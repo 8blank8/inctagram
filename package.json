@@ -21,7 +21,7 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./apps/inctagram/test/jest-e2e.json",
-    "generate:inctagram": "yarn prisma generate --schema=./apps/inctagram/prisma/schema.prisma"
+    "generate:inctagram": "yarn prisma generate --schema=./libs/db/src/prisma/schema.prisma"
   },
   "prisma": {
     "seed:inctagram": "ts-node apps/inctagram/prisma/seed.ts"
@@ -83,7 +83,8 @@
     ],
     "moduleNameMapper": {
       "^@app/user(|/.*)$": "<rootDir>/libs/user/src/$1",
-      "^@app/common(|/.*)$": "<rootDir>/libs/common/src/$1"
+      "^@app/common(|/.*)$": "<rootDir>/libs/common/src/$1",
+      "^@app/db(|/.*)$": "<rootDir>/libs/db/src/$1"
     }
   }
 }
