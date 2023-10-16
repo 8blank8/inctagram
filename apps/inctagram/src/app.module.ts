@@ -14,7 +14,7 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
         transport: Transport.TCP,
         options: {
           host: 'files-service',
-          port: 3051,
+          port: 3157,
         },
       },
     ]),
