@@ -21,14 +21,3 @@ spec:
            ports:
              - containerPort: PORT_CONTAINER
 
-           env:
-             - name: FILE_SERVICE_PORT
-               valueFrom:
-                 secretKeyRef:
-                   name: backend-inctagram-production-config-secret
-                   key: FILE_SERVICE_PORT
-             - name: DB_URL
-               valueFrom:
-                 secretKeyRef:
-                   name: backend-inctagram-production-config-secret
-                   key: DB_URL

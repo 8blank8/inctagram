@@ -3,13 +3,13 @@ pipeline {
     agent any
     environment {
         ENV_TYPE = "production"
-        PORT = 3125
+        PORT = 3157
         NAMESPACE = "incubator-icta-trainee-uk"
         REGISTRY_HOSTNAME = "8blank8"
-        PROJECT = "backend-inctagram"
-        SERVICE="inctagram"
+        PROJECT = "backend-files-microservice"
+        SERVICE="files"
         REGISTRY = "registry.hub.docker.com"
-        DEPLOYMENT_NAME = "backend-inctagram-deployment"
+        DEPLOYMENT_NAME = "backend-files-microservice-deployment"
         IMAGE_NAME = "${env.BUILD_ID}_${env.ENV_TYPE}_${env.GIT_COMMIT}"
         DOCKER_BUILD_NAME = "${env.REGISTRY_HOSTNAME}/${env.PROJECT}:${env.IMAGE_NAME}"
     }
@@ -24,7 +24,6 @@ pipeline {
             steps {
                 script {
                     sh "yarn install"
-                    sh "yarn prisma:generate"
                     sh "yarn test"
                 }
             }
