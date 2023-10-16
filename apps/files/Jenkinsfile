@@ -24,6 +24,7 @@ pipeline {
             steps {
                 script {
                     sh "yarn install"
+                    sh "yarn prisma:generate"
                     sh "yarn test"
                 }
             }
