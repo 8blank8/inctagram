@@ -27,7 +27,7 @@ RUN yarn install
 # Bundle app source code
 COPY --chown=node . .
 
-RUN yarn 'generate:inctagram'
+RUN yarn 'prisma:generate'
 
 RUN yarn build:${SERVICE}
 
