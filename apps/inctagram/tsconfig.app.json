@@ -7,7 +7,5 @@
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist", "test", "**/*spec.ts"],
-  "types": [
-    "@prisma/client"
-  ]
+  "types": ["@prisma/client"]
 }

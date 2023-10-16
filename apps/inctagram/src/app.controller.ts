@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { UserService } from './user/user.service';
 import { PostService } from './post/post.service';
-import { User as UserModel, Post as PostModel } from '../prisma/generated/client';
+import { User as UserModel, Post as PostModel } from '@prisma/client';
 import { AppService } from './app.service';
 
 @Controller()
@@ -17,19 +17,17 @@ export class AppController {
   constructor(
     private readonly userService: UserService,
     private readonly postService: PostService,
-    private appService: AppService
-  ) { }
+    private appService: AppService,
+  ) {}
 
   @Get()
   getHello() {
-    return this.appService.getHello()
+    return this.appService.getHello();
   }
 
   @Get('users')
-  getUsers(
-    @Param() queryParam
-  ) {
-    return this.userService.users(queryParam)
+  getUsers(@Param() queryParam) {
+    return this.userService.users(queryParam);
   }
 
   @Get('post/:id')
