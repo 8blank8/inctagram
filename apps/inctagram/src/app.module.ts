@@ -13,7 +13,7 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
         name: 'FILE_SERVICE',
         transport: Transport.TCP,
         options: {
-          host: 'files-service',
+          host: 'backend-files-microservice',
           port: 3157,
         },
       },
