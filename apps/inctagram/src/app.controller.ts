@@ -11,6 +11,7 @@ import { UserService } from './user/user.service';
 import { PostService } from './post/post.service';
 import { User as UserModel, Post as PostModel } from '@prisma/client';
 import { AppService } from './app.service';
+import { CreateUserDto } from './user/dto/create.user.dto';
 
 @Controller()
 export class AppController {
@@ -75,9 +76,7 @@ export class AppController {
   }
 
   @Post('user')
-  async signupUser(
-    @Body() userData: { name?: string; email: string },
-  ): Promise<UserModel> {
+  async signupUser(@Body() userData: CreateUserDto): Promise<UserModel> {
     return this.userService.createUser(userData);
   }
 
