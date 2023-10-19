@@ -1,5 +1,5 @@
 // import { Test, TestingModule } from '@nestjs/testing';
-// import { INestApplication } from '@nestjs/common';
+// import { INestApplication } from '@nestjs/utils';
 // import * as request from 'supertest';
 // import { AppModule } from '../src/app.module';
 
@@ -22,7 +22,7 @@ describe('AppController (e2e)', () => {
   //     .expect('Hello World!');
   // });
   it('mock', () => {
-    let i = 1;
+    const i = 1;
     expect(i).toBe(1);
   });
 });

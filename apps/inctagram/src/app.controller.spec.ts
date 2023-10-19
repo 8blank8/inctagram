@@ -7,6 +7,7 @@ import { PostService } from './post/post.service';
 import { PrismaService } from './prisma.service';
 import { FilesController } from '../../files/src/files.controller';
 import { FilesService } from '../../files/src/files.service';
+import { WELCOME_MESSAGE } from './utils/variables';
 
 describe('AppController', () => {
   let appController: AppController;
@@ -42,7 +43,7 @@ describe('AppController', () => {
 
   describe('root', () => {
     it('should return "Hello World! Deployed"', () => {
-      expect(appController.getHello()).toBe('Hello World! Deployed');
+      expect(appController.getHello()).toBe(WELCOME_MESSAGE);
     });
   });
 });
