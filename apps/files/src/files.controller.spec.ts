@@ -15,8 +15,8 @@ describe('AuthController', () => {
   });
 
   describe('root', () => {
-    it('should return "Hello World!"', () => {
-      expect(authController.getHello()).toBe('Hello World!');
+    it('should return "THIS_IS_FILES!!!"', () => {
+      expect(authController.getHello()).toBe('THIS_IS_FILES!!!');
     });
   });
 });

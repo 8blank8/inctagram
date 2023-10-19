@@ -3,16 +3,22 @@ import { Transport, MicroserviceOptions } from '@nestjs/microservices';
 import { FilesModule } from './files.module';
 
 async function bootstrap() {
+  const MODE = process.env.MODE || 'production';
+  const HOST = MODE === 'DEVELOPMENT' ? 'localhost' : '0.0.0.0';
+  const PORT = Number(process.env.FILES_SERVICE_PORT || 3157);
+
   const app = await NestFactory.createMicroservice<MicroserviceOptions>(
     FilesModule,
     {
       transport: Transport.TCP,
       options: {
-        host: '0.0.0.0',
-        port: 3157,
+        host: HOST,
+        port: PORT,
       },
     },
   );
+
+  console.log(`App listen on ${HOST}:${PORT} in ${MODE} mode.`);
   await app.listen();
 }
 

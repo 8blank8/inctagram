@@ -6,16 +6,19 @@ import {
   Body,
   Put,
   Delete,
+  Inject,
 } from '@nestjs/common';
 import { UserService } from './user/user.service';
 import { PostService } from './post/post.service';
 import { User as UserModel, Post as PostModel } from '@prisma/client';
 import { AppService } from './app.service';
 import { CreateUserDto } from './user/dto/create.user.dto';
+import { ClientProxy } from '@nestjs/microservices';
 
 @Controller()
 export class AppController {
   constructor(
+    @Inject('FILE_SERVICE') private client: ClientProxy,
     private readonly userService: UserService,
     private readonly postService: PostService,
     private appService: AppService,
@@ -41,6 +44,11 @@ export class AppController {
     return this.postService.posts({
       where: { published: true },
     });
+  }
+
+  @Get('files')
+  async getFiles(): Promise<any> {
+    return this.client.send({ cmd: 'YOUR_PATTERN' }, {}).toPromise();
   }
 
   @Get('filtered-posts/:searchString')
