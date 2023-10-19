@@ -27,6 +27,11 @@ spec:
                  secretKeyRef:
                    name: backend-inctagram-production-config-secret
                    key: FILE_SERVICE_PORT
+             - name: FILES_SERVICE_HOST
+               valueFrom:
+                 secretKeyRef:
+                   name: backend-inctagram-production-config-secret
+                   key: FILES_SERVICE_HOST
              - name: DB_URL
                valueFrom:
                  secretKeyRef:
