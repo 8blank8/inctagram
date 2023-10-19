@@ -5,6 +5,9 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  // Adding global prefix
+  app.setGlobalPrefix('api/v1');
+
   const config = new DocumentBuilder()
     .setTitle('Median')
     .setDescription('The Median API description')
@@ -15,6 +18,7 @@ async function bootstrap() {
   SwaggerModule.setup('documentation', app, document);
 
   const PORT = process.env.PORT || 3000;
+
   await app.listen(PORT);
   console.log(`Server mail inctagram running on port ==>  ${PORT}`);
 }
