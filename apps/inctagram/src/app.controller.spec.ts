@@ -23,7 +23,7 @@ describe('AppController', () => {
               host:
                 process.env.FILES_SERVICE_HOST ||
                 'backend-files-microservice-service',
-              port: Number(process.env.FILES_SERVICE_PORT || '3157'),
+              port: Number(process.env.FILES_SERVICE_PORT || '3161'),
             },
           },
         ]),
