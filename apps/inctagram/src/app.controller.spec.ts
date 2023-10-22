@@ -4,10 +4,10 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserService } from './user/user.service';
 import { PostService } from './post/post.service';
-import { PrismaService } from './prisma.service';
 import { FilesController } from '../../files/src/files.controller';
 import { FilesService } from '../../files/src/files.service';
 import { WELCOME_MESSAGE } from './utils/variables';
+import { PrismaService } from '@app/db';
 
 describe('AppController', () => {
   let appController: AppController;

@@ -1,13 +1,15 @@
 import { Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
+import { ConfigModule } from '@nestjs/config';
+import { PrismaService } from '@app/db';
+
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserService } from './user/user.service';
 import { PostService } from './post/post.service';
-import { PrismaService } from './prisma.service';
+
 import { FilesController } from '../../files/src/files.controller';
 import { FilesService } from '../../files/src/files.service';
-import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
