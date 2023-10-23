@@ -1,16 +1,18 @@
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { PassportStrategy } from '@nestjs/passport';
-import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
-import { PrismaService } from '@app/db';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { CommandBus } from '@nestjs/cqrs';
+import { settings_env } from '@app/common';
+import { ValidateUserCommand } from '@app/main/auth/use_cases/validate.user.use.case';
 
 export type JwtPayload = {
-  sub: string;
   email: string;
+  password: string;
 };
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
-  constructor(@Inject() private prisma: PrismaService) {
+  constructor(private commandBus: CommandBus) {
     const extractJwtFromCookie = (req) => {
       let token = null;
       if (req && req.cookies) {
@@ -21,21 +23,21 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
 
     super({
       ignoreExpiration: false,
-      secretOrKey: process.env.JWT_SECRET || 'JWT_SECRET_KEY',
+      secretOrKey: settings_env.JWT_SECRET || 'JWT_SECRET_KEY',
       jwtFromRequest: extractJwtFromCookie,
     });
   }
 
-  async validate(payload: JwtPayload) {
-    const user = await this.prisma.user.findFirst({
-      where: { id: Number(payload.sub) },
-    });
+  async validate({ email, password }: JwtPayload) {
+    const user = await this.commandBus.execute(
+      new ValidateUserCommand(email, password),
+    );
 
     if (!user) throw new UnauthorizedException('Please log in to continue');
 
     return {
-      id: payload.sub,
-      email: payload.email,
+      id: user.id,
+      email: email,
     };
   }
 }

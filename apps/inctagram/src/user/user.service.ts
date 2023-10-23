@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { User, Prisma } from '@prisma/client';
 import { PrismaService } from '@app/db';
-import { CreateUserDto } from './dto/create.user.dto';
 
 @Injectable()
 export class UserService {
@@ -29,12 +28,6 @@ export class UserService {
       cursor,
       where,
       orderBy,
-    });
-  }
-
-  async createUser(data: CreateUserDto): Promise<User> {
-    return this.prisma.user.create({
-      data,
     });
   }
 

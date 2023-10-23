@@ -19,6 +19,12 @@
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
     "paths": {
+      "@app/main": [
+        "apps/inctagram/src"
+      ],
+      "@app/main/*": [
+        "apps/inctagram/src/*"
+      ],
       "@app/user": [
         "libs/user/src"
       ],
@@ -26,10 +32,10 @@
         "libs/user/src/*"
       ],
       "@app/common": [
-        "libs/common/src"
+        "libs/common"
       ],
       "@app/common/*": [
-        "libs/common/src/*"
+        "libs/common/*"
       ],
       "@app/db": [
         "libs/db/src"

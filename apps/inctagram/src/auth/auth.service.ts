@@ -7,7 +7,7 @@ import { JwtService } from '@nestjs/jwt';
 import { generateFromEmail } from 'unique-username-generator';
 import { PrismaService } from '@app/db';
 
-import { RegisterUserDto } from './dto/auth.dto';
+import { RegisterUserDto } from './dto/register.user.dto';
 
 @Injectable()
 export class AuthService {
@@ -40,7 +40,7 @@ export class AuthService {
   async registerUser(user: RegisterUserDto) {
     try {
       const newUser = await this.prisma.user.create({ data: user });
-      newUser.name = await generateFromEmail(user.email, 5);
+      newUser.username = await generateFromEmail(user.email, 5);
 
       await this.prisma.user.update({
         where: { id: newUser.id },
