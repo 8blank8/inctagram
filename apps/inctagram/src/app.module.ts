@@ -7,9 +7,11 @@ import { PostService } from './post/post.service';
 import { PrismaService } from './prisma.service';
 import { FilesController } from '../../files/src/files.controller';
 import { FilesService } from '../../files/src/files.service';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
+    ConfigModule.forRoot(),
     ClientsModule.register([
       {
         name: 'FILE_SERVICE',
@@ -18,7 +20,7 @@ import { FilesService } from '../../files/src/files.service';
           host:
             process.env.FILES_SERVICE_HOST ||
             'backend-files-microservice-service',
-          port: Number(process.env.FILES_SERVICE_PORT || '3157'),
+          port: Number(process.env.FILES_SERVICE_PORT || '3161'),
         },
       },
     ]),
