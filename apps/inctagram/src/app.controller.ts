@@ -36,7 +36,7 @@ export class AppController {
 
   @Get('post/:id')
   async getPostById(@Param('id') id: string): Promise<PostModel> {
-    return this.postService.post({ id: Number(id) });
+    return this.postService.post({ id: id });
   }
 
   @Get('feed')
@@ -83,21 +83,21 @@ export class AppController {
     });
   }
 
-  @Post('user')
-  async signupUser(@Body() userData: CreateUserDto): Promise<UserModel> {
-    return this.userService.createUser(userData);
-  }
+  // @Post('user')
+  // async signupUser(@Body() userData: CreateUserDto): Promise<UserModel> {
+  //   return this.userService.createUser(userData);
+  // }
 
   @Put('publish/:id')
   async publishPost(@Param('id') id: string): Promise<PostModel> {
     return this.postService.updatePost({
-      where: { id: Number(id) },
+      where: { id: id },
       data: { published: true },
     });
   }
 
   @Delete('post/:id')
   async deletePost(@Param('id') id: string): Promise<PostModel> {
-    return this.postService.deletePost({ id: Number(id) });
+    return this.postService.deletePost({ id: id });
   }
 }
