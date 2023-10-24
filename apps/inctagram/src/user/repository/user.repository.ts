@@ -3,7 +3,7 @@ import { PrismaService } from '@app/db';
 
 @Injectable()
 export class UserRepository {
-  constructor(@Inject() private prisma: PrismaService) {}
+  constructor( private prisma: PrismaService) {}
 
   // TODO: types on save user
   async saveUser(user) {
