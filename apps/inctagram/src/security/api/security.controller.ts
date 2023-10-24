@@ -2,6 +2,7 @@ import {
   Controller,
   Delete,
   Get,
+  HttpStatus,
   Param,
   Request,
   Res,
@@ -9,23 +10,24 @@ import {
 } from '@nestjs/common';
 import { Response } from 'express';
 import { CommandBus } from '@nestjs/cqrs';
-import { JwtRefreshTokenGuard } from '../../auth/guards/jwt.refresh.token.guard';
+// import { JwtRefreshTokenGuard } from '../../auth/guards/jwt.refresh.token.guard';
 import { SecurityService } from '../application/security.service';
-import { STATUS_CODE } from '../../../entity/enum/status.code';
+// import { STATUS_CODE } from '../../../entity/enum/status.code';
 import { DeleteDeviceCommand } from '../application/use_cases/delete.device.use.case';
 import { DeleteAllDevicesCommand } from '../application/use_cases/delete.all.device.use.case';
-import { SecurityQueryRepositoryTypeorm } from '../infrastructure/secutity.query.repository.typeorm';
+import { SecurityQueryRepository } from '../repository/secutity.query.repository';
+// import { SecurityQueryRepositoryTypeorm } from '../infrastructure/secutity.query.repository.typeorm';
 
 @Controller('/security')
 export class SecurityController {
   constructor(
     // private readonly securityQueryRepository: SecurityQueryRepository,
-    private securityQueryRepository: SecurityQueryRepositoryTypeorm,
+    private securityQueryRepository: SecurityQueryRepository,
     private securityService: SecurityService,
     private commandBus: CommandBus,
   ) {}
 
-  @UseGuards(JwtRefreshTokenGuard)
+  // @UseGuards(JwtRefreshTokenGuard)
   @Get('/devices')
   async findDevices(@Request() req) {
     const devices = this.securityQueryRepository.findDevicesUserByUserId(
@@ -34,7 +36,7 @@ export class SecurityController {
     return devices;
   }
 
-  @UseGuards(JwtRefreshTokenGuard)
+  // @UseGuards(JwtRefreshTokenGuard)
   @Delete('/devices/:id')
   async deleteDeviceById(
     @Param('id') id: string,
@@ -44,12 +46,12 @@ export class SecurityController {
     const isDelete = await this.commandBus.execute(
       new DeleteDeviceCommand(id, req.user.userId),
     );
-    if (!isDelete) return res.sendStatus(STATUS_CODE.NOT_FOUND);
+    if (!isDelete) return res.sendStatus(HttpStatus.NOT_FOUND);
 
-    return res.sendStatus(STATUS_CODE.NO_CONTENT);
+    return res.sendStatus(HttpStatus.NO_CONTENT);
   }
 
-  @UseGuards(JwtRefreshTokenGuard)
+  // @UseGuards(JwtRefreshTokenGuard)
   @Delete('/devices')
   async deleteAllDevices(@Request() req, @Res() res: Response) {
     await this.commandBus.execute(
