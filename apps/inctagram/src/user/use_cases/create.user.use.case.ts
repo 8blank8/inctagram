@@ -15,7 +15,7 @@ export class CreateUserCommand {
 export class CreateUserUseCase {
   constructor(
     private userRepository: UserRepository,
-    private emailManager: EmailManager,
+    // private emailManager: EmailManager,
   ) {}
 
   async execute(command: CreateUserCommand): Promise<string> {
@@ -33,17 +33,17 @@ export class CreateUserUseCase {
 
     const res = await this.userRepository.saveUser(createUser);
 
-    if (sendMail) {
-      const hashedMail = bcrypt.hash(user.email, settings_env.HASH_ROUNDS);
-      const confirmationCode = JSON.stringify({
-        userId: res.id,
-        code: hashedMail,
-      });
-      this.emailManager.sendEmailConfirmationMessage(
-        user.email,
-        confirmationCode,
-      );
-    }
+    // if (sendMail) {
+    //   const hashedMail = bcrypt.hash(user.email, settings_env.HASH_ROUNDS);
+    //   const confirmationCode = JSON.stringify({
+    //     userId: res.id,
+    //     code: hashedMail,
+    //   });
+    //   this.emailManager.sendEmailConfirmationMessage(
+    //     user.email,
+    //     confirmationCode,
+    //   );
+    // }
     return res.id;
   }
 }
