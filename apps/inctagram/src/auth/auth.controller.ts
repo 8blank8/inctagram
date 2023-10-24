@@ -9,7 +9,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import { AuthService } from './auth.service';
 import { GoogleOauthGuard } from '@app/auth/guards/google-oauth.guard';
 import { RegisterUserDto } from './dto/register.user.dto';
@@ -29,9 +29,9 @@ export class AuthController {
     private commandBus: CommandBus,
   ) {}
 
-  @UseGuards(ThrottlerGuard, LocalAuthGuard)
+  @UseGuards( LocalAuthGuard)
   @Post('/login')
-  async login(@Req() req: Request, @Res() res: Response) {
+  async login(@Req() req, @Res() res: Response) {
     const deviceId = await this.commandBus.execute(
       new CreateDeviceCommand(req.user.id, req.ip, req.headers['user-agent']),
     );
