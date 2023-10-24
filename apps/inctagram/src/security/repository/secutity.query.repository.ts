@@ -1,37 +1,38 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { Devices } from '../domain/typeorm/devices.entity';
-import { DeviceViewSqlModel } from './models/queryRepositorySql/device.view.sql.model';
 import { PrismaService } from '@app/db';
+import { Device } from '@prisma/client';
+
 
 @Injectable()
 export class SecurityQueryRepository {
-  constructor(@Inject() private prisma: PrismaService) {}
+  constructor(
+     private prisma: PrismaService
+    ) {}
 
-  async findDeviceById(deviceId: string): Promise<Devices | null> {
-    const queryBuilder = this.securityRepository.createQueryBuilder('d');
+  async findDeviceById(deviceId: string): Promise<Device | null> {
 
-    const device = await queryBuilder
-      .where('d.id = :deviceId', { deviceId })
-      .leftJoinAndSelect('d.user', 'u')
-      .getOne();
+    const device = await this.prisma.device.findFirst({
+      where: {id: deviceId}
+    })
 
     return device;
   }
 
-  async findDevicesUserByUserId(userId: string): Promise<DeviceViewSqlModel[]> {
-    const qb = this.securityRepository.createQueryBuilder('d');
+  async findDevicesUserByUserId(userId: string): Promise<Device[] > {
 
-    const devices = await qb.where('d.userId = :userId', { userId }).getMany();
+    const devices = await this.prisma.device.findMany({
+      where: {userId: userId}
+    })
 
-    return devices.map(this._mapDeviceView);
+    return devices;
   }
 
-  private _mapDeviceView(device: Devices): DeviceViewSqlModel {
-    return {
-      deviceId: device.id,
-      ip: device.ip,
-      lastActiveDate: device.lastActiveDate,
-      title: device.title,
-    };
-  }
+  // private _mapDeviceView(device: Devices): DeviceViewSqlModel {
+  //   return {
+  //     deviceId: device.id,
+  //     ip: device.ip,
+  //     lastActiveDate: device.lastActiveDate,
+  //     title: device.title,
+  //   };
+  // }
 }
