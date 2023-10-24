@@ -3,7 +3,9 @@ import { PrismaService } from '@app/db';
 
 @Injectable()
 export class SecurityRepository {
-  constructor(@Inject() private prisma: PrismaService) {}
+  constructor(
+     private prisma: PrismaService
+    ) {}
 
   async saveDevice(device) {
     const id: string = device.id ?? '';
