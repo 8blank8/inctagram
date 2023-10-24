@@ -25,7 +25,7 @@ export class CreateRefreshTokenUseCase {
     const device = await this.securityQueryRepository.findDeviceById(deviceId);
     if (!device) return false;
 
-    device.lastActiveDate = new Date().toISOString();
+    device.lastActiveDate = new Date()
 
     await this.securityRepository.saveDevice(device);
     // await this.securityRepository.updateLastActiveDate(new Date().toISOString(), device.id)
