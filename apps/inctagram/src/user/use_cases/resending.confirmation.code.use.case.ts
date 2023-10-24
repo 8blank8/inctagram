@@ -13,7 +13,7 @@ export class ResendingConfirmationCodeUseCase {
   constructor(
     private userRepository: UserRepository,
     private userQueryRepository: UserQueryRepository,
-    private emailManager: EmailManager,
+    // private emailManager: EmailManager,
   ) {}
 
   async execute(command: ResendingConfirmationCodeCommand): Promise<boolean> {
@@ -27,10 +27,10 @@ export class ResendingConfirmationCodeUseCase {
       userId: user.id,
       code: hashedMail,
     });
-    this.emailManager.sendEmailConfirmationMessage(
-      user.email,
-      confirmationCode,
-    );
+    // this.emailManager.sendEmailConfirmationMessage(
+    //   user.email,
+    //   confirmationCode,
+    // );
 
     return true;
   }
