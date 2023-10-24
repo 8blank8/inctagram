@@ -9,10 +9,10 @@ export class ConfirmationEmailDto {
   @IsNotEmpty()
   @IsString()
   @Validate(IsTrimNotBlank)
-  code: string;
+  hash: string;
 
   @IsNotEmpty()
   @IsString()
   @IsEmail()
-  email: string;
+  userId: string;
 }
