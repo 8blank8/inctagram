@@ -6,6 +6,7 @@ import {
   Length,
   MinLength,
   Validate,
+  Matches
 } from 'class-validator';
 import { IsTrimNotBlank } from '../../utils/validation/is.trim.not.blank.validator';
 import { USER_REGISTRATION } from '../../utils/validation/auth.enum';
@@ -19,7 +20,8 @@ export class RegisterUserDto {
   @IsNotEmpty()
   @IsString()
   @Validate(IsTrimNotBlank)
-  @MinLength(USER_REGISTRATION.FIRSTNAME_MIN_LENGTH)
+  @Matches(/^[0-9A-Za-z_-]*$/)
+  @Length(USER_REGISTRATION.USERNAME_MIN_LENGTH, USER_REGISTRATION.USERNAME_MAX_LENGTH)
   username: string;
 
   @ApiProperty({ example: 'some@p@ssword', description: 'User password' })
