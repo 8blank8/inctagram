@@ -6,7 +6,7 @@ import { SecurityQueryRepository } from '../../repository/secutity.query.reposit
 export class DeleteDeviceCommand {
   constructor(
     public deviceId: string,
-    public userId: string
+    public userId: string,
   ) {}
 }
 
@@ -14,7 +14,7 @@ export class DeleteDeviceCommand {
 export class DeleteDeviceUseCase {
   constructor(
     private securityRepository: SecurityRepository,
-    private securityQueryRepository: SecurityQueryRepository
+    private securityQueryRepository: SecurityQueryRepository,
   ) {}
 
   async execute(command: DeleteDeviceCommand): Promise<boolean> {

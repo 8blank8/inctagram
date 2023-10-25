@@ -50,7 +50,7 @@ export const startTestConfig = async () => {
 
         throw new BadRequestException(errorMessages);
       },
-    })
+    }),
   );
   // app.useGlobalFilters(new HttpExceptionFilter())
   await app.init();

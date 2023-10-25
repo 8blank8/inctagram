@@ -23,7 +23,7 @@ export class RegisterUserDto {
   @Validate(IsTrimNotBlank)
   @Length(
     USER_REGISTRATION.PASSWORD_MIN_LENGTH,
-    USER_REGISTRATION.PASSWORD_MAX_LENGTH
+    USER_REGISTRATION.PASSWORD_MAX_LENGTH,
   )
   password: string;
 

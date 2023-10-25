@@ -13,7 +13,7 @@ import { RegisterUserDto } from './dto/register.user.dto';
 export class AuthService {
   constructor(
     private jwtService: JwtService,
-    private prisma: PrismaService
+    private prisma: PrismaService,
   ) {}
 
   generateJwt(payload) {

@@ -7,7 +7,7 @@ export const dropDataBase = async (app) => {
   async function main() {
     for (const tableName of tableNames)
       await prisma.$queryRawUnsafe(
-        `Truncate "${tableName}" restart identity cascade;`
+        `Truncate "${tableName}" restart identity cascade;`,
       );
   }
 

@@ -33,7 +33,7 @@ export class AuthController {
       new AuthorizeUserCommand(req.user.id, req.ip, req.headers['user-agent']),
     );
 
-    console.log(token)
+    console.log(token);
     res
       .status(HttpStatus.OK)
       .cookie('refreshToken', token.refreshToken, {
@@ -50,14 +50,14 @@ export class AuthController {
     @Res() res: Response,
   ) {
     const user = await this.commandBus.execute(
-      new CreateUserCommand(inputData)
+      new CreateUserCommand(inputData),
     );
 
-    console.log(user)
+    console.log(user);
     if (!user) return res.sendStatus(HttpStatus.BAD_REQUEST);
 
     const token = await this.commandBus.execute(
-      new AuthorizeUserCommand(user.id, req.ip, req.headers['user-agent'])
+      new AuthorizeUserCommand(user.id, req.ip, req.headers['user-agent']),
     );
 
     return res.status(HttpStatus.CREATED).send({ userId: user.id, token });
@@ -66,10 +66,10 @@ export class AuthController {
   @Post('/confirmation-code')
   async confirmationEmail(
     @Body() inputData: ConfirmationEmailDto,
-    @Res() res: Response
+    @Res() res: Response,
   ) {
     const isConfirmed = await this.commandBus.execute(
-      new EmailConfirmationCommand(inputData)
+      new EmailConfirmationCommand(inputData),
     );
     if (!isConfirmed) return res.sendStatus(HttpStatus.BAD_REQUEST);
 

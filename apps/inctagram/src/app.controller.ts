@@ -21,7 +21,7 @@ export class AppController {
     @Inject('FILE_SERVICE') private client: ClientProxy,
     private readonly userService: UserService,
     private readonly postService: PostService,
-    private appService: AppService
+    private appService: AppService,
   ) {}
 
   @Get()
@@ -53,7 +53,7 @@ export class AppController {
 
   @Get('filtered-posts/:searchString')
   async getFilteredPosts(
-    @Param('searchString') searchString: string
+    @Param('searchString') searchString: string,
   ): Promise<PostModel[]> {
     return this.postService.posts({
       where: {
@@ -71,7 +71,7 @@ export class AppController {
 
   @Post('post')
   async createDraft(
-    @Body() postData: { title: string; content?: string; authorEmail: string }
+    @Body() postData: { title: string; content?: string; authorEmail: string },
   ): Promise<PostModel> {
     const { title, content, authorEmail } = postData;
     return this.postService.createPost({

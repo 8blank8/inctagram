@@ -12,7 +12,7 @@ export class EmailConfirmationCommand {
 export class EmailConfirmationUseCase {
   constructor(
     private userRepository: UserRepository,
-    private userQueryRepository: UserQueryRepository
+    private userQueryRepository: UserQueryRepository,
   ) {}
 
   async execute(command: EmailConfirmationCommand): Promise<boolean> {

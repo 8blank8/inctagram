@@ -9,14 +9,14 @@ import { User } from '@prisma/client';
 export class CreateUserCommand {
   constructor(
     public user: CreateUserDto,
-    public sendMail: boolean = true
+    public sendMail: boolean = true,
   ) {}
 }
 
 @CommandHandler(CreateUserCommand)
 export class CreateUserUseCase {
   constructor(
-    private userRepository: UserRepository // private emailManager: EmailManager,
+    private userRepository: UserRepository, // private emailManager: EmailManager,
   ) {}
 
   async execute(command: CreateUserCommand): Promise<User> {
