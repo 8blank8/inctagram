@@ -11,14 +11,12 @@ import { PostService } from './post/post.service';
 import { JwtModule } from '@nestjs/jwt';
 import { CqrsModule } from '@nestjs/cqrs';
 
-
 import { FilesController } from '../../files/src/files.controller';
 import { FilesService } from '../../files/src/files.service';
 import { LocalStrategy } from '@app/auth';
 import { AuthModule } from './auth/auth.module';
 import { SecurityModule } from './security/security.module';
 import { UserModule } from './user/user.module';
-
 
 @Module({
   imports: [
@@ -40,7 +38,7 @@ import { UserModule } from './user/user.module';
     ]),
     AuthModule,
     SecurityModule,
-    UserModule
+    UserModule,
   ],
   controllers: [AppController, FilesController],
   providers: [

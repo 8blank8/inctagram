@@ -11,7 +11,7 @@ import { LoginUserUseCase } from './use_cases/login.user.use.case';
 import { ValidateUserUseCase } from './use_cases/validate.user.use.case';
 import { SecurityModule } from '../security/security.module';
 import { UserModule } from '../user/user.module';
-
+import { CreateDeviceUseCase } from '@app/main/security/application/use_cases/create.device.use.case';
 
 @Module({
   imports: [
@@ -19,14 +19,15 @@ import { UserModule } from '../user/user.module';
     JwtModule.register({}),
     CqrsModule,
     SecurityModule,
-    UserModule
+    UserModule,
   ],
-  controllers:[AuthController],
+  controllers: [AuthController],
   providers: [
-    AuthService, 
     PrismaService,
+    AuthService,
     CreateRefreshTokenUseCase,
     LoginUserUseCase,
+    CreateDeviceUseCase,
     ValidateUserUseCase,
   ],
   exports: [AuthService],

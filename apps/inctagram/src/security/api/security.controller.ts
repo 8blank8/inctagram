@@ -6,17 +6,13 @@ import {
   Param,
   Request,
   Res,
-  UseGuards,
 } from '@nestjs/common';
 import { Response } from 'express';
 import { CommandBus } from '@nestjs/cqrs';
-// import { JwtRefreshTokenGuard } from '../../auth/guards/jwt.refresh.token.guard';
 import { SecurityService } from '../application/security.service';
-// import { STATUS_CODE } from '../../../entity/enum/status.code';
 import { DeleteDeviceCommand } from '../application/use_cases/delete.device.use.case';
 import { DeleteAllDevicesCommand } from '../application/use_cases/delete.all.device.use.case';
 import { SecurityQueryRepository } from '../repository/secutity.query.repository';
-// import { SecurityQueryRepositoryTypeorm } from '../infrastructure/secutity.query.repository.typeorm';
 
 @Controller('/security')
 export class SecurityController {
@@ -24,14 +20,14 @@ export class SecurityController {
     // private readonly securityQueryRepository: SecurityQueryRepository,
     private securityQueryRepository: SecurityQueryRepository,
     private securityService: SecurityService,
-    private commandBus: CommandBus,
+    private commandBus: CommandBus
   ) {}
 
   // @UseGuards(JwtRefreshTokenGuard)
   @Get('/devices')
   async findDevices(@Request() req) {
     const devices = this.securityQueryRepository.findDevicesUserByUserId(
-      req.user.userId,
+      req.user.userId
     );
     return devices;
   }
@@ -41,10 +37,10 @@ export class SecurityController {
   async deleteDeviceById(
     @Param('id') id: string,
     @Request() req,
-    @Res() res: Response,
+    @Res() res: Response
   ) {
     const isDelete = await this.commandBus.execute(
-      new DeleteDeviceCommand(id, req.user.userId),
+      new DeleteDeviceCommand(id, req.user.userId)
     );
     if (!isDelete) return res.sendStatus(HttpStatus.NOT_FOUND);
 
@@ -55,7 +51,7 @@ export class SecurityController {
   @Delete('/devices')
   async deleteAllDevices(@Request() req, @Res() res: Response) {
     await this.commandBus.execute(
-      new DeleteAllDevicesCommand(req.user.userId, req.user.deviceId),
+      new DeleteAllDevicesCommand(req.user.userId, req.user.deviceId)
     );
     res.sendStatus(204);
   }

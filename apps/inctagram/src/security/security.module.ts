@@ -8,22 +8,15 @@ import { SecurityService } from './application/security.service';
 import { SecurityQueryRepository } from './repository/secutity.query.repository';
 import { SecurityRepository } from './repository/security.repository';
 
-
 @Module({
-  imports: [
-    ConfigModule.forRoot(),
-    CqrsModule,
-  ],
-  controllers:[SecurityController],
+  imports: [ConfigModule.forRoot(), CqrsModule],
+  controllers: [SecurityController],
   providers: [
     SecurityQueryRepository,
     SecurityService,
     SecurityRepository,
     PrismaService,
   ],
-  exports: [
-    SecurityQueryRepository,
-    SecurityRepository
-  ],
+  exports: [SecurityQueryRepository, SecurityRepository],
 })
 export class SecurityModule {}

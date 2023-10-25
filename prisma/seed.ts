@@ -8,6 +8,7 @@ async function main() {
     create: {
       email: 'alice@prisma.io',
       username: 'Alice',
+      password: '$2b$04$LmGVEiqKgdh1DQAa3GrSOuC.AmBWHG.3Ib2nrfQhbOCZj6THL159K',
       posts: {
         create: {
           title: 'Check out Prisma with Next.js',
@@ -23,6 +24,7 @@ async function main() {
     create: {
       email: 'bob@prisma.io',
       username: 'Bob',
+      password: '$2b$04$LmGVEiqKgdh1DQAa3GrSOuC.AmBWHG.3Ib2nrfQhbOCZj6THL159K',
       posts: {
         create: [
           {

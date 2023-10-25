@@ -20,7 +20,7 @@ model User {
   emailConfirmed Boolean  @default(false)
   password       String?
   posts          Post[]
-  Device         Device[]
+  devices        Device[]
 }
 
 model Device {

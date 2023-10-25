@@ -14,7 +14,6 @@ import { AuthService } from './auth.service';
 import { GoogleOauthGuard } from '@app/auth/guards/google-oauth.guard';
 import { RegisterUserDto } from './dto/register.user.dto';
 import { ConfirmationEmailDto } from './dto/confirmation.email.dto';
-import { ThrottlerGuard } from '@nestjs/throttler';
 import { LocalAuthGuard } from '@app/auth';
 import { CreateDeviceCommand } from '../security/application/use_cases/create.device.use.case';
 import { LoginUserCommand } from './use_cases/login.user.use.case';
@@ -26,21 +25,21 @@ import { EmailConfirmationCommand } from '../user/use_cases/email.confirmation.u
 export class AuthController {
   constructor(
     private authService: AuthService,
-    private commandBus: CommandBus,
+    private commandBus: CommandBus
   ) {}
 
-  @UseGuards( LocalAuthGuard)
+  @UseGuards(LocalAuthGuard)
   @Post('/login')
   async login(@Req() req, @Res() res: Response) {
     const deviceId = await this.commandBus.execute(
-      new CreateDeviceCommand(req.user.id, req.ip, req.headers['user-agent']),
+      new CreateDeviceCommand(req.user.id, req.ip, req.headers['user-agent'])
     );
 
     const token = await this.commandBus.execute(
-      new LoginUserCommand(req.user.id),
+      new LoginUserCommand(req.user.id)
     );
     const refreshToken = await this.commandBus.execute(
-      new CreateRefreshTokenCommand(req.user.id, deviceId),
+      new CreateRefreshTokenCommand(req.user.id, deviceId)
     );
 
     res
@@ -51,24 +50,36 @@ export class AuthController {
 
   @Post('/registration')
   async registrationUser(
+    @Req() req,
     @Body() inputData: RegisterUserDto,
-    @Res() res: Response,
+    @Res() res: Response
   ) {
-    const userId = await this.commandBus.execute(
-      new CreateUserCommand(inputData),
+    const user = await this.commandBus.execute(
+      new CreateUserCommand(inputData)
     );
-    if (!userId) return res.sendStatus(HttpStatus.BAD_REQUEST);
 
-    return res.status(HttpStatus.CREATED).send({ userId });
+    if (!user) return res.sendStatus(HttpStatus.BAD_REQUEST);
+    const deviceId = await this.commandBus.execute(
+      new CreateDeviceCommand(user.id, req.ip, req.headers['user-agent'])
+    );
+    const token = await this.commandBus.execute(
+      new LoginUserCommand(user.id)
+    );
+    const refreshToken = await this.commandBus.execute(
+      new CreateRefreshTokenCommand(user.id, deviceId)
+    );
+    return res
+      .status(HttpStatus.CREATED)
+      .send({ userId: user.id, token, refreshToken });
   }
 
   @Post('/confirmation-code')
   async confirmationEmail(
     @Body() inputData: ConfirmationEmailDto,
-    @Res() res: Response,
+    @Res() res: Response
   ) {
     const isConfirmed = await this.commandBus.execute(
-      new EmailConfirmationCommand(inputData),
+      new EmailConfirmationCommand(inputData)
     );
     if (!isConfirmed) return res.sendStatus(HttpStatus.BAD_REQUEST);
 

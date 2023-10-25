@@ -1,18 +1,16 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@app/db';
 
 @Injectable()
 export class SecurityRepository {
-  constructor(
-     private prisma: PrismaService
-    ) {}
+  constructor(private prisma: PrismaService) {}
 
   async saveDevice(device) {
-    const id: string = device.id ?? '';
-    return this.prisma.device.upsert({
+    const { id, ...data } = device;
+    if (!id) return this.prisma.device.create({ data: data });
+    return this.prisma.device.update({
       where: { id: id },
-      create: device,
-      update: device,
+      data,
     });
   }
 
