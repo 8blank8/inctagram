@@ -15,7 +15,7 @@ async function bootstrap() {
         host: HOST,
         port: PORT,
       },
-    },
+    }
   );
 
   console.log(`App listen on ${HOST}:${PORT} in ${MODE} mode.`);

@@ -62,9 +62,7 @@ export class AuthController {
     const deviceId = await this.commandBus.execute(
       new CreateDeviceCommand(user.id, req.ip, req.headers['user-agent'])
     );
-    const token = await this.commandBus.execute(
-      new LoginUserCommand(user.id)
-    );
+    const token = await this.commandBus.execute(new LoginUserCommand(user.id));
     const refreshToken = await this.commandBus.execute(
       new CreateRefreshTokenCommand(user.id, deviceId)
     );

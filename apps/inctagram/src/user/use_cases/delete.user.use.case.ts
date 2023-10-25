@@ -10,7 +10,7 @@ export class DeleteUserCommand {
 export class DeleteUserUseCase {
   constructor(
     private userRepository: UserRepository,
-    private userQueryRepository: UserQueryRepository,
+    private userQueryRepository: UserQueryRepository
   ) {}
 
   async execute(command: DeleteUserCommand) {

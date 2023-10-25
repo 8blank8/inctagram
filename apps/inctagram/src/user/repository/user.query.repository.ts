@@ -4,7 +4,7 @@ import { User } from '@prisma/client';
 
 @Injectable()
 export class UserQueryRepository {
-  constructor( private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) {}
 
   async findUserByLoginOrEmail(email: string): Promise<User | null> {
     const user = this.prisma.user.findFirstOrThrow({

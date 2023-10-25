@@ -19,7 +19,7 @@ export class LoginUserUseCase {
         {
           expiresIn: settings_env.JWT_ACCESS_EXP,
           secret: settings_env.JWT_SECRET,
-        },
+        }
       ),
     };
   }

@@ -2,7 +2,7 @@ import { CommandHandler } from '@nestjs/cqrs';
 import { UserRepository } from '../repository/user.repository';
 import { UserQueryRepository } from '../repository/user.query.repository';
 import bcrypt from 'bcrypt';
-import { ConfirmationEmailDto } from "../../auth/dto/confirmation.email.dto";
+import { ConfirmationEmailDto } from '../../auth/dto/confirmation.email.dto';
 
 export class EmailConfirmationCommand {
   constructor(public code: ConfirmationEmailDto) {}
@@ -12,7 +12,7 @@ export class EmailConfirmationCommand {
 export class EmailConfirmationUseCase {
   constructor(
     private userRepository: UserRepository,
-    private userQueryRepository: UserQueryRepository,
+    private userQueryRepository: UserQueryRepository
   ) {}
 
   async execute(command: EmailConfirmationCommand): Promise<boolean> {

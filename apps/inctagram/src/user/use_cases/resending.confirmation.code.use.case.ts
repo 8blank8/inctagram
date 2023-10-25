@@ -12,8 +12,7 @@ export class ResendingConfirmationCodeCommand {
 export class ResendingConfirmationCodeUseCase {
   constructor(
     private userRepository: UserRepository,
-    private userQueryRepository: UserQueryRepository,
-    // private emailManager: EmailManager,
+    private userQueryRepository: UserQueryRepository // private emailManager: EmailManager,
   ) {}
 
   async execute(command: ResendingConfirmationCodeCommand): Promise<boolean> {

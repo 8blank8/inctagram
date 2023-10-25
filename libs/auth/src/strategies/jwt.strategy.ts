@@ -30,7 +30,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
 
   async validate({ email, password }: JwtPayload) {
     const user = await this.commandBus.execute(
-      new ValidateUserCommand(email, password),
+      new ValidateUserCommand(email, password)
     );
 
     if (!user) throw new UnauthorizedException('Please log in to continue');

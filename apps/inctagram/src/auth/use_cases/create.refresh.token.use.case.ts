@@ -7,7 +7,7 @@ import { SecurityQueryRepository } from '../../security/repository/secutity.quer
 export class CreateRefreshTokenCommand {
   constructor(
     public userId: string,
-    public deviceId: string,
+    public deviceId: string
   ) {}
 }
 
@@ -16,7 +16,7 @@ export class CreateRefreshTokenUseCase {
   constructor(
     private securityQueryRepository: SecurityQueryRepository,
     private securityRepository: SecurityRepository,
-    private jwtService: JwtService,
+    private jwtService: JwtService
   ) {}
 
   async execute(command: CreateRefreshTokenCommand): Promise<string | boolean> {
@@ -25,7 +25,7 @@ export class CreateRefreshTokenUseCase {
     const device = await this.securityQueryRepository.findDeviceById(deviceId);
     if (!device) return false;
 
-    device.lastActiveDate = new Date()
+    device.lastActiveDate = new Date();
 
     await this.securityRepository.saveDevice(device);
     // await this.securityRepository.updateLastActiveDate(new Date().toISOString(), device.id)
@@ -40,7 +40,7 @@ export class CreateRefreshTokenUseCase {
       {
         expiresIn: settings_env.JWT_REFRESH_EXP,
         secret: settings_env.JWT_SECRET,
-      },
+      }
     );
     return refreshToken;
   }
