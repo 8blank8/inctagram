@@ -7,12 +7,12 @@ import { ValidateUserCommand } from '@app/main/auth/use_cases/validate.user.use.
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy) {
   constructor(private commandBus: CommandBus) {
-    super({ usernameField: 'loginOrEmail' });
+    super({ usernameField: 'email' });
   }
 
   async validate(username: string, password: string): Promise<any> {
     const user = await this.commandBus.execute(
-      new ValidateUserCommand(username, password)
+      new ValidateUserCommand(username, password),
     );
 
     if (!user) {

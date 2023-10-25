@@ -6,8 +6,7 @@ import { ConfigModule } from '@nestjs/config';
 
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
-import { CreateRefreshTokenUseCase } from './use_cases/create.refresh.token.use.case';
-import { LoginUserUseCase } from './use_cases/login.user.use.case';
+import { AuthorizeUserUseCase } from './use_cases/authorizeUserUseCase';
 import { ValidateUserUseCase } from './use_cases/validate.user.use.case';
 import { SecurityModule } from '../security/security.module';
 import { UserModule } from '../user/user.module';
@@ -25,8 +24,7 @@ import { CreateDeviceUseCase } from '@app/main/security/application/use_cases/cr
   providers: [
     PrismaService,
     AuthService,
-    CreateRefreshTokenUseCase,
-    LoginUserUseCase,
+    AuthorizeUserUseCase,
     CreateDeviceUseCase,
     ValidateUserUseCase,
   ],

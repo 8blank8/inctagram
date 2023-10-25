@@ -15,9 +15,7 @@ import { GoogleOauthGuard } from '@app/auth/guards/google-oauth.guard';
 import { RegisterUserDto } from './dto/register.user.dto';
 import { ConfirmationEmailDto } from './dto/confirmation.email.dto';
 import { LocalAuthGuard } from '@app/auth';
-import { CreateDeviceCommand } from '../security/application/use_cases/create.device.use.case';
-import { LoginUserCommand } from './use_cases/login.user.use.case';
-import { CreateRefreshTokenCommand } from './use_cases/create.refresh.token.use.case';
+import { AuthorizeUserCommand } from './use_cases/authorizeUserUseCase';
 import { CreateUserCommand } from '../user/use_cases/create.user.use.case';
 import { EmailConfirmationCommand } from '../user/use_cases/email.confirmation.use.case';
 
@@ -25,26 +23,23 @@ import { EmailConfirmationCommand } from '../user/use_cases/email.confirmation.u
 export class AuthController {
   constructor(
     private authService: AuthService,
-    private commandBus: CommandBus
+    private commandBus: CommandBus,
   ) {}
 
   @UseGuards(LocalAuthGuard)
   @Post('/login')
   async login(@Req() req, @Res() res: Response) {
-    const deviceId = await this.commandBus.execute(
-      new CreateDeviceCommand(req.user.id, req.ip, req.headers['user-agent'])
-    );
-
     const token = await this.commandBus.execute(
-      new LoginUserCommand(req.user.id)
-    );
-    const refreshToken = await this.commandBus.execute(
-      new CreateRefreshTokenCommand(req.user.id, deviceId)
+      new AuthorizeUserCommand(req.user.id, req.ip, req.headers['user-agent']),
     );
 
+    console.log(token)
     res
       .status(HttpStatus.OK)
-      .cookie('refreshToken', refreshToken, { httpOnly: true, secure: true })
+      .cookie('refreshToken', token.refreshToken, {
+        httpOnly: true,
+        secure: true,
+      })
       .send(token);
   }
 
@@ -52,23 +47,20 @@ export class AuthController {
   async registrationUser(
     @Req() req,
     @Body() inputData: RegisterUserDto,
-    @Res() res: Response
+    @Res() res: Response,
   ) {
     const user = await this.commandBus.execute(
       new CreateUserCommand(inputData)
     );
 
+    console.log(user)
     if (!user) return res.sendStatus(HttpStatus.BAD_REQUEST);
-    const deviceId = await this.commandBus.execute(
-      new CreateDeviceCommand(user.id, req.ip, req.headers['user-agent'])
+
+    const token = await this.commandBus.execute(
+      new AuthorizeUserCommand(user.id, req.ip, req.headers['user-agent'])
     );
-    const token = await this.commandBus.execute(new LoginUserCommand(user.id));
-    const refreshToken = await this.commandBus.execute(
-      new CreateRefreshTokenCommand(user.id, deviceId)
-    );
-    return res
-      .status(HttpStatus.CREATED)
-      .send({ userId: user.id, token, refreshToken });
+
+    return res.status(HttpStatus.CREATED).send({ userId: user.id, token });
   }
 
   @Post('/confirmation-code')

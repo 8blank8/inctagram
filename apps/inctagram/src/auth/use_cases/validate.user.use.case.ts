@@ -1,12 +1,11 @@
 import { CommandHandler } from '@nestjs/cqrs';
-import bcrypt from 'bcrypt';
-import { UserQueryRepository } from '../../user/repository/user.query.repository';
-import { settings_env } from '@app/common';
+import { compareSync } from 'bcrypt';
+import { UserQueryRepository } from '@app/main/user/repository/user.query.repository';
 
 export class ValidateUserCommand {
   constructor(
     public email: string,
-    public password: string
+    public password: string,
   ) {}
 }
 
@@ -20,12 +19,10 @@ export class ValidateUserUseCase {
     const user = await this.userQueryRepository.findUserByLoginOrEmail(email);
     if (!user) return null;
 
-    const newPasswordHash: string = await bcrypt.hash(
-      password,
-      settings_env.HASH_ROUNDS
-    );
-    if (user.password !== newPasswordHash) return null;
+    const isRightPassword = compareSync(password, user.password);
 
-    return { id: user.id, username: user.username };
+    if (!isRightPassword) return null;
+
+    return { userId: user.id, ...user };
   }
 }
