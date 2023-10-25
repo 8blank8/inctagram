@@ -10,9 +10,8 @@ import {
 } from '@nestjs/common';
 import { UserService } from './user/user.service';
 import { PostService } from './post/post.service';
-import { User as UserModel, Post as PostModel } from '@prisma/client';
+import { Post as PostModel } from '@prisma/client';
 import { AppService } from './app.service';
-import { CreateUserDto } from './user/dto/create.user.dto';
 import { ClientProxy } from '@nestjs/microservices';
 
 @Controller()
@@ -82,11 +81,6 @@ export class AppController {
       },
     });
   }
-
-  // @Post('user')
-  // async signupUser(@Body() userData: CreateUserDto): Promise<UserModel> {
-  //   return this.userService.createUser(userData);
-  // }
 
   @Put('publish/:id')
   async publishPost(@Param('id') id: string): Promise<PostModel> {
