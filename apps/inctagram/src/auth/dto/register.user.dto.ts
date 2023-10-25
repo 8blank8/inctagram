@@ -5,7 +5,6 @@ import {
   IsString,
   Length,
   Validate,
-  Matches,
 } from 'class-validator';
 import { IsTrimNotBlank } from '../../utils/validation/is.trim.not.blank.validator';
 import { USER_REGISTRATION } from '../../utils/validation/auth.enum';
@@ -16,7 +15,6 @@ export class RegisterUserDto {
    * @example Kitty
    */
   @ApiProperty({ example: 'John Doe', description: 'User name, optional' })
-  @Matches(/^[0-9A-Za-z_-]*$/)
   username: string;
 
   @ApiProperty({ example: 'some@p@ssword', description: 'User password' })

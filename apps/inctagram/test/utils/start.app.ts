@@ -11,12 +11,13 @@ import * as process from 'process';
 
 export const startTestConfig = async () => {
   let app: INestApplication;
+
+  console.log(process.env.DB_URL);
   process.env.DB_URL =
     'postgres://springfield.3298:VRirOjE9BfN2@ep-twilight-wave-02964973.eu-central-1.aws.neon.tech/neondb';
 
   process.env.FILES_SERVICE_PORT = '3161';
 
-  console.log(process.env);
   const moduleRef = await Test.createTestingModule({
     imports: [ConfigModule.forRoot(), AppModule],
   })
