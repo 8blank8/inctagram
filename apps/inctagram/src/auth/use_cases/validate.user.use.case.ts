@@ -6,7 +6,7 @@ import { settings_env } from '@app/common';
 export class ValidateUserCommand {
   constructor(
     public email: string,
-    public password: string,
+    public password: string
   ) {}
 }
 
@@ -22,7 +22,7 @@ export class ValidateUserUseCase {
 
     const newPasswordHash: string = await bcrypt.hash(
       password,
-      settings_env.HASH_ROUNDS,
+      settings_env.HASH_ROUNDS
     );
     if (user.password !== newPasswordHash) return null;
 

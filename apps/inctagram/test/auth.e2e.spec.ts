@@ -4,21 +4,20 @@ import { getTestUser } from './utils/get.test.user';
 import { startTestConfig } from './utils/start.app';
 import { dropDataBase } from './utils/drop.database';
 
-
 describe('AuthService', () => {
   let app: INestApplication;
-
+  //
   const user1 = getTestUser(1);
-  const user2 = getTestUser(2);
-  const createdUsersConfirmationCode = {};
-
+  // const user2 = getTestUser(2);
+  // const createdUsersConfirmationCode = {};
+  //
   beforeAll(async () => {
     app = await startTestConfig();
   });
 
   describe('delete all data', () => {
     it('DELETE /testing/delete-all delete all data', async () => {
-      await dropDataBase(app)
+      await dropDataBase(app);
     });
   });
 
@@ -29,7 +28,7 @@ describe('AuthService', () => {
         .send({ ...user1, email: '' })
         .expect(HttpStatus.BAD_REQUEST);
     });
-  })
+  });
 
   // describe('POST /auth/registration', () => {
   //   it('should be status 400 blank email', async () => {
@@ -39,12 +38,12 @@ describe('AuthService', () => {
   //       .expect(HttpStatus.BAD_REQUEST);
   //   });
 
-  //   it('should be status 400 "   " email', async () => {
-  //     await request(app.getHttpServer())
-  //       .post(`/auth/registration`)
-  //       .send({ ...user1, email: '     ' })
-  //       .expect(HttpStatus.BAD_REQUEST);
-  //   });
+  it('should be status 400 "   " email', async () => {
+    await request(app.getHttpServer())
+      .post(`/auth/registration`)
+      .send({ ...user1, email: '     ' })
+      .expect(HttpStatus.BAD_REQUEST);
+  });
 
   //   it('should be status 400 incorrect email', async () => {
   //     await request(app.getHttpServer())
