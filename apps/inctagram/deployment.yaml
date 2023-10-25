@@ -32,6 +32,26 @@ spec:
                  secretKeyRef:
                    name: backend-inctagram-production-config-secret
                    key: FILES_SERVICE_HOST
+             - name: GOOGLE_API_KEY
+               valueFrom:
+                 secretKeyRef:
+                   name: backend-inctagram-production-config-secret
+                   key: GOOGLE_API_KEY
+             - name: GOOGLE_OAUTH_CLIENT_ID
+               valueFrom:
+                 secretKeyRef:
+                   name: backend-inctagram-production-config-secret
+                   key: GOOGLE_OAUTH_CLIENT_ID
+             - name: GOOGLE_OAUTH_CLIENT_SECRET
+               valueFrom:
+                 secretKeyRef:
+                   name: backend-inctagram-production-config-secret
+                   key: GOOGLE_OAUTH_CLIENT_SECRET
+             - name: TEST_DB_URL
+               valueFrom:
+                 secretKeyRef:
+                   name: backend-inctagram-production-config-secret
+                   key: TEST_DB_URL
              - name: DB_URL
                valueFrom:
                  secretKeyRef:
