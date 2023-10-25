@@ -25,7 +25,8 @@
     "prisma:seed": "ts-node libs/db/src/prisma/seed.ts"
   },
   "pre-commit": {
-    "run": "lint"
+    "run": "lint",
+    "silent": false
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",
