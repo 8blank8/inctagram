@@ -5,13 +5,14 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { useContainer } from 'class-validator';
+import { ConfigModule } from '@nestjs/config';
 import { AppModule } from '../../src/app.module';
 
 export const startTestConfig = async () => {
   let app: INestApplication;
 
   const moduleRef = await Test.createTestingModule({
-    imports: [AppModule],
+    imports: [ConfigModule.forRoot(), AppModule],
   })
     // .overrideProvider(AuthEmailManager)
     // .useValue({
