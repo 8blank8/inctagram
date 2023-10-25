@@ -32,6 +32,7 @@ export const startTestConfig = async () => {
     // })
     .compile();
 
+  // eslint-disable-next-line prefer-const
   app = moduleRef.createNestApplication();
   // app.use(cookieParser())
   useContainer(app.select(AppModule), { fallbackOnErrors: true });

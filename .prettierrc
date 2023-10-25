@@ -3,5 +3,5 @@
   "tabWidth": 2,
   "trailingComma": "all",
   "semi": true,
-  "endOfLine": "crlf"
+  "endOfLine": "auto"
 }

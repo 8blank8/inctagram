@@ -1,7 +1,7 @@
 import { CommandHandler } from '@nestjs/cqrs';
 import { UserRepository } from '../repository/user.repository';
 import { CreateUserDto } from '../dto/create.user.dto';
-import { EmailManager, settings_env } from '@app/common';
+import { settings_env } from '@app/common';
 import { hash } from 'bcrypt';
 import { generateFromEmail } from 'unique-username-generator';
 import { User } from '@prisma/client';
