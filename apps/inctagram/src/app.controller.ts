@@ -13,6 +13,8 @@ import { PostService } from './post/post.service';
 import { Post as PostModel } from '@prisma/client';
 import { AppService } from './app.service';
 import { ClientProxy } from '@nestjs/microservices';
+import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { UserEntity } from '@app/main/user/entity/user.entity';
 
 @Controller()
 export class AppController {
@@ -28,6 +30,13 @@ export class AppController {
     return this.appService.getHello();
   }
 
+  @ApiOperation({ summary: 'get all users' })
+  @ApiResponse({
+    status: 200,
+    description: 'The found record',
+    type: UserEntity,
+    isArray: true,
+  })
   @Get('users')
   getUsers(@Param() queryParam) {
     return this.userService.users(queryParam);

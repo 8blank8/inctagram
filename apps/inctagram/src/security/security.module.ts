@@ -3,10 +3,10 @@ import { CqrsModule } from '@nestjs/cqrs';
 import { PrismaService } from '@app/db';
 import { ConfigModule } from '@nestjs/config';
 
-import { SecurityController } from './api/security.controller';
 import { SecurityService } from './application/security.service';
 import { SecurityQueryRepository } from './repository/secutity.query.repository';
 import { SecurityRepository } from './repository/security.repository';
+import { SecurityController } from '@app/main/security/security.controller';
 
 @Module({
   imports: [ConfigModule.forRoot(), CqrsModule],

@@ -8,6 +8,7 @@ import {
   Res,
   UseGuards,
 } from '@nestjs/common';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CommandBus } from '@nestjs/cqrs';
 import { Response } from 'express';
 import { AuthService } from './auth.service';
@@ -19,6 +20,7 @@ import { AuthorizeUserCommand } from './use_cases/authorizeUserUseCase';
 import { CreateUserCommand } from '../user/use_cases/create.user.use.case';
 import { EmailConfirmationCommand } from '../user/use_cases/email.confirmation.use.case';
 
+@ApiTags('auth')
 @Controller('auth')
 export class AuthController {
   constructor(
@@ -27,6 +29,8 @@ export class AuthController {
   ) {}
 
   @UseGuards(LocalAuthGuard)
+  @ApiOperation({ summary: 'Log in route' })
+  @ApiResponse({ status: 403, description: 'Forbidden.' })
   @Post('/login')
   async login(@Req() req, @Res() res: Response) {
     const token = await this.commandBus.execute(
@@ -42,6 +46,8 @@ export class AuthController {
       .send(token);
   }
 
+  @ApiOperation({ summary: 'Register route' })
+  @ApiResponse({ status: 403, description: 'Forbidden.' })
   @Post('/registration')
   async registrationUser(
     @Req() req,
@@ -61,6 +67,8 @@ export class AuthController {
     return res.status(HttpStatus.CREATED).send({ userId: user.id, token });
   }
 
+  @ApiOperation({ summary: 'Request to confirm code from mail' })
+  @ApiResponse({ status: 403, description: 'Forbidden.' })
   @Post('/confirmation-code')
   async confirmationEmail(
     @Body() inputData: ConfirmationEmailDto,
@@ -74,6 +82,8 @@ export class AuthController {
     return res.sendStatus(HttpStatus.NO_CONTENT);
   }
 
+  @ApiOperation({ summary: 'google auth' })
+  @ApiResponse({ status: 403, description: 'Forbidden.' })
   @Get('google')
   @UseGuards(GoogleOauthGuard)
   // eslint-disable-next-line @typescript-eslint/no-empty-function

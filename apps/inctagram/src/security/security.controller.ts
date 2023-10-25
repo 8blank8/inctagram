@@ -9,21 +9,28 @@ import {
 } from '@nestjs/common';
 import { Response } from 'express';
 import { CommandBus } from '@nestjs/cqrs';
-import { SecurityService } from '../application/security.service';
-import { DeleteDeviceCommand } from '../application/use_cases/delete.device.use.case';
-import { DeleteAllDevicesCommand } from '../application/use_cases/delete.all.device.use.case';
-import { SecurityQueryRepository } from '../repository/secutity.query.repository';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
+import { SecurityQueryRepository } from '@app/main/security/repository/secutity.query.repository';
+import { DeleteDeviceCommand } from '@app/main/security/application/use_cases/delete.device.use.case';
+import { DeleteAllDevicesCommand } from '@app/main/security/application/use_cases/delete.all.device.use.case';
 
+@ApiBearerAuth()
+@ApiTags('security')
 @Controller('/security')
 export class SecurityController {
   constructor(
-    // private readonly securityQueryRepository: SecurityQueryRepository,
     private securityQueryRepository: SecurityQueryRepository,
-    private securityService: SecurityService,
     private commandBus: CommandBus,
   ) {}
 
   // @UseGuards(JwtRefreshTokenGuard)
+  @ApiOperation({ summary: 'Get user active devices' })
+  @ApiResponse({ status: 403, description: 'Forbidden.' })
   @Get('/devices')
   async findDevices(@Request() req) {
     const devices = this.securityQueryRepository.findDevicesUserByUserId(
