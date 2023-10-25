@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@app/db';
 import { User } from '@prisma/client';
 
@@ -6,12 +6,13 @@ import { User } from '@prisma/client';
 export class UserQueryRepository {
   constructor(private prisma: PrismaService) {}
 
-  async findUserByLoginOrEmail(email: string): Promise<User | null> {
-    const user = this.prisma.user.findFirstOrThrow({
-      where: { email: email },
+  async findUserByLoginOrEmail(emailLogin: string): Promise<User | null> {
+    const user = await this.prisma.user.findMany({
+      where: {
+        OR: [{ email: emailLogin }, { username: emailLogin }],
+      },
     });
-
-    return user;
+    return user[0];
   }
 
   async findUserById(userId: string): Promise<User | null> {

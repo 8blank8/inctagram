@@ -8,6 +8,7 @@ describe('AuthService', () => {
   let app: INestApplication;
   //
   const user1 = getTestUser(1);
+  let user1Token = '';
   // const user2 = getTestUser(2);
   // const createdUsersConfirmationCode = {};
   //
@@ -66,17 +67,41 @@ describe('AuthService', () => {
         .expect(HttpStatus.BAD_REQUEST);
     });
 
-    //   it('should be status 201 correct registration data', async () => {
-    //     await request(app.getHttpServer())
-    //       .post(`/auth/registration`)
-    //       .send(user1)
-    //       .expect(HttpStatus.CREATED)
-    //       .then((item) => {
-    //         expect(item.body).toEqual({
-    //           userId: expect.any(String),
-    //         });
+    it('should be status 201 correct registration data', async () => {
+      await request(app.getHttpServer())
+        .post(`/auth/registration`)
+        .set('user-agent', 'test-user-agent')
+        .send(user1)
+        .expect(HttpStatus.CREATED)
+        .then((res) => {
+          user1Token = res.body?.token?.accessToken || '';
+          expect(res.body).toEqual({
+            userId: expect.any(String),
+            token: {
+              accessToken: expect.any(String),
+            },
+          });
+        });
+    });
+
+    // it('should login with right data', async () => {
+    //   // TODO: resolve why no any users in db????
+    //   await request(app.getHttpServer())
+    //     .post(`/auth/login`)
+    //     .set('user-agent', 'test-user-agent')
+    //     .send({ email: user1.email, password: user1.password })
+    //     .expect(HttpStatus.OK)
+    //     .then((res) => {
+    //       console.log(res.body);
+    //       user1Token = res.body?.token?.accessToken || '';
+    //       expect(res.body).toEqual({
+    //         userId: expect.any(String),
+    //         token: {
+    //           accessToken: expect.any(String),
+    //         },
     //       });
-    //   });
+    //     });
+    // });
 
     //   it('should be status 400 user email exist', async () => {
     //     await request(app.getHttpServer())

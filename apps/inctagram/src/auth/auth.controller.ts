@@ -33,7 +33,6 @@ export class AuthController {
       new AuthorizeUserCommand(req.user.id, req.ip, req.headers['user-agent']),
     );
 
-    console.log(token);
     res
       .status(HttpStatus.OK)
       .cookie('refreshToken', token.refreshToken, {
@@ -53,7 +52,6 @@ export class AuthController {
       new CreateUserCommand(inputData),
     );
 
-    console.log(user);
     if (!user) return res.sendStatus(HttpStatus.BAD_REQUEST);
 
     const token = await this.commandBus.execute(

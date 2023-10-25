@@ -1,8 +1,6 @@
 import { CommandBus, CommandHandler } from '@nestjs/cqrs';
 import { JwtService } from '@nestjs/jwt';
 import { settings_env } from '@app/common';
-import { SecurityQueryRepository } from '@app/main/security/repository/secutity.query.repository';
-import { SecurityRepository } from '@app/main/security/repository/security.repository';
 import { CreateDeviceCommand } from '@app/main/security/application/use_cases/create.device.use.case';
 
 export class AuthorizeUserCommand {
@@ -16,8 +14,6 @@ export class AuthorizeUserCommand {
 @CommandHandler(AuthorizeUserCommand)
 export class AuthorizeUserUseCase {
   constructor(
-    private securityQueryRepository: SecurityQueryRepository,
-    private securityRepository: SecurityRepository,
     private jwtService: JwtService,
     private commandBus: CommandBus,
   ) {}

@@ -4,6 +4,7 @@ import {
   IsNotEmpty,
   IsString,
   Length,
+  Matches,
   Validate,
 } from 'class-validator';
 import { IsTrimNotBlank } from '../../utils/validation/is.trim.not.blank.validator';
@@ -14,7 +15,15 @@ export class RegisterUserDto {
    * The name of the Cat
    * @example Kitty
    */
-  @ApiProperty({ example: 'John Doe', description: 'User name, optional' })
+  @ApiProperty({ example: 'John-Doe', description: 'User name, required' })
+  @IsNotEmpty()
+  @IsString()
+  @Validate(IsTrimNotBlank)
+  @Matches(/^[0-9A-Za-z_-]*$/)
+  @Length(
+    USER_REGISTRATION.USERNAME_MIN_LENGTH,
+    USER_REGISTRATION.USERNAME_MAX_LENGTH,
+  )
   username: string;
 
   @ApiProperty({ example: 'some@p@ssword', description: 'User password' })
