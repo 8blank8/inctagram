@@ -9,21 +9,20 @@ import { CreateUserUseCase } from './use_cases/create.user.use.case';
 import { DeleteUserUseCase } from './use_cases/delete.user.use.case';
 import { ResendingConfirmationCodeUseCase } from './use_cases/resending.confirmation.code.use.case';
 import { EmailConfirmationUseCase } from './use_cases/email.confirmation.use.case';
-import { EmailAdapter, EmailManager } from '@app/common';
+import { MailService } from '@app/common';
 
 @Module({
   imports: [ConfigModule.forRoot(), JwtModule.register({}), CqrsModule],
   controllers: [],
   providers: [
     PrismaService,
-    // EmailAdapter,
-    // EmailManager,
     UserQueryRepository,
     UserRepository,
     CreateUserUseCase,
     DeleteUserUseCase,
     ResendingConfirmationCodeUseCase,
     EmailConfirmationUseCase,
+    MailService,
   ],
   exports: [UserQueryRepository, UserRepository],
 })

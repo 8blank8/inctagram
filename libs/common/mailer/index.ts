@@ -1,2 +1,2 @@
-export * from './email.manager';
-export * from './email.adapter';
+export * from './mail.module';
+export * from './mail.service';

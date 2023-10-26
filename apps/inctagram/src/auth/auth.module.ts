@@ -11,6 +11,7 @@ import { ValidateUserUseCase } from './use_cases/validate.user.use.case';
 import { SecurityModule } from '../security/security.module';
 import { UserModule } from '../user/user.module';
 import { CreateDeviceUseCase } from '@app/main/security/application/use_cases/create.device.use.case';
+import { MailService } from '@app/common';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { CreateDeviceUseCase } from '@app/main/security/application/use_cases/cr
     AuthorizeUserUseCase,
     CreateDeviceUseCase,
     ValidateUserUseCase,
+    MailService,
   ],
   exports: [AuthService],
 })

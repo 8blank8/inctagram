@@ -19,6 +19,9 @@ import { LocalAuthGuard } from '@app/auth';
 import { AuthorizeUserCommand } from './use_cases/authorizeUserUseCase';
 import { CreateUserCommand } from '../user/use_cases/create.user.use.case';
 import { EmailConfirmationCommand } from '../user/use_cases/email.confirmation.use.case';
+import { ErrorResponse } from '@app/main/auth/entity/error.response';
+import { AuthCreatedEntity } from '@app/main/auth/entity/auth.created.entity';
+import { MailService } from '@app/common';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -26,7 +29,22 @@ export class AuthController {
   constructor(
     private authService: AuthService,
     private commandBus: CommandBus,
+    private mailService: MailService,
   ) {}
+
+  @ApiOperation({ summary: 'Send test mail' })
+  @ApiResponse({
+    status: 200,
+    description: 'Mail sent',
+  })
+  @Post('test-mail')
+  sendTestMail(
+    @Body() mailData: { mailAddress: string; content?: string },
+    @Res() res: Response,
+  ) {
+    this.mailService.testMail(mailData.mailAddress, mailData.content);
+    return res.sendStatus(HttpStatus.CREATED);
+  }
 
   @UseGuards(LocalAuthGuard)
   @ApiOperation({ summary: 'Log in route' })
@@ -48,6 +66,14 @@ export class AuthController {
 
   @ApiOperation({ summary: 'Register route' })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
+  @ApiResponse({
+    type: ErrorResponse,
+    status: 400,
+  })
+  @ApiResponse({
+    type: AuthCreatedEntity,
+    status: HttpStatus.CREATED,
+  })
   @Post('/registration')
   async registrationUser(
     @Req() req,
@@ -58,7 +84,7 @@ export class AuthController {
     if (!!exists) return res.sendStatus(HttpStatus.BAD_REQUEST);
 
     const user = await this.commandBus.execute(
-      new CreateUserCommand(inputData),
+      new CreateUserCommand(inputData, true),
     );
 
     if (!user) return res.sendStatus(HttpStatus.BAD_REQUEST);
