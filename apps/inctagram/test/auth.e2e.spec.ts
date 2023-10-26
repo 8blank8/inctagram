@@ -1,30 +1,25 @@
 import * as request from 'supertest';
 import { HttpStatus, INestApplication } from '@nestjs/common';
-import { getTestUser } from './utils/get.test.user';
+import { testUsers } from './utils/test.users.ustil';
 import { startTestConfig } from './utils/start.app';
-import { dropDataBase } from './utils/drop.database';
+import { clearTestDataBase } from './utils/clear.database';
 
 describe('AuthService', () => {
   let app: INestApplication;
-  //
-  const user1 = getTestUser(1);
-  let user1Token = '';
-  // const user2 = getTestUser(2);
-  // const createdUsersConfirmationCode = {};
-  //
+  let server;
+
+  const [user1] = testUsers;
+  let user1Token = null;
+
   beforeAll(async () => {
     app = await startTestConfig();
-  });
-
-  describe('delete all data', () => {
-    it('DELETE /testing/delete-all delete all data', async () => {
-      await dropDataBase(app);
-    });
+    server = app.getHttpServer();
+    await clearTestDataBase();
   });
 
   describe('POST /auth/registration', () => {
     it('should be status 400 blank email', async () => {
-      await request(app.getHttpServer())
+      await request(server)
         .post(`/auth/registration`)
         .send({ ...user1, email: '' })
         .expect(HttpStatus.BAD_REQUEST);
@@ -33,42 +28,42 @@ describe('AuthService', () => {
 
   describe('POST /auth/registration', () => {
     it('should be status 400 blank email', async () => {
-      await request(app.getHttpServer())
+      await request(server)
         .post(`/auth/registration`)
         .send({ ...user1, email: '' })
         .expect(HttpStatus.BAD_REQUEST);
     });
 
     it('should be status 400 "   " email', async () => {
-      await request(app.getHttpServer())
+      await request(server)
         .post(`/auth/registration`)
         .send({ ...user1, email: '     ' })
         .expect(HttpStatus.BAD_REQUEST);
     });
 
     it('should be status 400 incorrect email', async () => {
-      await request(app.getHttpServer())
+      await request(server)
         .post(`/auth/registration`)
         .send({ ...user1, email: 'example1mail.ru' })
         .expect(HttpStatus.BAD_REQUEST);
     });
 
     it('should be status 400 password length 1', async () => {
-      await request(app.getHttpServer())
+      await request(server)
         .post(`/auth/registration`)
         .send({ ...user1, password: 'a' })
         .expect(HttpStatus.BAD_REQUEST);
     });
 
     it('should be status 400 "    " password', async () => {
-      await request(app.getHttpServer())
+      await request(server)
         .post(`/auth/registration`)
         .send({ ...user1, password: '     ' })
         .expect(HttpStatus.BAD_REQUEST);
     });
 
     it('should be status 201 correct registration data', async () => {
-      await request(app.getHttpServer())
+      await request(server)
         .post(`/auth/registration`)
         .set('user-agent', 'test-user-agent')
         .send(user1)
@@ -84,24 +79,19 @@ describe('AuthService', () => {
         });
     });
 
-    // it('should login with right data', async () => {
-    //   // TODO: resolve why no any users in db????
-    //   await request(app.getHttpServer())
-    //     .post(`/auth/login`)
-    //     .set('user-agent', 'test-user-agent')
-    //     .send({ email: user1.email, password: user1.password })
-    //     .expect(HttpStatus.OK)
-    //     .then((res) => {
-    //       console.log(res.body);
-    //       user1Token = res.body?.token?.accessToken || '';
-    //       expect(res.body).toEqual({
-    //         userId: expect.any(String),
-    //         token: {
-    //           accessToken: expect.any(String),
-    //         },
-    //       });
-    //     });
-    // });
+    it('should login with right data', async () => {
+      await request(server)
+        .post(`/auth/login`)
+        .set('user-agent', 'test-user-agent')
+        .send({ email: user1.email, password: user1.password })
+        .expect(HttpStatus.OK)
+        .then((res) => {
+          user1Token = res.body?.token?.accessToken || '';
+          expect(res.body).toEqual({
+            accessToken: expect.any(String),
+          });
+        });
+    });
 
     //   it('should be status 400 user email exist', async () => {
     //     await request(app.getHttpServer())

@@ -34,8 +34,8 @@ export class UserQueryRepository {
   }
 
   async findAllUsers() {
-    const users = this.prisma.user.findMany({});
-    const totalCount = this.prisma.user.count();
+    const users = await this.prisma.user.findMany({});
+    const totalCount = await this.prisma.user.count();
 
     return {
       totalCount: +totalCount,

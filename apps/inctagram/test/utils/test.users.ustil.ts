@@ -7,3 +7,5 @@ export const getTestUser = (number: number): CreateUserDto => {
     email: `example${number}@mail.com`,
   };
 };
+
+export const testUsers = [0, 1, 2, 3].map((i) => getTestUser(i));

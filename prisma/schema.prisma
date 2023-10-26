@@ -30,7 +30,7 @@ model Device {
   updatedAt      DateTime  @updatedAt
   ip             String?
   title          String
-  user           User      @relation(fields: [userId], references: [id])
+  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId         String
 }
 
