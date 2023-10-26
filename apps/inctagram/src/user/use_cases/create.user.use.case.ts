@@ -28,7 +28,6 @@ export class CreateUserUseCase {
       password = await hash(user.password, settings_env.HASH_ROUNDS);
     }
 
-    console.log(password);
     const createUser = {
       email: user.email,
       password: password,

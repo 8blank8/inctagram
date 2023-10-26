@@ -24,9 +24,7 @@ describe('AuthService', () => {
         .send({ ...user1, email: '' })
         .expect(HttpStatus.BAD_REQUEST);
     });
-  });
 
-  describe('POST /auth/registration', () => {
     it('should be status 400 blank email', async () => {
       await request(server)
         .post(`/auth/registration`)
@@ -93,13 +91,21 @@ describe('AuthService', () => {
         });
     });
 
-    //   it('should be status 400 user email exist', async () => {
-    //     await request(app.getHttpServer())
-    //       .post(`/auth/registration`)
-    //       .send(user1)
-    //       .expect(HttpStatus.BAD_REQUEST);
-    //   });
-    // });
+    it('should be status 400 user email exist', async () => {
+      await request(server)
+        .post(`/auth/registration`)
+        .set('user-agent', 'test-user-agent')
+        .send(user1)
+        .expect(HttpStatus.BAD_REQUEST);
+    });
+
+    it('should be status 400 user email exist', async () => {
+      await request(server)
+        .post(`/auth/registration`)
+        .set('user-agent', 'test-user-agent')
+        .send(user1)
+        .expect(HttpStatus.BAD_REQUEST);
+    });
 
     // describe('POST /auth/confirmation-code', () => {
     //   it('should be status 400 "     " code', async () => {
@@ -234,7 +240,8 @@ describe('AuthService', () => {
     //   });
     // });
 
-    afterAll(() => {
+    afterAll(async () => {
+      await clearTestDataBase();
       app.close();
     });
   });

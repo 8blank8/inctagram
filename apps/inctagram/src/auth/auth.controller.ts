@@ -54,6 +54,9 @@ export class AuthController {
     @Body() inputData: RegisterUserDto,
     @Res() res: Response,
   ) {
+    const exists = await this.authService.findUserByEmail(inputData.email);
+    if (!!exists) return res.sendStatus(HttpStatus.BAD_REQUEST);
+
     const user = await this.commandBus.execute(
       new CreateUserCommand(inputData),
     );

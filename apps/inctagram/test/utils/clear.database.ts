@@ -16,9 +16,9 @@ export const clearTestDataBase = async (dropTables?: boolean) => {
   async function deleteUser(mail: string) {
     const user = await prisma.user.findFirst({ where: { email: mail } });
     if (user)
-      await prisma.user.delete({
-        where: { email: user.email },
-      });
+      await prisma.user
+        .delete({ where: { email: user.email } })
+        .then(() => console.log('deleted user => ', mail));
   }
   async function main() {
     for (const user of testUsers) await deleteUser(user.email);
