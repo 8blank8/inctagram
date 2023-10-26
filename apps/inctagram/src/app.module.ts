@@ -11,7 +11,6 @@ import { AppService } from './app.service';
 import { UserService } from './user/user.service';
 import { PostService } from './post/post.service';
 
-import { MailModule } from '@app/common/mailer/mail.module';
 import { LocalStrategy } from '@app/auth';
 import { FilesController } from '../../files/src/files.controller';
 import { FilesService } from '../../files/src/files.service';
@@ -40,7 +39,6 @@ import { UserModule } from './user/user.module';
     AuthModule,
     SecurityModule,
     UserModule,
-    MailModule,
   ],
   controllers: [AppController, FilesController],
   providers: [

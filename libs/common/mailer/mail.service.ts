@@ -15,21 +15,21 @@ export class MailService {
         text: content, // plaintext body
         html: `<b>${content}</b>`, // HTML body content
       })
-      .then(console.log)
+      .then((res) => console.log(res.accepted, res.response))
       .catch(console.log);
   }
 
-  public async sendEmailConfirmationMessage(email: string, code: string) {
+  public async sendEmailConfirmationMessage(email: string, query: string) {
     return this.mailerService
       .sendMail({
         to: email,
         from: settings_env.EMAIL_ID,
         subject: 'Confirmation code',
         text: 'Click the link below to complete registration',
-        html: `<a href="${settings_env.FRONT_URL}/confirm-registration?code=${code}">Click here to end registration</a>`,
+        html: `<a href="${settings_env.FRONT_URL}/confirm-registration?${query}">Click here to end registration</a>`,
       })
-      .then((success) => {
-        console.log(success);
+      .then(({ accepted, response }) => {
+        console.log('send Email Confirmation ==> ', query, accepted, response);
       });
   }
 

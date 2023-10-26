@@ -2,11 +2,11 @@ import { CommandHandler } from '@nestjs/cqrs';
 import { hash } from 'bcrypt';
 import { generateFromEmail } from 'unique-username-generator';
 import { User } from '@prisma/client';
-import * as querystring from 'querystring';
 
 import { UserRepository } from '../repository/user.repository';
 import { CreateUserDto } from '../dto/create.user.dto';
 import { MailService, settings_env } from '@app/common';
+import { getVerificationCode } from '@app/main/utils/verification.code.util';
 
 export class CreateUserCommand {
   constructor(
@@ -39,14 +39,13 @@ export class CreateUserUseCase {
 
     const result = await this.userRepository.saveUser(createUser);
     if (sendMail) {
-      const dataToCode = JSON.stringify({
-        email: user.email,
+      const query = await getVerificationCode({
         id: result.id,
+        email: result.email,
       });
-      const confirmationCode = await hash(dataToCode, settings_env.HASH_ROUNDS);
-      console.log('sending mail ==========>>> ', user.email);
+
       await this.mailService
-        .sendEmailConfirmationMessage(user.email, confirmationCode)
+        .sendEmailConfirmationMessage(user.email, query)
         .catch(async (e) => {
           await this.userRepository.deleteUser(result.id);
           console.log(e);

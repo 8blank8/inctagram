@@ -8,6 +8,13 @@ import { useContainer } from 'class-validator';
 import { ConfigModule } from '@nestjs/config';
 import { AppModule } from '../../src/app.module';
 import * as process from 'process';
+import { MailService } from '@app/common';
+import { MailerService } from "@nestjs-modules/mailer";
+
+
+const mockCatsService = {
+  sendMail: jest.fn()
+};
 
 export const startTestConfig = async () => {
   let app: INestApplication;
@@ -20,14 +27,28 @@ export const startTestConfig = async () => {
 
   const moduleRef = await Test.createTestingModule({
     imports: [ConfigModule.forRoot(), AppModule],
+    providers: [
+      {
+        provide: MailerService,
+        useValue: {
+          sendMail: jest.fn(),
+        },
+      },
+    ],
   })
-    // .overrideProvider(AuthEmailManager)
-    // .useValue({
-    //   sendRegistrationCode: (email: string, code: string) => {
-    //     createdUsersConfirmationCode[email] = code;
-    //   },
-    //   sendResetPasswordCode: (email: string, code: string) => {
-    //     createUsersResetPasswordCode[email] = code;
+    // .overrideProvider(MailService)
+    // .useFactory({
+    //   factory: () => {
+    //     return {
+    //       sendEmailConfirmationMessage: async (email: string, code: string) => {
+    //         console.log(email, code);
+    //         return true;
+    //       },
+    //       testMail: (email: string, code: string) => {
+    //         console.log(email, code);
+    //         return true;
+    //       },
+    //     };
     //   },
     // })
     .compile();

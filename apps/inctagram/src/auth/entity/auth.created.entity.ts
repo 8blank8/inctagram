@@ -1,9 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
 export class AuthCreatedEntity {
-  @ApiProperty()
+  @ApiProperty({ description: 'User id' })
   userId: string;
-  token: {
-    authToken: string;
-  };
 }

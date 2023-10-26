@@ -1,7 +1,7 @@
-import { IsEmail, IsNotEmpty, IsString, Validate } from 'class-validator';
+import { IsNotEmpty, IsString, Validate } from 'class-validator';
 import { IsTrimNotBlank } from '../../utils/validation/is.trim.not.blank.validator';
 
-export class ConfirmationEmailDto {
+export class ConfirmEmailDto {
   /**
    * The name of the Cat
    * @example Kitty
@@ -9,10 +9,10 @@ export class ConfirmationEmailDto {
   @IsNotEmpty()
   @IsString()
   @Validate(IsTrimNotBlank)
-  hash: string;
+  code: string;
 
   @IsNotEmpty()
   @IsString()
-  @IsEmail()
+  @Validate(IsTrimNotBlank)
   userId: string;
 }

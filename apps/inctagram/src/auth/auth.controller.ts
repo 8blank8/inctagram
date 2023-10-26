@@ -14,7 +14,7 @@ import { Response } from 'express';
 import { AuthService } from './auth.service';
 import { GoogleOauthGuard } from '@app/auth/guards/google-oauth.guard';
 import { RegisterUserDto } from './dto/register.user.dto';
-import { ConfirmationEmailDto } from './dto/confirmation.email.dto';
+import { ConfirmEmailDto } from './dto/confirm.email.dto';
 import { LocalAuthGuard } from '@app/auth';
 import { AuthorizeUserCommand } from './use_cases/authorizeUserUseCase';
 import { CreateUserCommand } from '../user/use_cases/create.user.use.case';
@@ -22,6 +22,7 @@ import { EmailConfirmationCommand } from '../user/use_cases/email.confirmation.u
 import { ErrorResponse } from '@app/main/auth/entity/error.response';
 import { AuthCreatedEntity } from '@app/main/auth/entity/auth.created.entity';
 import { MailService } from '@app/common';
+import { getVerificationCode } from '@app/main/utils/verification.code.util';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -51,6 +52,7 @@ export class AuthController {
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @Post('/login')
   async login(@Req() req, @Res() res: Response) {
+    console.log(req.user);
     const token = await this.commandBus.execute(
       new AuthorizeUserCommand(req.user.id, req.ip, req.headers['user-agent']),
     );
@@ -76,7 +78,6 @@ export class AuthController {
   })
   @Post('/registration')
   async registrationUser(
-    @Req() req,
     @Body() inputData: RegisterUserDto,
     @Res() res: Response,
   ) {
@@ -89,18 +90,16 @@ export class AuthController {
 
     if (!user) return res.sendStatus(HttpStatus.BAD_REQUEST);
 
-    const token = await this.commandBus.execute(
-      new AuthorizeUserCommand(user.id, req.ip, req.headers['user-agent']),
-    );
-
-    return res.status(HttpStatus.CREATED).send({ userId: user.id, token });
+    return res.status(HttpStatus.CREATED).send({ userId: user.id });
   }
 
-  @ApiOperation({ summary: 'Request to confirm code from mail' })
+  @ApiOperation({
+    summary: 'Post Request to confirm code from mail and get access to login',
+  })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
-  @Post('/confirmation-code')
+  @Post('/confirm-code')
   async confirmationEmail(
-    @Body() inputData: ConfirmationEmailDto,
+    @Body() inputData: ConfirmEmailDto,
     @Res() res: Response,
   ) {
     const isConfirmed = await this.commandBus.execute(
@@ -109,6 +108,27 @@ export class AuthController {
     if (!isConfirmed) return res.sendStatus(HttpStatus.BAD_REQUEST);
 
     return res.sendStatus(HttpStatus.NO_CONTENT);
+  }
+
+  @ApiOperation({
+    summary: 'Re-request for confirmation email',
+  })
+  @ApiResponse({ status: 403, description: 'Forbidden.' })
+  @Post('/request-email-code')
+  async requestEmailCode(
+    @Body() inputData: { email: string },
+    @Res() res: Response,
+  ) {
+    const user = await this.authService.findUserByEmail(inputData.email);
+    if (!user || user.emailConfirmed) {
+      return res.sendStatus(HttpStatus.BAD_REQUEST);
+    }
+    const query = await getVerificationCode({
+      id: user.id,
+      email: inputData.email,
+    });
+    await this.mailService.sendEmailConfirmationMessage(inputData.email, query);
+    return res.sendStatus(HttpStatus.OK);
   }
 
   @ApiOperation({ summary: 'google auth' })
