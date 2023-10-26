@@ -5,6 +5,8 @@ import { PrismaService } from '@app/db';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { CqrsModule } from '@nestjs/cqrs';
+import { MailerModule } from '@nestjs-modules/mailer';
+import { PugAdapter } from '@nestjs-modules/mailer/dist/adapters/pug.adapter';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -17,6 +19,7 @@ import { FilesService } from '../../files/src/files.service';
 import { AuthModule } from './auth/auth.module';
 import { SecurityModule } from './security/security.module';
 import { UserModule } from './user/user.module';
+import { MailService } from '@app/common';
 
 @Module({
   imports: [
@@ -36,6 +39,30 @@ import { UserModule } from './user/user.module';
         },
       },
     ]),
+    MailerModule.forRoot({
+      transport: {
+        host:
+          process.env.EMAIL_HOST ||
+          // settings_env.EMAIL_HOST ||
+          'smtp.office365.com',
+        port: Number(process.env.EMAIL_PORT),
+        secure: true, // true for 465, false for other ports
+        auth: {
+          user: process.env.EMAIL_ID, // generated ethereal user
+          pass: process.env.EMAIL_PASS, // generated ethereal password
+        },
+      },
+      defaults: {
+        from: process.env.EMAIL_ID,
+      },
+      template: {
+        dir: __dirname + '/templates',
+        adapter: new PugAdapter(),
+        options: {
+          strict: true,
+        },
+      },
+    }),
     AuthModule,
     SecurityModule,
     UserModule,
@@ -48,6 +75,7 @@ import { UserModule } from './user/user.module';
     PrismaService,
     FilesService,
     LocalStrategy,
+    MailService,
   ],
 })
 export class AppModule {}

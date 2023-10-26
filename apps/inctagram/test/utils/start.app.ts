@@ -8,14 +8,19 @@ import { useContainer } from 'class-validator';
 import { ConfigModule } from '@nestjs/config';
 import { AppModule } from '../../src/app.module';
 import * as process from 'process';
+import { MailerService } from '@nestjs-modules/mailer';
 import { MailService } from '@app/common';
-import { MailerService } from "@nestjs-modules/mailer";
 
-
-const mockCatsService = {
-  sendMail: jest.fn()
+const mockMailService = {
+  sendEmailConfirmationMessage: async (email: string, code: string) => {
+    console.log(email, code);
+    return true;
+  },
+  testMail: (email: string, code: string) => {
+    console.log(email, code);
+    return true;
+  },
 };
-
 export const startTestConfig = async () => {
   let app: INestApplication;
 
@@ -27,30 +32,13 @@ export const startTestConfig = async () => {
 
   const moduleRef = await Test.createTestingModule({
     imports: [ConfigModule.forRoot(), AppModule],
-    providers: [
-      {
-        provide: MailerService,
-        useValue: {
-          sendMail: jest.fn(),
-        },
-      },
-    ],
   })
-    // .overrideProvider(MailService)
-    // .useFactory({
-    //   factory: () => {
-    //     return {
-    //       sendEmailConfirmationMessage: async (email: string, code: string) => {
-    //         console.log(email, code);
-    //         return true;
-    //       },
-    //       testMail: (email: string, code: string) => {
-    //         console.log(email, code);
-    //         return true;
-    //       },
-    //     };
-    //   },
-    // })
+    .overrideProvider(MailService)
+    .useValue(mockMailService)
+    .overrideProvider(MailerService)
+    .useValue({
+      sendMail: jest.fn(),
+    })
     .compile();
 
   // eslint-disable-next-line prefer-const

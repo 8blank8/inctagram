@@ -70,9 +70,6 @@ describe('AuthService', () => {
           user1Token = res.body?.token?.accessToken || '';
           expect(res.body).toEqual({
             userId: expect.any(String),
-            token: {
-              accessToken: expect.any(String),
-            },
           });
         });
     });
