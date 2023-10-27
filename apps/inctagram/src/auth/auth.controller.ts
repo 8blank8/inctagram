@@ -22,7 +22,7 @@ import { EmailConfirmationCommand } from '../user/use_cases/email.confirmation.u
 import { ErrorResponse } from '@app/main/auth/entity/error.response';
 import { AuthCreatedEntity } from '@app/main/auth/entity/auth.created.entity';
 import { MailService } from '@app/common';
-import { getVerificationCode } from '@app/main/utils/verification.code.util';
+import { ResendConfirmationCodeCommand } from '@app/main/user/use_cases/resendConfirmationCodeUseCase';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -114,20 +114,15 @@ export class AuthController {
     summary: 'Re-request for confirmation email',
   })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
-  @Post('/request-email-code')
+  @Post('/resend-email-code')
   async requestEmailCode(
     @Body() inputData: { email: string },
     @Res() res: Response,
   ) {
-    const user = await this.authService.findUserByEmail(inputData.email);
-    if (!user || user.emailConfirmed) {
-      return res.sendStatus(HttpStatus.BAD_REQUEST);
-    }
-    const query = await getVerificationCode({
-      id: user.id,
-      email: inputData.email,
-    });
-    await this.mailService.sendEmailConfirmationMessage(inputData.email, query);
+    await this.commandBus.execute(
+      new ResendConfirmationCodeCommand(inputData.email),
+    );
+
     return res.sendStatus(HttpStatus.OK);
   }
 

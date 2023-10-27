@@ -7,7 +7,7 @@ import { UserQueryRepository } from './repository/user.query.repository';
 import { UserRepository } from './repository/user.repository';
 import { CreateUserUseCase } from './use_cases/create.user.use.case';
 import { DeleteUserUseCase } from './use_cases/delete.user.use.case';
-import { ResendingConfirmationCodeUseCase } from './use_cases/resending.confirmation.code.use.case';
+import { ResendConfirmationCodeUseCase } from './use_cases/resendConfirmationCodeUseCase';
 import { EmailConfirmationUseCase } from './use_cases/email.confirmation.use.case';
 import { MailService } from '@app/common';
 
@@ -20,7 +20,7 @@ import { MailService } from '@app/common';
     UserRepository,
     CreateUserUseCase,
     DeleteUserUseCase,
-    ResendingConfirmationCodeUseCase,
+    ResendConfirmationCodeUseCase,
     EmailConfirmationUseCase,
     MailService,
   ],

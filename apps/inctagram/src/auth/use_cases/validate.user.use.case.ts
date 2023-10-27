@@ -1,6 +1,6 @@
 import { CommandHandler } from '@nestjs/cqrs';
-import { compareSync } from 'bcrypt';
 import { UserQueryRepository } from '@app/main/user/repository/user.query.repository';
+import { matchPassword } from '@app/main/utils/verification.code.util';
 
 export class ValidateUserCommand {
   constructor(
@@ -19,7 +19,7 @@ export class ValidateUserUseCase {
     const user = await this.userQueryRepository.findUserByLoginOrEmail(email);
     if (!user) return null;
 
-    const isRightPassword = compareSync(password, user.password);
+    const isRightPassword = matchPassword(password, user.password);
 
     if (!isRightPassword) return null;
 

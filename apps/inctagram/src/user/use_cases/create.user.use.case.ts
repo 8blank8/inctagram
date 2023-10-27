@@ -1,12 +1,14 @@
 import { CommandHandler } from '@nestjs/cqrs';
-import { hash } from 'bcrypt';
 import { generateFromEmail } from 'unique-username-generator';
 import { User } from '@prisma/client';
 
 import { UserRepository } from '../repository/user.repository';
 import { CreateUserDto } from '../dto/create.user.dto';
-import { MailService, settings_env } from '@app/common';
-import { getVerificationCode } from '@app/main/utils/verification.code.util';
+import { MailService } from '@app/common';
+import {
+  getVerificationCode,
+  hashPassword,
+} from '@app/main/utils/verification.code.util';
 
 export class CreateUserCommand {
   constructor(
@@ -25,11 +27,8 @@ export class CreateUserUseCase {
   async execute(command: CreateUserCommand): Promise<User> {
     const { user, sendMail } = command;
 
-    let password = null;
+    let password = !user.password ? null : hashPassword(user.password);
     const username = user.username || generateFromEmail(user.email);
-    if (user.password) {
-      password = await hash(user.password, settings_env.HASH_ROUNDS);
-    }
 
     const createUser = {
       email: user.email,
