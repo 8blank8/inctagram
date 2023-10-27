@@ -5,15 +5,17 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { generateFromEmail } from 'unique-username-generator';
-import { PrismaService } from '@app/db';
 
 import { RegisterUserDto } from './dto/register.user.dto';
+import { UserQueryRepository } from '@app/main/user/repository/user.query.repository';
+import { UserRepository } from '@app/main/user/repository/user.repository';
 
 @Injectable()
 export class AuthService {
   constructor(
     private jwtService: JwtService,
-    private prisma: PrismaService,
+    private userQueryRepository: UserQueryRepository,
+    private userRepository: UserRepository,
   ) {}
 
   generateJwt(payload) {
@@ -38,18 +40,16 @@ export class AuthService {
   }
 
   async registerUser(user: RegisterUserDto) {
+    // TODO: move all methods in use_cases
     try {
-      const newUser = await this.prisma.user.create({ data: user });
-      newUser.username = await generateFromEmail(user.email, 5);
-
-      await this.prisma.user.update({
-        where: { id: newUser.id },
-        data: newUser,
-      });
+      const username =
+        user.username ?? (await generateFromEmail(user.email, 5));
+      const newUser = { ...user, username };
+      const result = await this.userRepository.saveUser(newUser);
 
       return this.generateJwt({
-        sub: newUser.id,
-        email: newUser.email,
+        sub: result.id,
+        email: result.email,
       });
     } catch {
       throw new InternalServerErrorException();
@@ -57,7 +57,7 @@ export class AuthService {
   }
 
   async findUserByEmail(email?: string) {
-    const user = await this.prisma.user.findFirst({ where: { email } });
+    const user = await this.userQueryRepository.findUserByLoginOrEmail(email);
     return user ?? null;
   }
 }

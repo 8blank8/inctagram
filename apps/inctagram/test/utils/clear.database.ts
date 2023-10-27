@@ -6,13 +6,6 @@ export const clearTestDataBase = async (dropTables?: boolean) => {
 
   const prisma = new PrismaClient();
 
-  if (dropTables) {
-    for (const tableName in tableNames) {
-      await prisma.$queryRawUnsafe(
-        `Truncate "${tableName}" restart identity cascade;`,
-      );
-    }
-  }
   async function deleteUser(mail: string) {
     const user = await prisma.user.findFirst({ where: { email: mail } });
     if (user)
@@ -21,7 +14,18 @@ export const clearTestDataBase = async (dropTables?: boolean) => {
         .then(() => console.log('deleted user => ', mail));
   }
   async function main() {
-    for (const user of testUsers) await deleteUser(user.email);
+    if (dropTables) {
+      for (const tableName in tableNames) {
+        await prisma.$queryRawUnsafe(
+          `Truncate "${tableName}" restart identity cascade;`,
+        );
+      }
+    }
+
+    for (const user of testUsers) {
+      console.log('delete user => ', user.email);
+      await deleteUser(user.email).catch(console.log);
+    }
   }
 
   await main().finally(async () => {

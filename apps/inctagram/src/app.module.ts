@@ -13,7 +13,7 @@ import { AppService } from './app.service';
 import { UserService } from './user/user.service';
 import { PostService } from './post/post.service';
 
-import { LocalStrategy } from '@app/auth';
+import { LocalStrategy, GoogleStrategy, JwtStrategy } from '@app/auth';
 import { FilesController } from '../../files/src/files.controller';
 import { FilesService } from '../../files/src/files.service';
 import { AuthModule } from './auth/auth.module';
@@ -74,7 +74,9 @@ import { MailService } from '@app/common';
     PostService,
     PrismaService,
     FilesService,
+    JwtStrategy,
     LocalStrategy,
+    GoogleStrategy,
     MailService,
   ],
 })

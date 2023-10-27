@@ -27,7 +27,7 @@ export class CreateUserUseCase {
   async execute(command: CreateUserCommand): Promise<User> {
     const { user, sendMail } = command;
 
-    let password = !user.password ? null : hashPassword(user.password);
+    const password = !user.password ? null : hashPassword(user.password);
     const username = user.username || generateFromEmail(user.email);
 
     const createUser = {

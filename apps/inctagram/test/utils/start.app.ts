@@ -10,6 +10,7 @@ import { AppModule } from '../../src/app.module';
 import * as process from 'process';
 import { MailerService } from '@nestjs-modules/mailer';
 import { MailService } from '@app/common';
+import { clearTestDataBase } from './clear.database';
 
 const mockMailService = {
   sendEmailConfirmationMessage: async (email: string, code: string) => {
@@ -24,7 +25,6 @@ const mockMailService = {
 export const startTestConfig = async () => {
   let app: INestApplication;
 
-  console.log(process.env.DB_URL);
   process.env.DB_URL =
     'postgres://springfield.3298:VRirOjE9BfN2@ep-twilight-wave-02964973.eu-central-1.aws.neon.tech/neondb';
 
@@ -40,7 +40,7 @@ export const startTestConfig = async () => {
       sendMail: jest.fn(),
     })
     .compile();
-
+  console.log('Created Testing Module ==> ');
   // eslint-disable-next-line prefer-const
   app = moduleRef.createNestApplication();
   // app.use(cookieParser())
@@ -62,8 +62,9 @@ export const startTestConfig = async () => {
       },
     }),
   );
-  // app.useGlobalFilters(new HttpExceptionFilter())
   await app.init();
-
+  console.log('app.init() ==> done');
+  await clearTestDataBase();
+  console.log('clearTestDataBase ==> done');
   return app;
 };

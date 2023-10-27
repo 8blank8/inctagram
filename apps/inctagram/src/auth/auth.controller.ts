@@ -12,7 +12,7 @@ import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CommandBus } from '@nestjs/cqrs';
 import { Response } from 'express';
 import { AuthService } from './auth.service';
-import { GoogleOauthGuard } from '@app/auth/guards/google-oauth.guard';
+import { GoogleOauthGuard } from '@app/auth/guards/google.oauth.guard';
 import { RegisterUserDto } from './dto/register.user.dto';
 import { ConfirmEmailDto } from './dto/confirm.email.dto';
 import { LocalAuthGuard } from '@app/auth';
@@ -130,8 +130,9 @@ export class AuthController {
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @Get('google')
   @UseGuards(GoogleOauthGuard)
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  async auth() {}
+  async googleAuth(@Req() req) {
+    console.log('GET: /google', req);
+  }
 
   @Get('google/callback')
   @UseGuards(GoogleOauthGuard)

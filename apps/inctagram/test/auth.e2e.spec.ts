@@ -2,7 +2,6 @@ import * as request from 'supertest';
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import { testUsers } from './utils/test.users.ustil';
 import { startTestConfig } from './utils/start.app';
-import { clearTestDataBase } from './utils/clear.database';
 
 describe('AuthService', () => {
   let app: INestApplication;
@@ -14,7 +13,7 @@ describe('AuthService', () => {
   beforeAll(async () => {
     app = await startTestConfig();
     server = app.getHttpServer();
-    await clearTestDataBase();
+    console.log('getHttpServer ==> ');
   });
 
   describe('POST /auth/registration', () => {
@@ -238,7 +237,6 @@ describe('AuthService', () => {
     // });
 
     afterAll(async () => {
-      await clearTestDataBase();
       app.close();
     });
   });
