@@ -8,8 +8,8 @@ import { CommandBus } from '@nestjs/cqrs';
 export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
   constructor(private commandBus: CommandBus) {
     super({
-      clientID: process.env.GOOGLE_OAUTH_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_OAUTH_CLIENT_SECRET,
+      clientID: process.env.GOOGLE_OAUTH_CLIENT_ID || 'OAUTH_CLIENT_ID',
+      clientSecret: process.env.GOOGLE_OAUTH_CLIENT_SECRET || 'CLIENT_SECRET',
       callbackURL:
         process.env.GOOGLE_OAUTH_CALLBACK ||
         'https://incubator-icta-trainee.uk/api/v1/auth/google/callback',
