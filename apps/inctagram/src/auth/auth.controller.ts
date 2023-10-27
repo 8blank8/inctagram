@@ -22,7 +22,7 @@ import { EmailConfirmationCommand } from '../user/use_cases/email.confirmation.u
 import { ErrorResponse } from '@app/main/auth/entity/error.response';
 import { AuthCreatedEntity } from '@app/main/auth/entity/auth.created.entity';
 import { MailService } from '@app/common';
-import { ResendConfirmationCodeCommand } from '@app/main/user/use_cases/resendConfirmationCodeUseCase';
+import { ResendConfirmationCodeCommand } from '@app/main/user/use_cases/resend.confirmation.code.use.case';
 
 @ApiTags('auth')
 @Controller('auth')
