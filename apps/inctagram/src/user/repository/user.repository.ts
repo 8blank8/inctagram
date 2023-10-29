@@ -1,5 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@app/db';
+import { GoogleUserData } from '@app/main/auth/use_cases/register-google-user.use-case';
+import { GitUserData } from '@app/main/auth/use_cases/register-github-user.use-case';
 
 @Injectable()
 export class UserRepository {
@@ -14,6 +16,101 @@ export class UserRepository {
     });
   }
 
+  async saveGoogleUser({
+    username,
+    providerId,
+    avatarUrl,
+    givenName,
+    familyName,
+    email,
+  }: GoogleUserData) {
+    const providerData = { username, providerId };
+    const profileData = { avatarUrl, firstName: givenName, familyName };
+    const found = await this.prisma.user.findFirst({
+      where: { email },
+    });
+    if (found) {
+      return this.prisma.user.update({
+        where: { email },
+        data: {
+          googleProvider: {
+            upsert: {
+              where: { userId: found.id },
+              create: providerData,
+              update: providerData,
+            },
+          },
+          userProfile: {
+            upsert: {
+              where: { userId: found.id },
+              create: profileData,
+              update: profileData,
+            },
+          },
+        },
+        include: { userProfile: true, googleProvider: true },
+      });
+    } else {
+      return this.prisma.user.create({
+        data: {
+          email,
+          username,
+          googleProvider: { create: providerData },
+          userProfile: { create: profileData },
+        },
+        include: { userProfile: true, googleProvider: true },
+      });
+    }
+  }
+
+  async saveGitHubUser({
+    username,
+    login,
+    providerId,
+    avatarUrl,
+    displayName,
+    email,
+  }: GitUserData) {
+    if (!email) throw new Error("Git hub didn't provide any e-mail");
+    const [firstName, familyName] = displayName.split(' ');
+    const providerData = { providerId: +providerId, email, gitName: login };
+    const profileData = { avatarUrl, firstName, familyName };
+    const found = await this.prisma.user.findFirst({
+      where: { email },
+    });
+    if (found) {
+      return this.prisma.user.update({
+        where: { email },
+        data: {
+          gitHubProvider: {
+            upsert: {
+              where: { userId: found.id },
+              create: providerData,
+              update: providerData,
+            },
+          },
+          userProfile: {
+            upsert: {
+              where: { userId: found.id },
+              create: profileData,
+              update: profileData,
+            },
+          },
+        },
+        include: { userProfile: true, googleProvider: true },
+      });
+    } else {
+      return this.prisma.user.create({
+        data: {
+          email,
+          username,
+          gitHubProvider: { create: providerData },
+          userProfile: { create: profileData },
+        },
+        include: { userProfile: true, googleProvider: true },
+      });
+    }
+  }
   async deleteUser(userId: string) {
     return this.prisma.user.delete({ where: { id: userId } });
   }

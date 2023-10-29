@@ -40,7 +40,7 @@ export const startTestConfig = async () => {
       sendMail: jest.fn(),
     })
     .compile();
-  console.log('Created Testing Module ==> ');
+
   // eslint-disable-next-line prefer-const
   app = moduleRef.createNestApplication();
   // app.use(cookieParser())

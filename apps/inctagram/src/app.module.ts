@@ -13,7 +13,7 @@ import { AppService } from './app.service';
 import { UserService } from './user/user.service';
 import { PostService } from './post/post.service';
 
-import { LocalStrategy, GoogleStrategy, JwtStrategy } from '@app/auth';
+import { GoogleStrategy, JwtStrategy, LocalStrategy } from '@app/auth';
 import { FilesController } from '../../files/src/files.controller';
 import { FilesService } from '../../files/src/files.service';
 import { AuthModule } from './auth/auth.module';
@@ -21,6 +21,7 @@ import { SecurityModule } from './security/security.module';
 import { UserModule } from './user/user.module';
 import { MailService } from '@app/common';
 import { GithubStrategy } from '@app/auth/strategies/github.strategy';
+import { RefreshTokenStrategy } from '@app/auth/strategies/refresh-jwt.strategy';
 
 @Module({
   imports: [
@@ -80,6 +81,7 @@ import { GithubStrategy } from '@app/auth/strategies/github.strategy';
     GoogleStrategy,
     MailService,
     GithubStrategy,
+    RefreshTokenStrategy,
   ],
 })
 export class AppModule {}

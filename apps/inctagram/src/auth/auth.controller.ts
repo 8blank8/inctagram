@@ -12,20 +12,25 @@ import {
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CommandBus } from '@nestjs/cqrs';
 import { Response } from 'express';
-import { AuthService } from './auth.service';
-import { GoogleOauthGuard } from '@app/auth/guards/google.oauth.guard';
-import { RegisterUserDto } from './dto/register.user.dto';
-import { ConfirmEmailDto } from './dto/confirm.email.dto';
+import passport from 'passport';
+
 import { LocalAuthGuard } from '@app/auth';
-import { AuthorizeUserCommand } from './use_cases/authorizeUserUseCase';
-import { CreateUserCommand } from '../user/use_cases/create.user.use.case';
-import { EmailConfirmationCommand } from '../user/use_cases/email.confirmation.use.case';
+import { GoogleOauthGuard } from '@app/auth/guards/google.oauth.guard';
+import { GithubOathGuard } from '@app/auth/guards/github.oauth.guard';
 import { ErrorResponse } from '@app/main/auth/entity/error.response';
 import { AuthCreatedEntity } from '@app/main/auth/entity/auth.created.entity';
-import { MailService } from '@app/common';
+import { MailService, settings_env } from '@app/common';
+import { RegisterGoogleUserCommand } from '@app/main/auth/use_cases/register-google-user.use-case';
 import { ResendConfirmationCodeCommand } from '@app/main/user/use_cases/resend.confirmation.code.use.case';
-import { GithubOathGuard } from '@app/auth/guards/github.oauth.guard';
-import { RegistrationGithubUserCommand } from './use_cases/registration.github.user.use.case';
+
+import { RegisterGithubUserCommand } from './use_cases/register-github-user.use-case';
+import { AuthorizeUserCommand } from './use_cases/authorize-user.use-case';
+import { CreateUserCommand } from '../user/use_cases/create.user.use.case';
+import { EmailConfirmationCommand } from '../user/use_cases/email.confirmation.use.case';
+import { AuthService } from './auth.service';
+import { RegisterUserDto } from './dto/register.user.dto';
+import { ConfirmEmailDto } from './dto/confirm.email.dto';
+import { setAuthTokens } from '@app/main/utils/setAuthTokens';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -55,18 +60,11 @@ export class AuthController {
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @Post('/login')
   async login(@Req() req, @Res() res: Response) {
-    console.log(req.user);
     const token = await this.commandBus.execute(
-      new AuthorizeUserCommand(req.user.id, req.ip, req.headers['user-agent']),
+      new AuthorizeUserCommand(req.user.id, req),
     );
-
-    res
-      .status(HttpStatus.OK)
-      .cookie('refreshToken', token.refreshToken, {
-        httpOnly: true,
-        secure: true,
-      })
-      .send(token);
+    setAuthTokens(res, token);
+    res.status(HttpStatus.OK).send(token);
   }
 
   @ApiOperation({ summary: 'Register route' })
@@ -133,45 +131,43 @@ export class AuthController {
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @Get('google')
   @UseGuards(GoogleOauthGuard)
-  async googleAuth(@Req() req) {
-    console.log('GET: /google', req);
-  }
+  async googleAuth() {}
 
   @Get('google/callback')
   @UseGuards(GoogleOauthGuard)
   async googleAuthCallback(@Req() req, @Res() res: Response) {
-    const token = await this.authService.signIn(req.user);
-
-    res.cookie('access_token', token, {
-      maxAge: 2592000000,
-      sameSite: true,
-      secure: false,
-    });
-
-    return res.status(HttpStatus.OK);
+    const user = await this.commandBus.execute(
+      new RegisterGoogleUserCommand(req.user),
+    );
+    const token = await this.commandBus.execute(
+      new AuthorizeUserCommand(user.id, req),
+    );
+    setAuthTokens(res, token);
+    res.status(HttpStatus.OK).redirect(`${settings_env.FRONT_URL}/`);
   }
 
   @Get('github')
   @UseGuards(GithubOathGuard)
-  async githubAuth() {}
+  async githubAuth() {
+    return passport.authenticate('github', { scope: ['user:email'] });
+  }
 
   @Get('callback/github')
   @UseGuards(GithubOathGuard)
-  async githubAuthCallback(@Req() req, @Query('code') code: string) {
-    console.log({ code });
-    // console.log(req.user)
-    const { id, displayName, username, emails, photos } = req.user;
+  async githubAuthCallback(
+    @Req() req,
+    @Query('code') code: string,
+    @Res() res,
+  ) {
+    console.log('code => ', code);
 
-    const token = await this.commandBus.execute(
-      new RegistrationGithubUserCommand(
-        username,
-        id,
-        photos[0].value,
-        displayName,
-        emails[0].value,
-      ),
+    const user = await this.commandBus.execute(
+      new RegisterGithubUserCommand(req.user),
     );
-
-    return token;
+    const token = await this.commandBus.execute(
+      new AuthorizeUserCommand(user.id, req),
+    );
+    setAuthTokens(res, token);
+    return res.redirect(`${settings_env.FRONT_URL}/`);
   }
 }

@@ -14,7 +14,6 @@ describe('AuthService', () => {
   beforeAll(async () => {
     app = await startTestConfig();
     server = app.getHttpServer();
-    console.log('getHttpServer ==> ');
   });
 
   describe('POST /auth/registration', () => {
@@ -84,6 +83,7 @@ describe('AuthService', () => {
           user1Token = res.body?.token?.accessToken || '';
           expect(res.body).toEqual({
             accessToken: expect.any(String),
+            refreshToken: expect.any(String),
           });
         });
     });

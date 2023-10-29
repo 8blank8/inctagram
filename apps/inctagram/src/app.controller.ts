@@ -1,20 +1,23 @@
 import {
+  Body,
   Controller,
+  Delete,
   Get,
+  Inject,
   Param,
   Post,
-  Body,
   Put,
-  Delete,
-  Inject,
+  UseGuards,
 } from '@nestjs/common';
+import { ClientProxy } from '@nestjs/microservices';
+import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { UserEntity } from '@app/main/user/entity/user.entity';
+import { JwtAuthGuard } from '@app/auth';
+
 import { UserService } from './user/user.service';
 import { PostService } from './post/post.service';
 import { Post as PostModel } from '@prisma/client';
 import { AppService } from './app.service';
-import { ClientProxy } from '@nestjs/microservices';
-import { ApiOperation, ApiResponse } from '@nestjs/swagger';
-import { UserEntity } from '@app/main/user/entity/user.entity';
 
 @Controller()
 export class AppController {
@@ -47,6 +50,7 @@ export class AppController {
     return this.postService.post({ id: id });
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get('feed')
   async getPublishedPosts(): Promise<PostModel[]> {
     return this.postService.posts({

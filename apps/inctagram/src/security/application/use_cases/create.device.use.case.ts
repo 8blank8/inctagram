@@ -30,7 +30,6 @@ export class CreateDeviceUseCase {
       ip: ip,
       title: title,
     };
-    const res = await this.securityRepository.saveDevice(device);
-    return res;
+    return await this.securityRepository.saveDevice(device);
   }
 }
