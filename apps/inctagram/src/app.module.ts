@@ -20,6 +20,7 @@ import { AuthModule } from './auth/auth.module';
 import { SecurityModule } from './security/security.module';
 import { UserModule } from './user/user.module';
 import { MailService } from '@app/common';
+import { GithubStrategy } from '@app/auth/strategies/github.strategy';
 
 @Module({
   imports: [
@@ -78,6 +79,7 @@ import { MailService } from '@app/common';
     LocalStrategy,
     GoogleStrategy,
     MailService,
+    GithubStrategy,
   ],
 })
 export class AppModule {}
