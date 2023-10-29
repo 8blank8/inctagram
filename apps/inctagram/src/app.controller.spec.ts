@@ -8,6 +8,7 @@ import { FilesController } from '../../files/src/files.controller';
 import { FilesService } from '../../files/src/files.service';
 import { WELCOME_MESSAGE } from './utils/variables';
 import { PrismaService } from '@app/db';
+import { UserQueryRepository } from '@app/main/user/repository/user-query.repository';
 
 describe('AppController', () => {
   let appController: AppController;
@@ -31,6 +32,7 @@ describe('AppController', () => {
       controllers: [AppController, FilesController],
       providers: [
         AppService,
+        UserQueryRepository,
         UserService,
         PostService,
         PrismaService,
