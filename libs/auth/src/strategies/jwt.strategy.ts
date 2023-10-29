@@ -24,7 +24,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(username: string, password: string): Promise<any> {
-    console.log(username, password)
+    console.log(username, password);
     const user = await this.commandBus.execute(
       new ValidateUserCommand(username, password),
     );

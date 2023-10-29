@@ -9,6 +9,7 @@ describe('AuthService', () => {
 
   const [user1] = testUsers;
   let user1Token = null;
+  console.log(user1Token);
 
   beforeAll(async () => {
     app = await startTestConfig();
