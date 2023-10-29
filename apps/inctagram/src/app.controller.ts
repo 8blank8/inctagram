@@ -1,30 +1,16 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Inject,
-  Param,
-  Post,
-  Put,
-  UseGuards,
-} from '@nestjs/common';
+import { Controller, Get, Inject, Param } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { UserEntity } from '@app/main/user/entity/user.entity';
-import { JwtAuthGuard } from '@app/auth';
 
-import { UserService } from './user/user.service';
-import { PostService } from './post/post.service';
-import { Post as PostModel } from '@prisma/client';
 import { AppService } from './app.service';
+import { UserQueryRepository } from '@app/main/user/repository/user-query.repository';
 
 @Controller()
 export class AppController {
   constructor(
     @Inject('FILE_SERVICE') private client: ClientProxy,
-    private readonly userService: UserService,
-    private readonly postService: PostService,
+    private readonly userQueryRepository: UserQueryRepository,
     private appService: AppService,
   ) {}
 
@@ -42,69 +28,11 @@ export class AppController {
   })
   @Get('users')
   getUsers(@Param() queryParam) {
-    return this.userService.users(queryParam);
-  }
-
-  @Get('post/:id')
-  async getPostById(@Param('id') id: string): Promise<PostModel> {
-    return this.postService.post({ id: id });
-  }
-
-  @UseGuards(JwtAuthGuard)
-  @Get('feed')
-  async getPublishedPosts(): Promise<PostModel[]> {
-    return this.postService.posts({
-      where: { published: true },
-    });
+    return this.userQueryRepository.findAllUsers(queryParam);
   }
 
   @Get('files')
   async getFiles(): Promise<any> {
     return this.client.send({ cmd: 'YOUR_PATTERN' }, {}).toPromise();
-  }
-
-  @Get('filtered-posts/:searchString')
-  async getFilteredPosts(
-    @Param('searchString') searchString: string,
-  ): Promise<PostModel[]> {
-    return this.postService.posts({
-      where: {
-        OR: [
-          {
-            title: { contains: searchString },
-          },
-          {
-            content: { contains: searchString },
-          },
-        ],
-      },
-    });
-  }
-
-  @Post('post')
-  async createDraft(
-    @Body() postData: { title: string; content?: string; authorEmail: string },
-  ): Promise<PostModel> {
-    const { title, content, authorEmail } = postData;
-    return this.postService.createPost({
-      title,
-      content,
-      author: {
-        connect: { email: authorEmail },
-      },
-    });
-  }
-
-  @Put('publish/:id')
-  async publishPost(@Param('id') id: string): Promise<PostModel> {
-    return this.postService.updatePost({
-      where: { id: id },
-      data: { published: true },
-    });
-  }
-
-  @Delete('post/:id')
-  async deletePost(@Param('id') id: string): Promise<PostModel> {
-    return this.postService.deletePost({ id: id });
   }
 }

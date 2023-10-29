@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { UserQueryRepository } from '@app/main/user/repository/user.query.repository';
+import { UserQueryRepository } from '@app/main/user/repository/user-query.repository';
 import { UserRepository } from '@app/main/user/repository/user.repository';
 
 @Injectable()
@@ -26,7 +26,8 @@ export class AuthService {
     });
   }
   async findUserByEmail(email?: string) {
-    const user = await this.userQueryRepository.findUserByLoginOrEmail(email);
+    const user =
+      await this.userQueryRepository.findUserByUserNameOrEmail(email);
     return user ?? null;
   }
 }

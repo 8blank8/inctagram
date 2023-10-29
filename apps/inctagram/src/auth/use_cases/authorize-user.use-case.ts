@@ -1,8 +1,9 @@
 import { CommandBus, CommandHandler } from '@nestjs/cqrs';
 import { JwtService } from '@nestjs/jwt';
-import { settings_env } from '@app/common';
-import { CreateDeviceCommand } from '@app/main/security/application/use_cases/create.device.use.case';
 import { Request } from 'express';
+
+import { settings_env } from '@app/common';
+import { CreateDeviceCommand } from '@app/main/security/use_cases/create.device.use.case';
 
 export class AuthorizeUserCommand {
   constructor(

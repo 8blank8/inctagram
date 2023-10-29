@@ -1,15 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@app/db';
-import { User } from '@prisma/client';
+import { Prisma, User } from '@prisma/client';
 
 @Injectable()
 export class UserQueryRepository {
   constructor(private prisma: PrismaService) {}
 
-  async findUserByLoginOrEmail(emailLogin: string): Promise<User | null> {
+  async findUserByUserNameOrEmail(emailUserName: string): Promise<User | null> {
     const user = await this.prisma.user.findMany({
       where: {
-        OR: [{ email: emailLogin }, { username: emailLogin }],
+        OR: [{ email: emailUserName }, { username: emailUserName }],
       },
     });
     return user[0];
@@ -33,21 +33,32 @@ export class UserQueryRepository {
     return this._mapUserViewByMe(user);
   }
 
-  async findAllUsers() {
-    const users = await this.prisma.user.findMany({});
+  async findAllUsers(params?: {
+    skip?: number;
+    take?: number;
+    cursor?: Prisma.UserWhereUniqueInput;
+    where?: Prisma.UserWhereInput;
+    orderBy?: Prisma.UserOrderByWithRelationInput;
+  }) {
+    const { skip, take, cursor, where, orderBy } = params ?? {};
+
+    const users = await this.prisma.user.findMany({
+      skip,
+      take,
+      cursor,
+      where,
+      orderBy,
+    });
     const totalCount = await this.prisma.user.count();
 
     return {
       totalCount: +totalCount,
-      items: users,
+      items: users.map((u) => this._mapUserViewByMe(u)),
     };
   }
 
-  private _mapUserViewByMe(user: User) {
-    return {
-      userId: user.id,
-      username: user.username,
-      email: user.email,
-    };
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  private _mapUserViewByMe({ password: _password, ...rest }: User) {
+    return rest;
   }
 }

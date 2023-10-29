@@ -1,5 +1,5 @@
 import { CommandHandler } from '@nestjs/cqrs';
-import { UserQueryRepository } from '@app/main/user/repository/user.query.repository';
+import { UserQueryRepository } from '@app/main/user/repository/user-query.repository';
 import { matchPassword } from '@app/main/utils/verification.code.util';
 
 export class ValidateUserCommand {
@@ -16,7 +16,8 @@ export class ValidateUserUseCase {
   async execute(command: ValidateUserCommand) {
     const { email, password } = command;
 
-    const user = await this.userQueryRepository.findUserByLoginOrEmail(email);
+    const user =
+      await this.userQueryRepository.findUserByUserNameOrEmail(email);
     if (!user) return null;
 
     const isRightPassword = matchPassword(password, user.password);

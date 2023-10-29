@@ -1,5 +1,5 @@
 import { CommandHandler } from '@nestjs/cqrs';
-import { UserQueryRepository } from '../repository/user.query.repository';
+import { UserQueryRepository } from '../repository/user-query.repository';
 import { getVerificationCode } from '@app/main/utils/verification.code.util';
 import { MailService } from '@app/common';
 
@@ -17,7 +17,8 @@ export class ResendConfirmationCodeUseCase {
   async execute(command: ResendConfirmationCodeCommand): Promise<boolean> {
     const { email } = command;
 
-    const user = await this.userQueryRepository.findUserByLoginOrEmail(email);
+    const user =
+      await this.userQueryRepository.findUserByUserNameOrEmail(email);
     if (!user) return false;
 
     const query = await getVerificationCode({

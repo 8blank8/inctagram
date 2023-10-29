@@ -16,8 +16,8 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { SecurityQueryRepository } from '@app/main/security/repository/secutity.query.repository';
-import { DeleteDeviceCommand } from '@app/main/security/application/use_cases/delete.device.use.case';
-import { DeleteAllDevicesCommand } from '@app/main/security/application/use_cases/delete.all.device.use.case';
+import { DeleteDeviceCommand } from '@app/main/security/use_cases/delete.device.use.case';
+import { DeleteAllDevicesCommand } from '@app/main/security/use_cases/delete.all.device.use.case';
 
 @ApiBearerAuth()
 @ApiTags('security')

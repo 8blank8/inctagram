@@ -11,7 +11,6 @@ import { PugAdapter } from '@nestjs-modules/mailer/dist/adapters/pug.adapter';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserService } from './user/user.service';
-import { PostService } from './post/post.service';
 
 import { GoogleStrategy, JwtStrategy, LocalStrategy } from '@app/auth';
 import { FilesController } from '../../files/src/files.controller';
@@ -22,6 +21,8 @@ import { UserModule } from './user/user.module';
 import { MailService } from '@app/common';
 import { GithubStrategy } from '@app/auth/strategies/github.strategy';
 import { RefreshTokenStrategy } from '@app/auth/strategies/refresh-jwt.strategy';
+import { PostModule } from '@app/main/post/post.module';
+import { PostService } from '@app/main/post/post.service';
 
 @Module({
   imports: [
@@ -68,6 +69,7 @@ import { RefreshTokenStrategy } from '@app/auth/strategies/refresh-jwt.strategy'
     AuthModule,
     SecurityModule,
     UserModule,
+    PostModule,
   ],
   controllers: [AppController, FilesController],
   providers: [

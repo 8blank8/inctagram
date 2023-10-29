@@ -1,7 +1,7 @@
 import { CommandHandler } from '@nestjs/cqrs';
 import { ForbiddenException } from '@nestjs/common';
-import { SecurityRepository } from '../../repository/security.repository';
-import { SecurityQueryRepository } from '../../repository/secutity.query.repository';
+import { SecurityQueryRepository } from '@app/main/security/repository/secutity.query.repository';
+import { SecurityRepository } from '@app/main/security/repository/security.repository';
 
 export class DeleteDeviceCommand {
   constructor(

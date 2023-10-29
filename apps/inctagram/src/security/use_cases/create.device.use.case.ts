@@ -1,7 +1,7 @@
 import { CommandHandler } from '@nestjs/cqrs';
-import { SecurityRepository } from '../../repository/security.repository';
-import { UserQueryRepository } from '../../../user/repository/user.query.repository';
 import { Device } from '@prisma/client';
+import { SecurityRepository } from '@app/main/security/repository/security.repository';
+import { UserQueryRepository } from '@app/main/user/repository/user-query.repository';
 
 export class CreateDeviceCommand {
   constructor(

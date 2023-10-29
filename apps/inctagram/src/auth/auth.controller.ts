@@ -22,6 +22,7 @@ import { AuthCreatedEntity } from '@app/main/auth/entity/auth.created.entity';
 import { MailService, settings_env } from '@app/common';
 import { RegisterGoogleUserCommand } from '@app/main/auth/use_cases/register-google-user.use-case';
 import { ResendConfirmationCodeCommand } from '@app/main/user/use_cases/resend.confirmation.code.use.case';
+import { setAuthTokens } from '@app/main/utils/setAuthTokens';
 
 import { RegisterGithubUserCommand } from './use_cases/register-github-user.use-case';
 import { AuthorizeUserCommand } from './use_cases/authorize-user.use-case';
@@ -30,7 +31,6 @@ import { EmailConfirmationCommand } from '../user/use_cases/email.confirmation.u
 import { AuthService } from './auth.service';
 import { RegisterUserDto } from './dto/register.user.dto';
 import { ConfirmEmailDto } from './dto/confirm.email.dto';
-import { setAuthTokens } from '@app/main/utils/setAuthTokens';
 
 @ApiTags('auth')
 @Controller('auth')

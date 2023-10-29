@@ -1,5 +1,5 @@
 import { CommandHandler } from '@nestjs/cqrs';
-import { SecurityRepository } from '../../repository/security.repository';
+import { SecurityRepository } from '@app/main/security/repository/security.repository';
 
 export class DeleteAllDevicesCommand {
   constructor(

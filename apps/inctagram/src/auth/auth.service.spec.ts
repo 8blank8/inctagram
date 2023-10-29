@@ -3,7 +3,7 @@ import { AuthService } from './auth.service';
 import { PrismaService } from '@app/db';
 import { JwtService } from '@nestjs/jwt';
 import { UserRepository } from '@app/main/user/repository/user.repository';
-import { UserQueryRepository } from '@app/main/user/repository/user.query.repository';
+import { UserQueryRepository } from '@app/main/user/repository/user-query.repository';
 
 describe('AuthService', () => {
   let service: AuthService;

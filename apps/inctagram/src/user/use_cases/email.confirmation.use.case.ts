@@ -1,7 +1,7 @@
 import { CommandHandler } from '@nestjs/cqrs';
 
 import { UserRepository } from '../repository/user.repository';
-import { UserQueryRepository } from '../repository/user.query.repository';
+import { UserQueryRepository } from '../repository/user-query.repository';
 import { ConfirmEmailDto } from '../../auth/dto/confirm.email.dto';
 import { compareVerificationCode } from '@app/main/utils/verification.code.util';
 
