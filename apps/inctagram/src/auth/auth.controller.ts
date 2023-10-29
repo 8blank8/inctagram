@@ -4,6 +4,7 @@ import {
   Get,
   HttpStatus,
   Post,
+  Query,
   Req,
   Res,
   UseGuards,
@@ -23,6 +24,8 @@ import { ErrorResponse } from '@app/main/auth/entity/error.response';
 import { AuthCreatedEntity } from '@app/main/auth/entity/auth.created.entity';
 import { MailService } from '@app/common';
 import { ResendConfirmationCodeCommand } from '@app/main/user/use_cases/resend.confirmation.code.use.case';
+import { GithubOathGuard } from '@app/auth/guards/github.oauth.guard';
+import { RegistrationGithubUserCommand } from './use_cases/registration.github.user.use.case';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -146,5 +149,29 @@ export class AuthController {
     });
 
     return res.status(HttpStatus.OK);
+  }
+
+  @Get('github')
+  @UseGuards(GithubOathGuard)
+  async githubAuth() {}
+
+  @Get('callback/github')
+  @UseGuards(GithubOathGuard)
+  async githubAuthCallback(@Req() req, @Query('code') code: string) {
+    console.log({ code });
+    // console.log(req.user)
+    const { id, displayName, username, emails, photos } = req.user;
+
+    const token = await this.commandBus.execute(
+      new RegistrationGithubUserCommand(
+        username,
+        id,
+        photos[0].value,
+        displayName,
+        emails[0].value,
+      ),
+    );
+
+    return token;
   }
 }
