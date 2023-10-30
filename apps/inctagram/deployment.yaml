@@ -67,6 +67,11 @@ spec:
                  secretKeyRef:
                    name: backend-inctagram-production-config-secret
                    key: EMAIL_PASS
+             - name: FRONT_URL
+               valueFrom:
+                 secretKeyRef:
+                   name: backend-inctagram-production-config-secret
+                   key: FRONT_URL
              - name: TEST_DB_URL
                valueFrom:
                  secretKeyRef:
