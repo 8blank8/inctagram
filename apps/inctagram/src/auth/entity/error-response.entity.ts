@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class ErrorResponse {
+export class ErrorResponseEntity {
   @ApiProperty()
   message: Array<string>;
 }

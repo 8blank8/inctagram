@@ -6,6 +6,7 @@ import {
   Param,
   Request,
   Res,
+  UseGuards,
 } from '@nestjs/common';
 import { Response } from 'express';
 import { CommandBus } from '@nestjs/cqrs';
@@ -18,6 +19,7 @@ import {
 import { SecurityQueryRepository } from '@app/main/security/repository/secutity.query.repository';
 import { DeleteDeviceCommand } from '@app/main/security/use_cases/delete.device.use.case';
 import { DeleteAllDevicesCommand } from '@app/main/security/use_cases/delete.all.device.use.case';
+import { JwtAuthGuard } from '@app/auth';
 
 @ApiBearerAuth()
 @ApiTags('security')
@@ -28,7 +30,7 @@ export class SecurityController {
     private commandBus: CommandBus,
   ) {}
 
-  // @UseGuards(JwtRefreshTokenGuard)
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Get user active devices' })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @Get('/devices')
@@ -39,7 +41,7 @@ export class SecurityController {
     return devices;
   }
 
-  // @UseGuards(JwtRefreshTokenGuard)
+  @UseGuards(JwtAuthGuard)
   @Delete('/devices/:id')
   async deleteDeviceById(
     @Param('id') id: string,
@@ -54,7 +56,7 @@ export class SecurityController {
     return res.sendStatus(HttpStatus.NO_CONTENT);
   }
 
-  // @UseGuards(JwtRefreshTokenGuard)
+  @UseGuards(JwtAuthGuard)
   @Delete('/devices')
   async deleteAllDevices(@Request() req, @Res() res: Response) {
     await this.commandBus.execute(

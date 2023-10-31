@@ -17,7 +17,7 @@ import passport from 'passport';
 import { LocalAuthGuard } from '@app/auth';
 import { GoogleOauthGuard } from '@app/auth/guards/google.oauth.guard';
 import { GithubOathGuard } from '@app/auth/guards/github.oauth.guard';
-import { ErrorResponse } from '@app/main/auth/entity/error.response';
+import { ErrorResponseEntity } from '@app/main/auth/entity/error-response.entity';
 import { AuthCreatedEntity } from '@app/main/auth/entity/auth.created.entity';
 import { MailService, settings_env } from '@app/common';
 import { RegisterGoogleUserCommand } from '@app/main/auth/use_cases/register-google-user.use-case';
@@ -33,10 +33,11 @@ import { RegisterUserDto } from './dto/register.user.dto';
 import { ConfirmEmailDto } from './dto/confirm.email.dto';
 import { TestMailEntity } from '@app/main/auth/entity/test-mail.entity';
 import { ResendMailEntity } from '@app/main/auth/entity/resend-mail.entity';
-import { ConfirmMailEntity } from '@app/main/auth/entity/confirm-mail.entity';
+import { TokenEntity } from '@app/main/auth/entity/token.entity';
+import { LoginDataEntity } from '@app/main/auth/entity/login-data.entity';
 
-@ApiTags('auth')
-@Controller('auth')
+@ApiTags('Auth')
+@Controller('/auth')
 export class AuthController {
   constructor(
     private authService: AuthService,
@@ -46,20 +47,22 @@ export class AuthController {
 
   @ApiOperation({ summary: 'Send test mail' })
   @ApiResponse({
-    status: 200,
+    status: 201,
     description: 'Mail sent',
+    type: TestMailEntity,
   })
   @Post('test-mail')
   sendTestMail(@Body() mailData: TestMailEntity, @Res() res: Response) {
     this.mailService.testMail(mailData.mailAddress, mailData.content);
-    return res.sendStatus(HttpStatus.CREATED);
+    return res.sendStatus(HttpStatus.CREATED).send(mailData);
   }
 
   @UseGuards(LocalAuthGuard)
   @ApiOperation({ summary: 'Log in route' })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
+  @ApiResponse({ status: HttpStatus.OK, type: TokenEntity })
   @Post('/login')
-  async login(@Req() req, @Res() res: Response) {
+  async login(@Req() req, @Body() body: LoginDataEntity, @Res() res: Response) {
     const token = await this.commandBus.execute(
       new AuthorizeUserCommand(req.user.id, req),
     );
@@ -70,7 +73,7 @@ export class AuthController {
   @ApiOperation({ summary: 'Register route' })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @ApiResponse({
-    type: ErrorResponse,
+    type: ErrorResponseEntity,
     status: 400,
   })
   @ApiResponse({
@@ -98,7 +101,7 @@ export class AuthController {
     summary: 'Post Request to confirm code from mail and get access to login',
   })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
-  @ApiResponse({ status: 200, type: ConfirmMailEntity })
+  @ApiResponse({ status: 200 })
   @Post('/confirm-code')
   async confirmationEmail(
     @Body() inputData: ConfirmEmailDto,
@@ -109,13 +112,14 @@ export class AuthController {
     );
     if (!isConfirmed) return res.sendStatus(HttpStatus.BAD_REQUEST);
 
-    return res.sendStatus(HttpStatus.NO_CONTENT);
+    return res.sendStatus(HttpStatus.OK);
   }
 
   @ApiOperation({
     summary: 'Re-request for confirmation email',
   })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
+  @ApiResponse({ status: 200, description: 'Mail sent' })
   @Post('/resend-email-code')
   async requestEmailCode(
     @Body() inputData: ResendMailEntity,
@@ -129,11 +133,18 @@ export class AuthController {
   }
 
   @ApiOperation({ summary: 'google auth' })
-  @ApiResponse({ status: 403, description: 'Forbidden.' })
+  @ApiResponse({
+    status: 200,
+    description: 'will redirect to google auth page',
+  })
   @Get('google')
   @UseGuards(GoogleOauthGuard)
   async googleAuth() {}
 
+  @ApiOperation({
+    summary:
+      'after success will redirect to "/auth-confirmed" with accessToken & refreshToken in query',
+  })
   @Get('google/callback')
   @UseGuards(GoogleOauthGuard)
   async googleAuthCallback(@Req() req, @Res() res: Response) {
@@ -144,7 +155,11 @@ export class AuthController {
       new AuthorizeUserCommand(user.id, req),
     );
     setAuthTokens(res, token);
-    res.status(HttpStatus.OK).redirect(`${settings_env.FRONT_URL}/`);
+    res
+      .status(HttpStatus.OK)
+      .redirect(
+        `${settings_env.FRONT_URL}/auth-confirmed?accessToken=${token.accessToken}&refreshToken=${token.refreshToken}`,
+      );
   }
 
   @Get('github')

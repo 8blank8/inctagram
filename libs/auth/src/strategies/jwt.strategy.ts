@@ -1,13 +1,18 @@
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { PassportStrategy } from '@nestjs/passport';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { CommandBus } from '@nestjs/cqrs';
-import { ValidateUserCommand } from '@app/main/auth/use_cases/validate.user.use.case';
 import { settings_env } from '@app/common';
+import { UserQueryRepository } from '@app/main/user/repository/user-query.repository';
 
+interface TokenData {
+  sub: string;
+  deviceId: string;
+  iat: number;
+  exp: number;
+}
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-  constructor(private commandBus: CommandBus) {
+  constructor(private userQueryRepository: UserQueryRepository) {
     const extractJwtFromCookie = (req) => {
       let token = null;
       if (req && req.cookies) {
@@ -23,13 +28,15 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate(username: string, password: string): Promise<any> {
-    console.log(username, password);
-    const user = await this.commandBus.execute(
-      new ValidateUserCommand(username, password),
-    );
+  async validate(tokenData: TokenData): Promise<any> {
+    if (!tokenData) {
+      throw new UnauthorizedException();
+    }
 
-    if (!user) {
+    // TODO: write normal validate command, store pass in coolie??
+    const user = await this.userQueryRepository.findUserById(tokenData.sub);
+
+    if (!user || !user.emailConfirmed) {
       throw new UnauthorizedException();
     }
     return user;

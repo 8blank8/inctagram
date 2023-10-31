@@ -8,12 +8,19 @@ async function main() {
     create: {
       email: 'alice@prisma.io',
       username: 'Alice',
-      password: '$2b$04$LmGVEiqKgdh1DQAa3GrSOuC.AmBWHG.3Ib2nrfQhbOCZj6THL159K',
+      password: '',
       posts: {
         create: {
           title: 'Check out Prisma with Next.js',
           content: 'https://www.prisma.io/nextjs',
           published: true,
+        },
+      },
+      userProfile: {
+        create: {
+          avatarUrl: '',
+          familyName: 'Alice',
+          firstName: 'Some',
         },
       },
     },
@@ -24,7 +31,7 @@ async function main() {
     create: {
       email: 'bob@prisma.io',
       username: 'Bob',
-      password: '$2b$04$LmGVEiqKgdh1DQAa3GrSOuC.AmBWHG.3Ib2nrfQhbOCZj6THL159K',
+      password: '',
       posts: {
         create: [
           {
@@ -38,6 +45,13 @@ async function main() {
             published: true,
           },
         ],
+      },
+      userProfile: {
+        create: {
+          avatarUrl: '',
+          familyName: 'Bob',
+          firstName: 'Some',
+        },
       },
     },
   });

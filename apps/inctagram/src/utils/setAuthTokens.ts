@@ -1,9 +1,9 @@
 import { Response } from 'express';
-import { AuthEntity } from '@app/main/auth/entity/auth.entity';
+import { TokenEntity } from '@app/main/auth/entity/token.entity';
 
-export const setAuthTokens = (res: Response, token: AuthEntity) => {
+export const setAuthTokens = (res: Response, token: TokenEntity) => {
   res
-    .cookie('access-token', token.refreshToken, {
+    .cookie('access-token', token.accessToken, {
       httpOnly: true,
       secure: true,
     })

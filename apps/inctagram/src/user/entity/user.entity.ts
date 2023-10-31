@@ -26,6 +26,6 @@ export class UserEntity {
   })
   updatedAt: string;
 
-  @ApiProperty({ example: 'some_password_1', description: 'email confirmed' })
+  @ApiProperty({ example: true, description: 'email confirmed' })
   emailConfirmed: boolean;
 }
