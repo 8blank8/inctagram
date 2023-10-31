@@ -31,6 +31,9 @@ import { EmailConfirmationCommand } from '../user/use_cases/email.confirmation.u
 import { AuthService } from './auth.service';
 import { RegisterUserDto } from './dto/register.user.dto';
 import { ConfirmEmailDto } from './dto/confirm.email.dto';
+import { TestMailEntity } from '@app/main/auth/entity/test-mail.entity';
+import { ResendMailEntity } from '@app/main/auth/entity/resend-mail.entity';
+import { ConfirmMailEntity } from '@app/main/auth/entity/confirm-mail.entity';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -47,10 +50,7 @@ export class AuthController {
     description: 'Mail sent',
   })
   @Post('test-mail')
-  sendTestMail(
-    @Body() mailData: { mailAddress: string; content?: string },
-    @Res() res: Response,
-  ) {
+  sendTestMail(@Body() mailData: TestMailEntity, @Res() res: Response) {
     this.mailService.testMail(mailData.mailAddress, mailData.content);
     return res.sendStatus(HttpStatus.CREATED);
   }
@@ -98,6 +98,7 @@ export class AuthController {
     summary: 'Post Request to confirm code from mail and get access to login',
   })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
+  @ApiResponse({ status: 200, type: ConfirmMailEntity })
   @Post('/confirm-code')
   async confirmationEmail(
     @Body() inputData: ConfirmEmailDto,
@@ -117,7 +118,7 @@ export class AuthController {
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @Post('/resend-email-code')
   async requestEmailCode(
-    @Body() inputData: { email: string },
+    @Body() inputData: ResendMailEntity,
     @Res() res: Response,
   ) {
     await this.commandBus.execute(
