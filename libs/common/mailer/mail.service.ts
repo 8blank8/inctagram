@@ -25,8 +25,15 @@ export class MailService {
         to: email,
         from: settings_env.EMAIL_ID,
         subject: 'Confirmation code',
-        text: 'Click the link below to complete registration',
-        html: `<a href="${settings_env.FRONT_URL}/confirm-registration?${query}">Click here to end registration</a>`,
+        html: `
+          <div>
+           <h5>Click the link below to complete registration</h5>
+          </div>
+          <p>
+           <a href="${settings_env.FRONT_URL}/confirm-registration?${query}">
+            Click here to end registration
+           </a>
+         </p>`,
       })
       .then(({ accepted, response }) => {
         console.log('send Email Confirmation ==> ', query, accepted, response);
