@@ -33,6 +33,7 @@ export class UserRepository {
       return this.prisma.user.update({
         where: { email },
         data: {
+          emailConfirmed: true,
           googleProvider: {
             upsert: {
               where: { userId: found.id },
@@ -55,6 +56,7 @@ export class UserRepository {
         data: {
           email,
           username,
+          emailConfirmed: true,
           googleProvider: { create: providerData },
           userProfile: { create: profileData },
         },
@@ -82,6 +84,7 @@ export class UserRepository {
       return this.prisma.user.update({
         where: { email },
         data: {
+          emailConfirmed: true,
           gitHubProvider: {
             upsert: {
               where: { userId: found.id },
@@ -104,6 +107,7 @@ export class UserRepository {
         data: {
           email,
           username,
+          emailConfirmed: true,
           gitHubProvider: { create: providerData },
           userProfile: { create: profileData },
         },
