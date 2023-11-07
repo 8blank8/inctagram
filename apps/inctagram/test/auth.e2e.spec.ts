@@ -1,7 +1,8 @@
 import * as request from 'supertest';
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import { testUsers } from './utils/test.users.ustil';
-import { startTestConfig } from './utils/start.app';
+import { mockMailCodes, startTestConfig } from './utils/start.app';
+import * as querystring from 'querystring';
 
 describe('AuthService', () => {
   let app: INestApplication;
@@ -66,11 +67,37 @@ describe('AuthService', () => {
         .send(user1)
         .expect(HttpStatus.CREATED)
         .then((res) => {
-          user1Token = res.body?.token?.accessToken || '';
+          expect(mockMailCodes[user1.email]).toBeDefined();
           expect(res.body).toEqual({
             userId: expect.any(String),
           });
         });
+    });
+
+    it('should overwrite data if user email exist', async () => {
+      await request(server)
+        .post(`/auth/registration`)
+        .set('user-agent', 'test-user-agent')
+        .send(user1)
+        .expect(HttpStatus.CREATED);
+    });
+
+    describe('POST /auth/confirm-code', () => {
+      it('should be status 400 "     " code', async () => {
+        const data = querystring.parse(mockMailCodes[user1.email]);
+        await request(app.getHttpServer())
+          .post(`/auth/confirm-code`)
+          .send(data)
+          .expect(HttpStatus.OK);
+      });
+    });
+
+    it('should be status 400 user email exist', async () => {
+      await request(server)
+        .post(`/auth/registration`)
+        .set('user-agent', 'test-user-agent')
+        .send(user1)
+        .expect(HttpStatus.BAD_REQUEST);
     });
 
     it('should login with right data', async () => {
@@ -87,30 +114,6 @@ describe('AuthService', () => {
           });
         });
     });
-
-    it('should be status 400 user email exist', async () => {
-      await request(server)
-        .post(`/auth/registration`)
-        .set('user-agent', 'test-user-agent')
-        .send(user1)
-        .expect(HttpStatus.BAD_REQUEST);
-    });
-
-    it('should be status 400 user email exist', async () => {
-      await request(server)
-        .post(`/auth/registration`)
-        .set('user-agent', 'test-user-agent')
-        .send(user1)
-        .expect(HttpStatus.BAD_REQUEST);
-    });
-
-    // describe('POST /auth/confirmation-code', () => {
-    //   it('should be status 400 "     " code', async () => {
-    //     await request(app.getHttpServer())
-    //       .post(`/auth/confirmation-code`)
-    //       .send({ code: '     ', email: user1.email })
-    //       .expect(HttpStatus.BAD_REQUEST);
-    //   });
 
     //   it('should be status 400 confirmation data not found', async () => {
     //     await request(app.getHttpServer())

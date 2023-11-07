@@ -28,6 +28,7 @@ export class EmailConfirmationUseCase {
       id: userId,
       email: user.email,
     });
+    console.log(isComapre);
     if (!isComapre) return false;
 
     user.emailConfirmed = true;

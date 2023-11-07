@@ -23,6 +23,7 @@
     "test:e2e": "jest --runInBand --testRegex=\"^.*e2e.*.spec.ts$\"",
     "prisma:generate": "yarn prisma generate",
     "prisma:reset": "yarn prisma migrate reset",
+    "prisma:deploy": "yarn prisma migrate deploy",
     "prisma:seed": "ts-node prisma/seed.ts"
   },
   "pre-commit": {

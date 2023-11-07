@@ -12,9 +12,11 @@ import { MailerService } from '@nestjs-modules/mailer';
 import { MailService } from '@app/common';
 import { clearTestDataBase } from './clear.database';
 
+export const mockMailCodes = {};
+
 const mockMailService = {
   sendEmailConfirmationMessage: async (email: string, code: string) => {
-    console.log(email, code);
+    mockMailCodes[email] = code;
     return true;
   },
   testMail: (email: string, code: string) => {

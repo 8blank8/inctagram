@@ -28,6 +28,7 @@ RUN yarn install
 COPY --chown=node . .
 
 RUN yarn 'prisma:generate'
+RUN yarn 'prisma:deploy'
 
 RUN yarn build:${SERVICE}
 

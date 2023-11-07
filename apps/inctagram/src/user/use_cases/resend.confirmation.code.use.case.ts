@@ -17,8 +17,7 @@ export class ResendConfirmationCodeUseCase {
   async execute(command: ResendConfirmationCodeCommand): Promise<boolean> {
     const { email } = command;
 
-    const user =
-      await this.userQueryRepository.findUserByUserNameOrEmail(email);
+    const user = await this.userQueryRepository.byUserNameOrEmail(email);
     if (!user) return false;
 
     const query = await getVerificationCode({

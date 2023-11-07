@@ -6,11 +6,17 @@ import { Prisma, User } from '@prisma/client';
 export class UserQueryRepository {
   constructor(private prisma: PrismaService) {}
 
-  async findUserByUserNameOrEmail(emailUserName: string): Promise<User | null> {
+  async byUserNameOrEmail(emailUserName: string): Promise<User | null> {
     const user = await this.prisma.user.findMany({
       where: {
         OR: [{ email: emailUserName }, { username: emailUserName }],
       },
+    });
+    return user[0];
+  }
+  async byUserName(userName: string): Promise<User | null> {
+    const user = await this.prisma.user.findMany({
+      where: { username: userName },
     });
     return user[0];
   }

@@ -26,8 +26,7 @@ export class AuthService {
     });
   }
   async findUserByEmail(email?: string) {
-    const user =
-      await this.userQueryRepository.findUserByUserNameOrEmail(email);
+    const user = await this.userQueryRepository.byUserNameOrEmail(email);
     return user ?? null;
   }
 }

@@ -16,8 +16,7 @@ export class ValidateUserUseCase {
   async execute(command: ValidateUserCommand) {
     const { email, password } = command;
 
-    const user =
-      await this.userQueryRepository.findUserByUserNameOrEmail(email);
+    const user = await this.userQueryRepository.byUserNameOrEmail(email);
     if (!user) return null;
 
     const isRightPassword = matchPassword(password, user.password);

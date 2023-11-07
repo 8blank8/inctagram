@@ -86,7 +86,8 @@ export class AuthController {
     @Res() res: Response,
   ) {
     const exists = await this.authService.findUserByEmail(inputData.email);
-    if (!!exists) return res.sendStatus(HttpStatus.BAD_REQUEST);
+    if (!!exists && exists.emailConfirmed)
+      return res.sendStatus(HttpStatus.BAD_REQUEST);
 
     const user = await this.commandBus.execute(
       new CreateUserCommand(inputData, true),

@@ -12,7 +12,6 @@ export async function getVerificationCode(payload: CodePayload) {
   const dataToCode = payload.email;
 
   const code = hashPassword(dataToCode);
-  console.log('===========>>>>>>>>>>>> ', code);
   return `userId=${payload.id}&code=${code}`;
 }
 

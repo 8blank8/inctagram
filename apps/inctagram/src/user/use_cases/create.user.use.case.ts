@@ -9,6 +9,7 @@ import {
   getVerificationCode,
   hashPassword,
 } from '@app/main/utils/verification.code.util';
+import { UserQueryRepository } from '@app/main/user/repository/user-query.repository';
 
 export class CreateUserCommand {
   constructor(
@@ -21,6 +22,7 @@ export class CreateUserCommand {
 export class CreateUserUseCase {
   constructor(
     private userRepository: UserRepository,
+    private userQueryRepository: UserQueryRepository,
     private mailService: MailService,
   ) {}
 
@@ -28,7 +30,18 @@ export class CreateUserUseCase {
     const { user, sendMail } = command;
 
     const password = !user.password ? null : hashPassword(user.password);
-    const username = user.username || generateFromEmail(user.email);
+    let username = user.username;
+    // if user auth first time with google or other, generate new unique username
+    if (!username) {
+      let isUnique = false;
+      let randomDigits = 0;
+      username = generateFromEmail(user.email, 2);
+      while (!isUnique) {
+        const found = await this.userQueryRepository.byUserName(username);
+        if (!!found) username = generateFromEmail(user.email, randomDigits++);
+        isUnique = !found;
+      }
+    }
 
     const createUser = {
       email: user.email,
