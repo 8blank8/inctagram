@@ -26,7 +26,7 @@ export class RegisterUserDto {
   )
   username: string;
 
-  @ApiProperty({ example: 'some@p@sSword', description: 'User password' })
+  @ApiProperty({ example: 'some1p@sSword', description: 'User password' })
   @IsNotEmpty()
   @IsString()
   @Matches(/^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,16}$/)

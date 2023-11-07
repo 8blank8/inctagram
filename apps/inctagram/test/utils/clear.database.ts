@@ -20,7 +20,6 @@ export const clearTestDataBase = async (dropTables?: boolean) => {
     }
 
     for (const user of testUsers) {
-      console.log('delete user => ', user.email);
       await deleteUser(user.email).catch(console.log);
     }
   }

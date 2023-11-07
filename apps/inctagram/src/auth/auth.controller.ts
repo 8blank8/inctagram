@@ -21,20 +21,23 @@ import { ErrorResponseEntity } from '@app/main/auth/entity/error-response.entity
 import { AuthCreatedEntity } from '@app/main/auth/entity/auth.created.entity';
 import { MailService, settings_env } from '@app/common';
 import { RegisterGoogleUserCommand } from '@app/main/auth/use_cases/register-google-user.use-case';
-import { ResendConfirmationCodeCommand } from '@app/main/user/use_cases/resend.confirmation.code.use.case';
+import { ResendConfirmationCodeCommand } from '@app/main/user/use_cases/resend-confirmation-code.use-case';
 import { setAuthTokens } from '@app/main/utils/setAuthTokens';
 
 import { RegisterGithubUserCommand } from './use_cases/register-github-user.use-case';
 import { AuthorizeUserCommand } from './use_cases/authorize-user.use-case';
-import { CreateUserCommand } from '../user/use_cases/create.user.use.case';
-import { EmailConfirmationCommand } from '../user/use_cases/email.confirmation.use.case';
+import { CreateUserCommand } from '../user/use_cases/create-user.use-case';
+import { EmailConfirmationCommand } from '../user/use_cases/email-confirmation.use-case';
 import { AuthService } from './auth.service';
-import { RegisterUserDto } from './dto/register.user.dto';
-import { ConfirmEmailDto } from './dto/confirm.email.dto';
+import { RegisterUserDto } from './dto/register-user.dto';
+import { ConfirmEmailDto } from './dto/confirm-email.dto';
 import { TestMailEntity } from '@app/main/auth/entity/test-mail.entity';
 import { ResendMailEntity } from '@app/main/auth/entity/resend-mail.entity';
 import { TokenEntity } from '@app/main/auth/entity/token.entity';
 import { LoginDataEntity } from '@app/main/auth/entity/login-data.entity';
+import { PasswordResetMail } from '@app/main/user/use_cases/password-reset-email.use-case';
+import { ResetPasswordDto } from '@app/main/auth/dto/reset-password.dto';
+import { ResetUserPassword } from '@app/main/user/use_cases/reset-user-password.use-case';
 
 @ApiTags('Auth')
 @Controller('/auth')
@@ -120,7 +123,7 @@ export class AuthController {
     summary: 'Re-request for confirmation email',
   })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
-  @ApiResponse({ status: 200, description: 'Mail sent' })
+  @ApiResponse({ status: HttpStatus.OK, description: 'Mail sent' })
   @Post('/resend-email-code')
   async requestEmailCode(
     @Body() inputData: ResendMailEntity,
@@ -130,6 +133,40 @@ export class AuthController {
       new ResendConfirmationCodeCommand(inputData.email),
     );
 
+    return res.sendStatus(HttpStatus.OK);
+  }
+
+  @ApiOperation({
+    summary: 'Password recovery email',
+  })
+  @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Forbidden.' })
+  @ApiResponse({ status: HttpStatus.OK, description: 'Mail sent' })
+  @Post('/password-recovery-email')
+  async passwordRecoveryEmailCode(
+    @Body() inputData: ResendMailEntity,
+    @Res() res: Response,
+  ) {
+    const sent = await this.commandBus.execute(
+      new PasswordResetMail(inputData.email),
+    );
+    if (!sent) return res.sendStatus(HttpStatus.BAD_REQUEST);
+    return res.sendStatus(HttpStatus.OK);
+  }
+
+  @ApiOperation({
+    summary: 'Password recovery email',
+  })
+  @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Forbidden.' })
+  @ApiResponse({ status: HttpStatus.OK, description: 'New password applied' })
+  @Post('/change-password')
+  async changePassword(
+    @Body() inputData: ResetPasswordDto,
+    @Res() res: Response,
+  ) {
+    const result = await this.commandBus.execute(
+      new ResetUserPassword(inputData),
+    );
+    if (!result) return res.sendStatus(HttpStatus.BAD_REQUEST);
     return res.sendStatus(HttpStatus.OK);
   }
 

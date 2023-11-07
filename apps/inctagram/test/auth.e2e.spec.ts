@@ -17,72 +17,169 @@ describe('AuthService', () => {
     server = app.getHttpServer();
   });
 
-  describe('POST /auth/registration', () => {
-    it('should be status 400 blank email', async () => {
-      await request(server)
-        .post(`/auth/registration`)
-        .send({ ...user1, email: '' })
-        .expect(HttpStatus.BAD_REQUEST);
-    });
+  describe('/auth/', () => {
+    describe('POST /registration', () => {
+      it('should be status 400 blank email', async () => {
+        await request(server)
+          .post(`/auth/registration`)
+          .send({ ...user1, email: '' })
+          .expect(HttpStatus.BAD_REQUEST);
+      });
 
-    it('should be status 400 blank email', async () => {
-      await request(server)
-        .post(`/auth/registration`)
-        .send({ ...user1, email: '' })
-        .expect(HttpStatus.BAD_REQUEST);
-    });
+      it('should be status 400 blank email', async () => {
+        await request(server)
+          .post(`/auth/registration`)
+          .send({ ...user1, email: '' })
+          .expect(HttpStatus.BAD_REQUEST);
+      });
 
-    it('should be status 400 "   " email', async () => {
-      await request(server)
-        .post(`/auth/registration`)
-        .send({ ...user1, email: '     ' })
-        .expect(HttpStatus.BAD_REQUEST);
-    });
+      it('should be status 400 "   " email', async () => {
+        await request(server)
+          .post(`/auth/registration`)
+          .send({ ...user1, email: '     ' })
+          .expect(HttpStatus.BAD_REQUEST);
+      });
 
-    it('should be status 400 incorrect email', async () => {
-      await request(server)
-        .post(`/auth/registration`)
-        .send({ ...user1, email: 'example1mail.ru' })
-        .expect(HttpStatus.BAD_REQUEST);
-    });
+      it('should be status 400 incorrect email', async () => {
+        await request(server)
+          .post(`/auth/registration`)
+          .send({ ...user1, email: 'example1mail.ru' })
+          .expect(HttpStatus.BAD_REQUEST);
+      });
 
-    it('should be status 400 password length 1', async () => {
-      await request(server)
-        .post(`/auth/registration`)
-        .send({ ...user1, password: 'a' })
-        .expect(HttpStatus.BAD_REQUEST);
-    });
+      it('should be status 400 password length 1', async () => {
+        await request(server)
+          .post(`/auth/registration`)
+          .send({ ...user1, password: 'a' })
+          .expect(HttpStatus.BAD_REQUEST);
+      });
 
-    it('should be status 400 "    " password', async () => {
-      await request(server)
-        .post(`/auth/registration`)
-        .send({ ...user1, password: '     ' })
-        .expect(HttpStatus.BAD_REQUEST);
-    });
+      it('should be status 400 "    " password', async () => {
+        await request(server)
+          .post(`/auth/registration`)
+          .send({ ...user1, password: '     ' })
+          .expect(HttpStatus.BAD_REQUEST);
+      });
 
-    it('should be status 201 correct registration data', async () => {
-      await request(server)
-        .post(`/auth/registration`)
-        .set('user-agent', 'test-user-agent')
-        .send(user1)
-        .expect(HttpStatus.CREATED)
-        .then((res) => {
-          expect(mockMailCodes[user1.email]).toBeDefined();
-          expect(res.body).toEqual({
-            userId: expect.any(String),
+      it('should be status 201 correct registration data', async () => {
+        await request(server)
+          .post(`/auth/registration`)
+          .set('user-agent', 'test-user-agent')
+          .send(user1)
+          .expect(HttpStatus.CREATED)
+          .then((res) => {
+            expect(mockMailCodes[user1.email]).toBeDefined();
+            expect(res.body).toEqual({
+              userId: expect.any(String),
+            });
           });
+      });
+
+      it('should overwrite data if user email exist', async () => {
+        await request(server)
+          .post(`/auth/registration`)
+          .set('user-agent', 'test-user-agent')
+          .send(user1)
+          .expect(HttpStatus.CREATED);
+      });
+
+      describe('POST /auth/confirm-code', () => {
+        it('should send code', async () => {
+          const data = querystring.parse(mockMailCodes[user1.email]);
+          await request(app.getHttpServer())
+            .post(`/auth/confirm-code`)
+            .send(data)
+            .expect(HttpStatus.OK);
         });
+      });
+
+      it('should be status 400 user email exist', async () => {
+        await request(server)
+          .post(`/auth/registration`)
+          .set('user-agent', 'test-user-agent')
+          .send(user1)
+          .expect(HttpStatus.BAD_REQUEST);
+      });
+
+      it('should not login with wrong data', async () => {
+        await request(server)
+          .post(`/auth/login`)
+          .set('user-agent', 'test-user-agent')
+          .send({ email: 'user1.email', password: user1.password })
+          .expect(HttpStatus.UNAUTHORIZED);
+      });
+
+      it('should login with right data', async () => {
+        await request(server)
+          .post(`/auth/login`)
+          .set('user-agent', 'test-user-agent')
+          .send({ email: user1.email, password: user1.password })
+          .expect(HttpStatus.OK)
+          .then((res) => {
+            user1Token = res.body?.token?.accessToken || '';
+            expect(res.body).toEqual({
+              accessToken: expect.any(String),
+              refreshToken: expect.any(String),
+            });
+          });
+      });
     });
 
-    it('should overwrite data if user email exist', async () => {
-      await request(server)
-        .post(`/auth/registration`)
-        .set('user-agent', 'test-user-agent')
-        .send(user1)
-        .expect(HttpStatus.CREATED);
+    describe('POST /password-recovery', () => {
+      it('should be status 400 "     " code', async () => {
+        await request(app.getHttpServer())
+          .post(`/auth/password-recovery-email`)
+          .send({ email: user1.email })
+          .expect(HttpStatus.OK);
+      });
+
+      it(`should ${HttpStatus.BAD_REQUEST} with wrong data`, async () => {
+        const data = querystring.parse(mockMailCodes[user1.email]);
+        await request(server)
+          .post(`/auth/change-password`)
+          .set('user-agent', 'test-user-agent')
+          .send({
+            password: user1.password,
+            userId: data.userId,
+            token: data.token + '1',
+          })
+          .expect(HttpStatus.BAD_REQUEST);
+      });
+
+      it('should change-password with right data', async () => {
+        const data = querystring.parse(mockMailCodes[user1.email]);
+        await request(server)
+          .post(`/auth/change-password`)
+          .set('user-agent', 'test-user-agent')
+          .send({ password: user1.password + '1', ...(data ?? {}) })
+          .expect(HttpStatus.OK);
+      });
+
+      it('should not login with prev password', async () => {
+        await request(server)
+          .post(`/auth/login`)
+          .set('user-agent', 'test-user-agent')
+          .send({ email: user1.email, password: user1.password })
+          .expect(HttpStatus.UNAUTHORIZED);
+      });
+
+      it('should login with with New password', async () => {
+        await request(server)
+          .post(`/auth/login`)
+          .set('user-agent', 'test-user-agent')
+          .send({ email: user1.email, password: user1.password + '1' })
+          .expect(HttpStatus.OK)
+          .then((res) => {
+            user1Token = res.body?.token?.accessToken || '';
+            expect(res.body).toEqual({
+              accessToken: expect.any(String),
+              refreshToken: expect.any(String),
+            });
+          });
+      });
     });
 
-    describe('POST /auth/confirm-code', () => {
+    describe('POST /confirm-code', () => {
       it('should be status 400 "     " code', async () => {
         const data = querystring.parse(mockMailCodes[user1.email]);
         await request(app.getHttpServer())
@@ -90,29 +187,6 @@ describe('AuthService', () => {
           .send(data)
           .expect(HttpStatus.OK);
       });
-    });
-
-    it('should be status 400 user email exist', async () => {
-      await request(server)
-        .post(`/auth/registration`)
-        .set('user-agent', 'test-user-agent')
-        .send(user1)
-        .expect(HttpStatus.BAD_REQUEST);
-    });
-
-    it('should login with right data', async () => {
-      await request(server)
-        .post(`/auth/login`)
-        .set('user-agent', 'test-user-agent')
-        .send({ email: user1.email, password: user1.password })
-        .expect(HttpStatus.OK)
-        .then((res) => {
-          user1Token = res.body?.token?.accessToken || '';
-          expect(res.body).toEqual({
-            accessToken: expect.any(String),
-            refreshToken: expect.any(String),
-          });
-        });
     });
 
     //   it('should be status 400 confirmation data not found', async () => {
@@ -239,9 +313,9 @@ describe('AuthService', () => {
     //       .expect(HttpStatus.NO_CONTENT);
     //   });
     // });
+  });
 
-    afterAll(async () => {
-      app.close();
-    });
+  afterAll(async () => {
+    app.close();
   });
 });

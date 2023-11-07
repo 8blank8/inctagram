@@ -4,8 +4,7 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class ConfirmEmailDto {
   /**
-   * The name of the Cat
-   * @example Kitty
+   * Data to confirm email
    */
   @ApiProperty({ example: 'code from querystring', description: 'code' })
   @IsNotEmpty()

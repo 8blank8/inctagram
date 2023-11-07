@@ -19,6 +19,10 @@ const mockMailService = {
     mockMailCodes[email] = code;
     return true;
   },
+  sendEmailPassRecovery: async (email: string, code: string) => {
+    mockMailCodes[email] = code;
+    return true;
+  },
   testMail: (email: string, code: string) => {
     console.log(email, code);
     return true;

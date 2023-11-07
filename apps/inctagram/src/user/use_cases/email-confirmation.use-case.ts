@@ -2,7 +2,7 @@ import { CommandHandler } from '@nestjs/cqrs';
 
 import { UserRepository } from '../repository/user.repository';
 import { UserQueryRepository } from '../repository/user-query.repository';
-import { ConfirmEmailDto } from '../../auth/dto/confirm.email.dto';
+import { ConfirmEmailDto } from '../../auth/dto/confirm-email.dto';
 import { compareVerificationCode } from '@app/main/utils/verification.code.util';
 
 export class EmailConfirmationCommand {
@@ -28,7 +28,7 @@ export class EmailConfirmationUseCase {
       id: userId,
       email: user.email,
     });
-    console.log(isComapre);
+
     if (!isComapre) return false;
 
     user.emailConfirmed = true;

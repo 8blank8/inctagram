@@ -40,6 +40,26 @@ export class MailService {
       });
   }
 
+  public async sendEmailPassRecovery(email: string, query: string) {
+    return this.mailerService
+      .sendMail({
+        to: email,
+        from: settings_env.EMAIL_ID,
+        subject: 'Password reset',
+        html: `
+          <div>
+           <h5>Click the link below to complete registration</h5>
+          </div>
+          <p>
+           <a href="${settings_env.FRONT_URL}/password-reset?${query}">
+            Click here to set new password
+           </a>
+         </p>`,
+      })
+      .then(({ accepted, response }) => {
+        console.log('send Email PassRecovery ==> ', query, accepted, response);
+      });
+  }
   public send(): void {
     this.mailerService
       .sendMail({
