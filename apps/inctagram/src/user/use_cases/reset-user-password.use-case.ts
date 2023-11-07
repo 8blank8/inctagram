@@ -34,6 +34,7 @@ export class ResetUserPasswordUseCase {
     });
     if (!isCompare) return false;
 
+    // TODO: broke all sessions
     user.password = hashPassword(password);
     await this.userRepository.saveUser(user);
 
