@@ -14,11 +14,11 @@ import { CommandBus } from '@nestjs/cqrs';
 import { Response } from 'express';
 import passport from 'passport';
 
-import { LocalAuthGuard } from '@app/auth';
+import { JwtAuthGuard, LocalAuthGuard } from '@app/auth';
 import { GoogleOauthGuard } from '@app/auth/guards/google.oauth.guard';
 import { GithubOathGuard } from '@app/auth/guards/github.oauth.guard';
 import { ErrorResponseEntity } from '@app/main/auth/entity/error-response.entity';
-import { AuthCreatedEntity } from '@app/main/auth/entity/auth.created.entity';
+import { AuthCreatedEntity } from '@app/main/auth/entity/auth-created-entity';
 import { MailService, settings_env } from '@app/common';
 import { RegisterGoogleUserCommand } from '@app/main/auth/use_cases/register-google-user.use-case';
 import { ResendConfirmationCodeCommand } from '@app/main/user/use_cases/resend-confirmation-code.use-case';
@@ -38,6 +38,7 @@ import { LoginDataEntity } from '@app/main/auth/entity/login-data.entity';
 import { PasswordResetMail } from '@app/main/user/use_cases/password-reset-email.use-case';
 import { ResetPasswordDto } from '@app/main/auth/dto/reset-password.dto';
 import { ResetUserPassword } from '@app/main/user/use_cases/reset-user-password.use-case';
+import { UserEntity } from '@app/main/user/entity/user-entity';
 
 @ApiTags('Auth')
 @Controller('/auth')
@@ -99,6 +100,21 @@ export class AuthController {
     if (!user) return res.sendStatus(HttpStatus.BAD_REQUEST);
 
     return res.status(HttpStatus.CREATED).send({ userId: user.id });
+  }
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Get user profile data' })
+  @ApiResponse({ status: 401, description: 'Forbidden.' })
+  @ApiResponse({
+    type: ErrorResponseEntity,
+    status: 500,
+  })
+  @ApiResponse({
+    type: UserEntity,
+    status: HttpStatus.OK,
+  })
+  @Get('/me')
+  async getMe(@Req() req, @Res() res: Response) {
+    return res.status(HttpStatus.OK).send(req.user);
   }
 
   @ApiOperation({

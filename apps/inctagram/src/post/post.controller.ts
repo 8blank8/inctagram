@@ -52,7 +52,7 @@ export class PostController {
     isArray: true,
   })
   @UseGuards(JwtAuthGuard)
-  @Get('filtered-posts/:searchString')
+  @Get('filtered-posts:searchString')
   async getFilteredPosts(
     @Param('searchString') searchString: string,
   ): Promise<PostModel[]> {
