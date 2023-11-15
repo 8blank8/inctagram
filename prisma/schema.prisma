@@ -29,12 +29,14 @@ model GitHubProvider {
 }
 
 model UserProfile {
-  id         String  @id @default(uuid())
-  userId     String  @unique
-  user       User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  avatarUrl  String
-  firstName  String?
-  familyName String?
+  id          String  @id @default(uuid())
+  userId      String  @unique
+  user        User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  avatarUrl   String
+  firstName   String?
+  familyName  String?
+  aboutMe     String?
+  dateOfBirth String?
 }
 
 model User {

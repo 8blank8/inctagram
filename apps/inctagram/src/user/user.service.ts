@@ -4,7 +4,7 @@ import { PrismaService } from '@app/db';
 
 @Injectable()
 export class UserService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   async user(
     userWhereUniqueInput: Prisma.UserWhereUniqueInput,
@@ -14,15 +14,15 @@ export class UserService {
     });
   }
 
-  async users(params: {
-    skip?: number;
-    take?: number;
-    cursor?: Prisma.UserWhereUniqueInput;
-    where?: Prisma.UserWhereInput;
-    orderBy?: Prisma.UserOrderByWithRelationInput;
-  }): Promise<User[]> {
-    return this.prisma.user.findMany();
-  }
+  // async users(params: {
+  //   skip?: number;
+  //   take?: number;
+  //   cursor?: Prisma.UserWhereUniqueInput;
+  //   where?: Prisma.UserWhereInput;
+  //   orderBy?: Prisma.UserOrderByWithRelationInput;
+  // }): Promise<User[]> {
+  //   return this.prisma.user.findMany();
+  // }
 
   async updateUser(params: {
     where: Prisma.UserWhereUniqueInput;
