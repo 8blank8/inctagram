@@ -32,6 +32,51 @@ spec:
                  secretKeyRef:
                    name: backend-inctagram-production-config-secret
                    key: FILES_SERVICE_HOST
+             - name: GOOGLE_API_KEY
+               valueFrom:
+                 secretKeyRef:
+                   name: backend-inctagram-production-config-secret
+                   key: GOOGLE_API_KEY
+             - name: GOOGLE_OAUTH_CLIENT_ID
+               valueFrom:
+                 secretKeyRef:
+                   name: backend-inctagram-production-config-secret
+                   key: GOOGLE_OAUTH_CLIENT_ID
+             - name: GOOGLE_OAUTH_CLIENT_SECRET
+               valueFrom:
+                 secretKeyRef:
+                   name: backend-inctagram-production-config-secret
+                   key: GOOGLE_OAUTH_CLIENT_SECRET
+             - name: EMAIL_HOST
+               valueFrom:
+                 secretKeyRef:
+                   name: backend-inctagram-production-config-secret
+                   key: EMAIL_HOST
+             - name: EMAIL_PORT
+               valueFrom:
+                 secretKeyRef:
+                   name: backend-inctagram-production-config-secret
+                   key: EMAIL_PORT
+             - name: EMAIL_ID
+               valueFrom:
+                 secretKeyRef:
+                   name: backend-inctagram-production-config-secret
+                   key: EMAIL_ID
+             - name: EMAIL_PASS
+               valueFrom:
+                 secretKeyRef:
+                   name: backend-inctagram-production-config-secret
+                   key: EMAIL_PASS
+             - name: FRONT_URL
+               valueFrom:
+                 secretKeyRef:
+                   name: backend-inctagram-production-config-secret
+                   key: FRONT_URL
+             - name: TEST_DB_URL
+               valueFrom:
+                 secretKeyRef:
+                   name: backend-inctagram-production-config-secret
+                   key: TEST_DB_URL
              - name: DB_URL
                valueFrom:
                  secretKeyRef:

@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { User, Prisma } from '@prisma/client';
-import { PrismaService } from '../prisma.service';
-import { CreateUserDto } from './dto/create.user.dto';
+import { Prisma, User } from '@prisma/client';
+import { PrismaService } from '@app/db';
 
 @Injectable()
 export class UserService {
@@ -22,20 +21,7 @@ export class UserService {
     where?: Prisma.UserWhereInput;
     orderBy?: Prisma.UserOrderByWithRelationInput;
   }): Promise<User[]> {
-    const { skip, take, cursor, where, orderBy } = params;
-    return this.prisma.user.findMany({
-      skip,
-      take,
-      cursor,
-      where,
-      orderBy,
-    });
-  }
-
-  async createUser(data: CreateUserDto): Promise<User> {
-    return this.prisma.user.create({
-      data,
-    });
+    return this.prisma.user.findMany();
   }
 
   async updateUser(params: {

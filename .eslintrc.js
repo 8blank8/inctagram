@@ -21,7 +21,10 @@ module.exports = {
     '@typescript-eslint/explicit-function-return-type': 'off',
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
-    '@typescript-eslint/no-trailing-spaces': 'off',
+    'no-trailing-spaces': ['warn', { "skipBlankLines": true }],
     '@typescript-eslint/lines-between-class-members': 'off',
+    '@typescript-eslint/no-duplicate-enum-values': 'off',
+    '@typescript-eslint/no-unused-vars': 'error',
+    '@typescript-eslint/linebreak-style': 'off',
   },
 };
