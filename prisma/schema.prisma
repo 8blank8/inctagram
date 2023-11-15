@@ -32,7 +32,7 @@ model UserProfile {
   id          String  @id @default(uuid())
   userId      String  @unique
   user        User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  avatarUrl   String
+  photos      File[]
   firstName   String?
   familyName  String?
   aboutMe     String?
@@ -78,13 +78,15 @@ model Post {
 }
 
 model File {
-  id        String   @id @default(uuid())
-  title     String
-  url       String
-  size      String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  authorId  String
-  Post      Post?    @relation(fields: [postId], references: [id])
-  postId    String?
+  id            String       @id @default(uuid())
+  title         String
+  url           String
+  size          String
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  authorId      String
+  Post          Post?        @relation(fields: [postId], references: [id])
+  postId        String?
+  UserProfile   UserProfile? @relation(fields: [userProfileId], references: [id])
+  userProfileId String?
 }
