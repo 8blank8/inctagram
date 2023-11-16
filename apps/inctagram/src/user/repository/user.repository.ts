@@ -124,19 +124,26 @@ export class UserRepository {
   async changeProfileInfo(userId: string, profileData: ChangeProfileInfoDto) {
     const { firstname, lastname, aboutMe, dateOfBirth, username } = profileData;
 
+    const newProfileData = {
+      firstName: firstname,
+      familyName: lastname,
+      aboutMe: aboutMe,
+      dateOfBirth: dateOfBirth,
+    };
+
     return this.prisma.user.update({
       where: { id: userId },
       data: {
         username: username,
         userProfile: {
-          update: {
-            firstName: firstname,
-            familyName: lastname,
-            aboutMe: aboutMe,
-            dateOfBirth: dateOfBirth,
+          upsert: {
+            where: { userId: userId },
+            update: newProfileData,
+            create: newProfileData,
           },
         },
       },
+      include: { userProfile: true },
     });
   }
 }
