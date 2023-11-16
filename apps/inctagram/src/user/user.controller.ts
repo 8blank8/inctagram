@@ -14,7 +14,10 @@ import { JwtAuthGuard } from '@app/auth';
 import { CommandBus } from '@nestjs/cqrs';
 import { ChangeProfileInfoCommand } from './use_cases/change-profile-info.use-case';
 import { UserQueryRepository } from './repository/user-query.repository';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ErrorResponseEntity } from '../auth/entity/error-response.entity';
 
+@ApiTags('User')
 @Controller('user')
 export class UserController {
   constructor(
@@ -22,6 +25,16 @@ export class UserController {
     private userQueryRepo: UserQueryRepository,
   ) {}
 
+  @ApiOperation({ summary: 'Change Profile' })
+  @ApiResponse({ status: HttpStatus.UNAUTHORIZED, description: 'Unauthorized' })
+  @ApiResponse({
+    type: ErrorResponseEntity,
+    status: HttpStatus.BAD_REQUEST,
+  })
+  @ApiResponse({
+    description: 'profile changed',
+    status: HttpStatus.NO_CONTENT,
+  })
   @UseGuards(JwtAuthGuard)
   @Put('profile')
   async changeProfileInfo(
@@ -30,7 +43,7 @@ export class UserController {
     @Body() inputData: ChangeProfileInfoDto,
   ) {
     const userId = req.user.id;
-
+    console.log({ userId });
     const isChange = await this.commandBus.execute(
       new ChangeProfileInfoCommand(userId, inputData),
     );
@@ -39,6 +52,7 @@ export class UserController {
     return res.sendStatus(HttpStatus.NO_CONTENT);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get('profile')
   async getMyProfile(@Req() req, @Res() res: Response) {
     const userId = req.user.id;
