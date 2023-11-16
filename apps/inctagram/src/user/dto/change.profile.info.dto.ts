@@ -2,7 +2,6 @@ import { USER_REGISTRATION } from '@app/main/utils/validation/auth.enum';
 import { IsTrimNotBlank } from '@app/main/utils/validation/is.trim.not.blank.validator';
 import { ApiProperty } from '@nestjs/swagger';
 import {
-  IsDateString,
   IsNotEmpty,
   IsString,
   Length,
@@ -47,7 +46,7 @@ export class ChangeProfileInfoDto {
   @ApiProperty({ example: '01.01.2023' })
   @IsNotEmpty()
   @IsString()
-  @IsDateString()
+  // @IsDateString()
   @Matches(/^(0[1-9]|[12][0-9]|3[01])\.(0[1-9]|1[0-2])\.\d{4}$/)
   @Validate(IsTrimNotBlank)
   dateOfBirth: string;
