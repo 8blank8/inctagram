@@ -26,7 +26,7 @@ import { PostService } from '@app/main/post/post.service';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({ isGlobal: true }),
     PassportModule,
     JwtModule.register({}),
     CqrsModule,
