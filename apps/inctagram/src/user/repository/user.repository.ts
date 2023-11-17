@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@app/db';
 import { GoogleUserData } from '@app/main/auth/use_cases/register-google-user.use-case';
 import { GitUserData } from '@app/main/auth/use_cases/register-github-user.use-case';
+import { ChangeProfileInfoDto } from '../dto/change.profile.info.dto';
 
 @Injectable()
 export class UserRepository {
@@ -115,7 +116,34 @@ export class UserRepository {
       });
     }
   }
+
   async deleteUser(userId: string) {
     return this.prisma.user.delete({ where: { id: userId } });
+  }
+
+  async changeProfileInfo(userId: string, profileData: ChangeProfileInfoDto) {
+    const { firstname, lastname, aboutMe, dateOfBirth, username } = profileData;
+
+    const newProfileData = {
+      firstName: firstname,
+      familyName: lastname,
+      aboutMe: aboutMe,
+      dateOfBirth: dateOfBirth,
+    };
+
+    return this.prisma.user.update({
+      where: { id: userId },
+      data: {
+        username: username,
+        userProfile: {
+          upsert: {
+            where: { userId: userId },
+            update: newProfileData,
+            create: newProfileData,
+          },
+        },
+      },
+      include: { userProfile: true },
+    });
   }
 }
