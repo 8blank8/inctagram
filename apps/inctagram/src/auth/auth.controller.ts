@@ -114,7 +114,8 @@ export class AuthController {
   })
   @Get('/me')
   async getMe(@Req() req, @Res() res: Response) {
-    return res.status(HttpStatus.OK).send(req.user);
+    const data = await this.authService.getFullUserData(req.user.email);
+    return res.status(HttpStatus.OK).send(data);
   }
 
   @ApiOperation({

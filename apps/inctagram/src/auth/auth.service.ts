@@ -15,6 +15,12 @@ export class AuthService {
     return this.jwtService.sign(payload);
   }
 
+  getFullUserData(email?: string) {
+    return this.userQueryRepository.byUserNameOrEmail(email, {
+      userProfile: { include: { photos: true } },
+    });
+  }
+
   async signIn(user) {
     if (!user) {
       throw new BadRequestException('Unauthenticated');

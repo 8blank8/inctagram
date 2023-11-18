@@ -26,7 +26,9 @@ export class UserRepository {
     email,
   }: GoogleUserData) {
     const providerData = { username, providerId };
-    const profileData = { avatarUrl, firstName: givenName, familyName };
+    // TODO: fetch avatar url, and save to bucket
+    console.log(avatarUrl);
+    const profileData = { firstName: givenName, familyName };
     const found = await this.prisma.user.findFirst({
       where: { email },
     });
@@ -77,7 +79,9 @@ export class UserRepository {
     if (!email) throw new Error("Git hub didn't provide any e-mail");
     const [firstName, familyName] = displayName.split(' ');
     const providerData = { providerId: +providerId, email, gitName: login };
-    const profileData = { avatarUrl, firstName, familyName };
+    // TODO: fetch avatar url, and save to bucket
+    console.log(avatarUrl);
+    const profileData = { firstName, familyName };
     const found = await this.prisma.user.findFirst({
       where: { email },
     });

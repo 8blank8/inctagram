@@ -80,7 +80,7 @@ model Post {
 model File {
   id            String       @id @default(uuid())
   title         String
-  url           String
+  url           String       @unique
   size          String
   createdAt     DateTime     @default(now())
   updatedAt     DateTime     @updatedAt

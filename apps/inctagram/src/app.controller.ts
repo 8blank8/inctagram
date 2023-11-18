@@ -6,7 +6,7 @@ import {
   Param,
   ParseFilePipe,
   Post,
-  Res,
+  Req,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -63,10 +63,9 @@ export class AppController {
       }),
     }),
   )
-  @Post('file-upload/:userId')
+  @Post('upload-avatar')
   async uploadFile(
-    @Res() res,
-    @Param() params: any,
+    @Req() req,
     @UploadedFile(
       new ParseFilePipe({
         validators: [new FileTypeValidator({ fileType: 'image/jpeg' })],
@@ -74,11 +73,8 @@ export class AppController {
     )
     file: Express.Multer.File,
   ): Promise<any> {
-    console.log(params);
-    const result = await this.client
-      .send({ cmd: 'UPLOAD_FILE' }, { file })
+    return this.client
+      .send({ cmd: 'UPLOAD_FILE' }, { file, user: req.user })
       .toPromise();
-    console.log(result);
-    res.send(201);
   }
 }

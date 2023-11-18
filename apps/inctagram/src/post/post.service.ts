@@ -28,6 +28,7 @@ export class PostService {
       cursor,
       where,
       orderBy,
+      include: { photos: true },
     });
   }
 
@@ -51,6 +52,7 @@ export class PostService {
   async deletePost(where: Prisma.PostWhereUniqueInput): Promise<Post> {
     return this.prisma.post.delete({
       where,
+      include: { photos: true },
     });
   }
 }
