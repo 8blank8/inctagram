@@ -15,7 +15,6 @@ export class UploadController {
   }): Promise<any> {
     const { file, user, prefix } = data;
     try {
-      //inctagram-trainee.s3.eu-central-1.amazonaws.com/avatars/300px-Scared_Hamster.jpg
       const uploadedImage = await this.uploadService.uploadFile({
         filePath: file.path,
         fileName: file.filename,

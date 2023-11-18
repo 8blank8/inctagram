@@ -23,10 +23,12 @@ import { GithubStrategy } from '@app/auth/strategies/github.strategy';
 import { RefreshTokenStrategy } from '@app/auth/strategies/refresh-jwt.strategy';
 import { PostModule } from '@app/main/post/post.module';
 import { PostService } from '@app/main/post/post.service';
+import { HttpModule } from '@nestjs/axios';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
+    HttpModule,
     PassportModule,
     JwtModule.register({}),
     CqrsModule,

@@ -9,6 +9,7 @@ import { FilesService } from '../../files/src/files.service';
 import { WELCOME_MESSAGE } from './utils/variables';
 import { PrismaService } from '@app/db';
 import { UserQueryRepository } from '@app/main/user/repository/user-query.repository';
+import { HttpModule } from '@nestjs/axios';
 
 describe('AppController', () => {
   let appController: AppController;
@@ -28,6 +29,7 @@ describe('AppController', () => {
             },
           },
         ]),
+        HttpModule,
       ],
       controllers: [AppController, FilesController],
       providers: [

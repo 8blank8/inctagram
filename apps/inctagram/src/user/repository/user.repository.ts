@@ -28,7 +28,12 @@ export class UserRepository {
     const providerData = { username, providerId };
     // TODO: fetch avatar url, and save to bucket
     console.log(avatarUrl);
-    const profileData = { firstName: givenName, familyName };
+    const photo = { size: '200', url: avatarUrl, title: username };
+    const profileData = {
+      firstName: givenName,
+      familyName,
+      include: { photos: true },
+    };
     const found = await this.prisma.user.findFirst({
       where: { email },
     });
@@ -47,7 +52,12 @@ export class UserRepository {
           userProfile: {
             upsert: {
               where: { userId: found.id },
-              create: profileData,
+              create: {
+                ...profileData,
+                photos: {
+                  create: [{ ...photo, authorId: found.id }],
+                },
+              },
               update: profileData,
             },
           },
@@ -55,7 +65,7 @@ export class UserRepository {
         include: { userProfile: true, googleProvider: true },
       });
     } else {
-      return this.prisma.user.create({
+      const user = await this.prisma.user.create({
         data: {
           email,
           username,
@@ -65,6 +75,14 @@ export class UserRepository {
         },
         include: { userProfile: true, googleProvider: true },
       });
+      await this.prisma.userProfile.update({
+        where: { userId: user.id },
+        data: {
+          photos: { create: { ...photo, authorId: user.id } },
+        },
+        include: { photos: true },
+      });
+      return user;
     }
   }
 
