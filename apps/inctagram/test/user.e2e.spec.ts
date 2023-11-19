@@ -86,7 +86,8 @@ describe('User', () => {
     it('find my profile after changed', async () => {
       const res = await request(server)
         .get('/user/profile')
-        .set('Authorization', `Bearer ${user2Token}`);
+        .set('Authorization', `Bearer ${user2Token}`)
+        .send();
 
       expect(res.status).toBe(HttpStatus.OK);
       expect(res.body).toEqual({

@@ -68,6 +68,7 @@ export class UserQueryRepository {
       cursor,
       where,
       orderBy,
+      include: { userProfile: { include: { photos: true } } },
     });
     const totalCount = await this.prisma.user.count();
 
@@ -78,13 +79,6 @@ export class UserQueryRepository {
   }
 
   private _mapUserProfileView(userProfile): UserProfileViewEntity {
-    let photos: Array<{ url: string }> | null = null;
-    if (userProfile.photos.length) {
-      photos = userProfile.photos.map((photo) => {
-        url: photo.url;
-      });
-    }
-
     return {
       id: userProfile.id,
       userId: userProfile.userId,
@@ -92,7 +86,7 @@ export class UserQueryRepository {
       familyName: userProfile.familyName,
       dateOfBirth: userProfile.dateOfBirth,
       aboutMe: userProfile.aboutMe,
-      photos: photos,
+      photos: userProfile.photos ?? [],
     };
   }
 
