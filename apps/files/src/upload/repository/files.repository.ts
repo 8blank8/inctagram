@@ -24,7 +24,7 @@ export class FilesRepository {
   }
 
   async saveProfileAvatar(file) {
-    if (!file.userProfileId && !file.authorId) {
+    if (!file.authorId) {
       throw new Error('authorId or userProfileId required');
     }
     return this.prisma.userProfile.update({
@@ -65,7 +65,7 @@ export class FilesRepository {
         include: { photos: true },
       });
     }
-    if (!file.postId && !file.userProfileId) {
+    if (!file.postId && !file.userProfileId && !file.authorId) {
       throw new Error('postId or userProfileId required');
     }
     return this.prisma.file.upsert({

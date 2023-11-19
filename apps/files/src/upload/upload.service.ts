@@ -54,8 +54,7 @@ export class UploadService {
       const { buffer, metadata } = await this.resize(filePath);
       writeFile(filePath, buffer, 'binary', async (error) => {
         if (!error) {
-          const s3Res = await this.uploadToS3(filePath, storePath, mimetype);
-          console.log('s3Res ==========>>>>>>>>', s3Res);
+          await this.uploadToS3(filePath, storePath, mimetype);
         } else {
           return { message: 'uploaded unsuccessfully' };
         }
