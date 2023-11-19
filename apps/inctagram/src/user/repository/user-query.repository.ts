@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@app/db';
 import { Prisma, User, UserProfile } from '@prisma/client';
+import { UserProfileViewEntity } from '../entity/user-profile-view-entity';
 
 @Injectable()
 export class UserQueryRepository {
@@ -36,9 +37,10 @@ export class UserQueryRepository {
   async findUserProfileByUserId(userId: string): Promise<UserProfile | null> {
     const user = await this.prisma.userProfile.findFirst({
       where: { userId: userId },
+      include: { photos: true },
     });
 
-    return user;
+    return this._mapUserProfileView(user);
   }
 
   async findMe(userId: string) {
@@ -72,6 +74,25 @@ export class UserQueryRepository {
     return {
       totalCount: +totalCount,
       items: users.map((u) => this._mapUserViewByMe(u)),
+    };
+  }
+
+  private _mapUserProfileView(userProfile): UserProfileViewEntity {
+    let photos: Array<{ url: string }> | null = null;
+    if (userProfile.photos.length) {
+      photos = userProfile.photos.map((photo) => {
+        url: photo.url;
+      });
+    }
+
+    return {
+      id: userProfile.id,
+      userId: userProfile.userId,
+      firstName: userProfile.firstName,
+      familyName: userProfile.familyName,
+      dateOfBirth: userProfile.dateOfBirth,
+      aboutMe: userProfile.aboutMe,
+      photos: photos,
     };
   }
 
