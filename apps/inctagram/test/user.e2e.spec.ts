@@ -96,6 +96,7 @@ describe('User', () => {
         familyName: 'Boba',
         dateOfBirth: '12.12.2000',
         aboutMe: 'about me info',
+        photos: expect.any(Array),
       });
     });
   });

@@ -25,7 +25,6 @@ export class ChangeProfileInfoUseCase {
 
     const currentDate = new Date().getFullYear();
     const userDate = new Date(inputData.dateOfBirth).getFullYear();
-    console.log({ date: currentDate - userDate });
     if (currentDate - userDate <= 13) return false;
 
     await this.userRepo.changeProfileInfo(user.id, inputData);
