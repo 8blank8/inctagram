@@ -16,6 +16,7 @@ import { ChangeProfileInfoCommand } from './use_cases/change-profile-info.use-ca
 import { UserQueryRepository } from './repository/user-query.repository';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ErrorResponseEntity } from '../auth/entity/error-response.entity';
+import { UserProfileViewEntity } from './entity/user-profile-view-entity';
 
 @ApiTags('User')
 @Controller('user')
@@ -23,7 +24,7 @@ export class UserController {
   constructor(
     private commandBus: CommandBus,
     private userQueryRepo: UserQueryRepository,
-  ) {}
+  ) { }
 
   @ApiOperation({ summary: 'Change Profile' })
   @ApiResponse({ status: HttpStatus.UNAUTHORIZED, description: 'Unauthorized' })
@@ -43,7 +44,7 @@ export class UserController {
     @Body() inputData: ChangeProfileInfoDto,
   ) {
     const userId = req.user.id;
-    console.log({ userId });
+
     const isChange = await this.commandBus.execute(
       new ChangeProfileInfoCommand(userId, inputData),
     );
@@ -52,6 +53,10 @@ export class UserController {
     return res.sendStatus(HttpStatus.NO_CONTENT);
   }
 
+  @ApiOperation({ summary: 'Get my profile' })
+  @ApiResponse({ status: HttpStatus.UNAUTHORIZED, description: 'Unauthorized' })
+  @ApiResponse({ status: HttpStatus.NOT_FOUND, description: "if user doesn't not exist" })
+  @ApiResponse({ status: HttpStatus.OK, type: UserProfileViewEntity, description: "user is found" })
   @UseGuards(JwtAuthGuard)
   @Get('profile')
   async getMyProfile(@Req() req, @Res() res: Response) {
