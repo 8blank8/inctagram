@@ -24,7 +24,7 @@ export class UserController {
   constructor(
     private commandBus: CommandBus,
     private userQueryRepo: UserQueryRepository,
-  ) { }
+  ) {}
 
   @ApiOperation({ summary: 'Change Profile' })
   @ApiResponse({ status: HttpStatus.UNAUTHORIZED, description: 'Unauthorized' })
@@ -55,8 +55,15 @@ export class UserController {
 
   @ApiOperation({ summary: 'Get my profile' })
   @ApiResponse({ status: HttpStatus.UNAUTHORIZED, description: 'Unauthorized' })
-  @ApiResponse({ status: HttpStatus.NOT_FOUND, description: "if user doesn't not exist" })
-  @ApiResponse({ status: HttpStatus.OK, type: UserProfileViewEntity, description: "user is found" })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: "if user doesn't not exist",
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    type: UserProfileViewEntity,
+    description: 'user is found',
+  })
   @UseGuards(JwtAuthGuard)
   @Get('profile')
   async getMyProfile(@Req() req, @Res() res: Response) {
