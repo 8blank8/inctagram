@@ -20,12 +20,10 @@ interface FilePayload {
 @Injectable()
 export class UploadService {
   private readonly s3Client = new S3Client({
-    region: this.configService.getOrThrow('AWS_S3_REGION'),
+    region: this.configService.get('AWS_S3_REGION'),
     credentials: {
-      accessKeyId: this.configService.getOrThrow('AWS_S3_ACCESS_KEY'),
-      secretAccessKey: this.configService.getOrThrow(
-        'AWS_S3_SECRET_ACCESS_KEY',
-      ),
+      accessKeyId: this.configService.get('AWS_S3_ACCESS_KEY'),
+      secretAccessKey: this.configService.get('AWS_S3_SECRET_ACCESS_KEY'),
     },
   });
 
