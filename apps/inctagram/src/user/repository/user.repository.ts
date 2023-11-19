@@ -32,7 +32,6 @@ export class UserRepository {
     const profileData = {
       firstName: givenName,
       familyName,
-      include: { photos: true },
     };
     const found = await this.prisma.user.findFirst({
       where: { email },
@@ -62,7 +61,10 @@ export class UserRepository {
             },
           },
         },
-        include: { userProfile: true, googleProvider: true },
+        include: {
+          userProfile: { include: { photos: true } },
+          googleProvider: true,
+        },
       });
     } else {
       const user = await this.prisma.user.create({
