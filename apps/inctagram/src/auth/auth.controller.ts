@@ -38,7 +38,7 @@ import { LoginDataEntity } from '@app/main/auth/entity/login-data.entity';
 import { PasswordResetMail } from '@app/main/user/use_cases/password-reset-email.use-case';
 import { ResetPasswordDto } from '@app/main/auth/dto/reset-password.dto';
 import { ResetUserPassword } from '@app/main/user/use_cases/reset-user-password.use-case';
-import { UserEntity } from '@app/main/user/entity/user-entity';
+import { FullUserEntity } from '@app/main/user/entity/full-user.entity';
 
 @ApiTags('Auth')
 @Controller('/auth')
@@ -109,12 +109,12 @@ export class AuthController {
     status: 500,
   })
   @ApiResponse({
-    type: UserEntity,
+    type: FullUserEntity,
     status: HttpStatus.OK,
   })
   @Get('/me')
   async getMe(@Req() req, @Res() res: Response) {
-    const data = await this.authService.getFullUserData(req.user.email);
+    const data = await this.authService.getFullUserData(req.user.id);
     return res.status(HttpStatus.OK).send(data);
   }
 

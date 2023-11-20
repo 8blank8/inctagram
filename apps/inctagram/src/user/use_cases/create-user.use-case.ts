@@ -47,6 +47,7 @@ export class CreateUserUseCase {
       email: user.email,
       password: password,
       username,
+      userProfile: { create: { firstName: username } },
     };
 
     const result = await this.userRepository.saveUser(createUser);

@@ -15,15 +15,13 @@ export class UploadController {
   }): Promise<any> {
     const { file, user, prefix } = data;
     try {
-      const uploadedImage = await this.uploadService.uploadFile({
+      return await this.uploadService.uploadFile({
         filePath: file.path,
         fileName: file.filename,
         authorId: user.id,
         mimetype: file.mimetype,
         prefix: prefix ?? 'avatar',
       });
-
-      return { statusCode: 200, isSuccess: true, data: uploadedImage };
     } catch (err) {
       console.log('[SERVER ERROR][UploadToS3Controller]: ', err);
       return { statusCode: 500, isSuccess: false, error: err.message };

@@ -1,7 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@app/db';
-import { Prisma, User, UserProfile } from '@prisma/client';
-import { UserProfileViewEntity } from '../entity/user-profile-view-entity';
+import { Prisma, User } from '@prisma/client';
+import {
+  userProfileSelect,
+  UserProfileViewEntity,
+} from '../entity/user-profile-view-entity';
+import { userSelect } from '@app/main/user/entity/user-entity';
 
 @Injectable()
 export class UserQueryRepository {
@@ -34,10 +38,12 @@ export class UserQueryRepository {
     return user;
   }
 
-  async findUserProfileByUserId(userId: string): Promise<UserProfile | null> {
+  async findUserProfileByUserId(
+    userId: string,
+  ): Promise<UserProfileViewEntity | null> {
     const user = await this.prisma.userProfile.findFirst({
       where: { userId: userId },
-      include: { photos: true },
+      select: userProfileSelect,
     });
 
     return this._mapUserProfileView(user);
@@ -46,11 +52,14 @@ export class UserQueryRepository {
   async findMe(userId: string) {
     const user = await this.prisma.user.findFirstOrThrow({
       where: { id: userId },
+      select: {
+        userProfile: { select: userProfileSelect },
+      },
     });
 
     if (!user) return null;
 
-    return this._mapUserViewByMe(user);
+    return user;
   }
 
   async findAllUsers(params?: {
@@ -68,19 +77,21 @@ export class UserQueryRepository {
       cursor,
       where,
       orderBy,
-      include: { userProfile: { include: { photos: true } } },
+      select: {
+        ...userSelect,
+        userProfile: { select: userProfileSelect },
+      },
     });
     const totalCount = await this.prisma.user.count();
 
     return {
       totalCount: +totalCount,
-      items: users.map((u) => this._mapUserViewByMe(u)),
+      items: users,
     };
   }
 
   private _mapUserProfileView(userProfile): UserProfileViewEntity {
     return {
-      id: userProfile.id,
       userId: userProfile.userId,
       firstName: userProfile.firstName,
       familyName: userProfile.familyName,
@@ -88,10 +99,5 @@ export class UserQueryRepository {
       aboutMe: userProfile.aboutMe,
       photos: userProfile.photos ?? [],
     };
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  private _mapUserViewByMe({ password: _password, ...rest }: User) {
-    return rest;
   }
 }

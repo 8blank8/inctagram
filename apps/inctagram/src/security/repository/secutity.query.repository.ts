@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@app/db';
 import { Device } from '@prisma/client';
+import { deviceSelect } from '@app/main/security/entity/device.entity';
 
 @Injectable()
 export class SecurityQueryRepository {
@@ -14,20 +15,12 @@ export class SecurityQueryRepository {
     return device;
   }
 
-  async findDevicesUserByUserId(userId: string): Promise<Device[]> {
+  async findDevicesUserByUserId(userId: string) {
     const devices = await this.prisma.device.findMany({
       where: { userId: userId },
+      select: deviceSelect,
     });
 
     return devices;
   }
-
-  // private _mapDeviceView(device: Devices): DeviceViewSqlModel {
-  //   return {
-  //     deviceId: device.id,
-  //     ip: device.ip,
-  //     lastActiveDate: device.lastActiveDate,
-  //     title: device.title,
-  //   };
-  // }
 }

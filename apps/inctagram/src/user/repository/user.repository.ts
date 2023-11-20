@@ -14,6 +14,7 @@ export class UserRepository {
       where: { email: user.email },
       update: user,
       create: user,
+      include: { userProfile: !!user.userProfile },
     });
   }
 

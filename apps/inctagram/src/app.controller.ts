@@ -2,6 +2,7 @@ import {
   Controller,
   FileTypeValidator,
   Get,
+  HttpStatus,
   Inject,
   Param,
   ParseFilePipe,
@@ -12,8 +13,12 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { ApiOperation, ApiResponse } from '@nestjs/swagger';
-import { UserEntity } from '@app/main/user/entity/user-entity';
+import {
+  ApiBody,
+  ApiConsumes,
+  ApiOperation,
+  ApiResponse,
+} from '@nestjs/swagger';
 
 import { AppService } from './app.service';
 import { UserQueryRepository } from '@app/main/user/repository/user-query.repository';
@@ -21,6 +26,9 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { editFileName } from '@app/common/utils/editFileName';
 import { JwtAuthGuard } from '@app/auth';
+import { FullUserEntity } from '@app/main/user/entity/full-user.entity';
+import { ErrorResponseEntity } from '@app/main/auth/entity/error-response.entity';
+import { UserProfileViewEntity } from '@app/main/user/entity/user-profile-view-entity';
 
 @Controller()
 export class AppController {
@@ -39,7 +47,7 @@ export class AppController {
   @ApiResponse({
     status: 200,
     description: 'The found record',
-    type: UserEntity,
+    type: FullUserEntity,
     isArray: true,
   })
   @Get('users')
@@ -52,8 +60,30 @@ export class AppController {
     return this.client.send({ cmd: 'YOUR_PATTERN' }, {}).toPromise();
   }
 
-  @ApiOperation({ summary: 'upload file' })
+  // TODO: move upload avatar or to separate action, or to separate controller
+  @ApiOperation({ summary: 'upload file, image/jpeg' })
   @UseGuards(JwtAuthGuard)
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        file: {
+          type: 'string',
+          format: 'binary',
+        },
+      },
+    },
+  })
+  @ApiResponse({ status: 401, description: 'Forbidden.' })
+  @ApiResponse({
+    type: ErrorResponseEntity,
+    status: 500,
+  })
+  @ApiResponse({
+    type: UserProfileViewEntity,
+    status: HttpStatus.OK,
+  })
   @UseInterceptors(
     FileInterceptor('file', {
       limits: { files: 20 },

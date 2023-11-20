@@ -1,12 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
+import {
+  FileEntity,
+  fileExample,
+  fileSelect,
+} from '@app/main/user/entity/file.entity';
 
 export class UserProfileViewEntity {
-  @ApiProperty({
-    example: '123e4567-e89b-12d3-a456-426655440000',
-    description: 'profile id',
-  })
-  id: string;
-
   @ApiProperty({
     example: '32asdf67-283b-16d7-a546-4266as4400fe',
     description: 'user id',
@@ -26,8 +25,25 @@ export class UserProfileViewEntity {
   aboutMe: string;
 
   @ApiProperty({
-    example: [{ url: 'http://photo.ru' }],
+    example: [fileExample],
     description: 'user photo',
   })
-  photos: Array<{ url: string }> | null;
+  photos: Array<FileEntity>;
 }
+
+export const userProfileSelect = {
+  userId: true,
+  firstName: true,
+  familyName: true,
+  dateOfBirth: true,
+  aboutMe: true,
+  photos: { select: fileSelect },
+};
+
+export const userProfileExample = {
+  userId: '32asdf67-283b-16d7-a546-4266as4400fe',
+  firstName: 'Jonh',
+  familyName: 'Doe',
+  dateOfBirth: '12.12.1999',
+  aboutMe: 'about me any text',
+};

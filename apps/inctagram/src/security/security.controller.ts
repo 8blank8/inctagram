@@ -20,6 +20,7 @@ import { SecurityQueryRepository } from '@app/main/security/repository/secutity.
 import { DeleteDeviceCommand } from '@app/main/security/use_cases/delete.device.use.case';
 import { DeleteAllDevicesCommand } from '@app/main/security/use_cases/delete.all.device.use.case';
 import { JwtAuthGuard } from '@app/auth';
+import { DeviceEntity } from '@app/main/security/entity/device.entity';
 
 @ApiBearerAuth()
 @ApiTags('security')
@@ -33,6 +34,11 @@ export class SecurityController {
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Get user active devices' })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
+  @ApiResponse({
+    type: DeviceEntity,
+    isArray: true,
+    status: HttpStatus.OK,
+  })
   @Get('/devices')
   async findDevices(@Request() req) {
     const devices = this.securityQueryRepository.findDevicesUserByUserId(
