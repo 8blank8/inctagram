@@ -1,5 +1,6 @@
 import {
   Controller,
+  Delete,
   FileTypeValidator,
   Get,
   HttpStatus,
@@ -55,11 +56,6 @@ export class AppController {
     return this.userQueryRepository.findAllUsers(queryParam);
   }
 
-  @Get('files')
-  async getFiles(): Promise<any> {
-    return this.client.send({ cmd: 'YOUR_PATTERN' }, {}).toPromise();
-  }
-
   // TODO: move upload avatar or to separate action, or to separate controller
   @ApiOperation({ summary: 'upload file, image/jpeg' })
   @UseGuards(JwtAuthGuard)
@@ -93,7 +89,7 @@ export class AppController {
       }),
     }),
   )
-  @Post('upload-avatar')
+  @Post('avatar/upload')
   async uploadFile(
     @Req() req,
     @UploadedFile(
@@ -105,6 +101,16 @@ export class AppController {
   ): Promise<any> {
     return this.client
       .send({ cmd: 'UPLOAD_FILE' }, { file, user: req.user })
+      .toPromise();
+  }
+  @ApiOperation({ summary: 'delete profile avatar file' })
+  @ApiResponse({ status: 401, description: 'Forbidden.' })
+  @ApiResponse({ status: 200, description: 'Deleted' })
+  @UseGuards(JwtAuthGuard)
+  @Delete('avatar/:id')
+  async deleteAvatarFile(@Param() params: any) {
+    return this.client
+      .send({ cmd: 'DELETE_FILE' }, { id: params.id })
       .toPromise();
   }
 }

@@ -27,4 +27,17 @@ export class UploadController {
       return { statusCode: 500, isSuccess: false, error: err.message };
     }
   }
+  @MessagePattern({ cmd: 'DELETE_FILE' })
+  async deleteFile(data: { id: string; prefix?: FolderType }): Promise<any> {
+    const { id, prefix } = data;
+    try {
+      return await this.uploadService.deleteFile({
+        id: id,
+        prefix: prefix ?? 'avatar',
+      });
+    } catch (err) {
+      console.log('[SERVER ERROR][UploadToS3Controller]: ', err);
+      return err;
+    }
+  }
 }

@@ -4,17 +4,24 @@ import { GoogleUserData } from '@app/main/auth/use_cases/register-google-user.us
 import { GitUserData } from '@app/main/auth/use_cases/register-github-user.use-case';
 import { ChangeProfileInfoDto } from '../dto/change.profile.info.dto';
 
+interface SaveUserDTO {
+  email: string;
+  username: string;
+  password: string;
+  emailConfirmed?: boolean;
+  userProfile?: { create: { firstName: string } };
+}
+
 @Injectable()
 export class UserRepository {
   constructor(private prisma: PrismaService) {}
 
-  // TODO: types on save user
-  async saveUser(user) {
+  async saveUser({ userProfile, ...user }: SaveUserDTO) {
     return this.prisma.user.upsert({
       where: { email: user.email },
       update: user,
-      create: user,
-      include: { userProfile: !!user.userProfile },
+      create: { ...user, userProfile },
+      include: { userProfile: !!userProfile },
     });
   }
 

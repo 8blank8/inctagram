@@ -91,7 +91,6 @@ describe('User', () => {
 
       expect(res.status).toBe(HttpStatus.OK);
       expect(res.body).toEqual({
-        id: expect.any(String),
         userId: expect.any(String),
         firstName: 'Biba',
         familyName: 'Boba',

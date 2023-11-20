@@ -3,17 +3,22 @@ import { readFileSync, unlinkSync, writeFile } from 'fs';
 import * as sharp from 'sharp';
 import { ConfigService } from '@nestjs/config';
 import {
+  DeleteObjectCommand,
   PutObjectCommand,
   PutObjectCommandOutput,
   S3Client,
 } from '@aws-sdk/client-s3';
 import { FilesRepository, FolderType } from './repository/files.repository';
 
+interface DeletePayload {
+  id: string;
+  prefix: FolderType;
+}
 interface FilePayload {
   filePath: string;
+  mimetype: string;
   fileName: string;
   authorId: string;
-  mimetype: string;
   prefix: FolderType;
 }
 
@@ -71,6 +76,29 @@ export class UploadService {
       console.log('[SERVER ERROR][UploadToS3Service:uploadFile]: ', err);
       throw err;
     }
+  }
+
+  async deleteFile(payload: DeletePayload) {
+    const { id, prefix } = payload;
+    const file = await this.filesRepository.getFile(id);
+    const storePath = [prefix, file.authorId, file.title].join('/');
+    let result = {
+      $metadata: undefined,
+    };
+    if (file.url.includes('inctagram-trainee.s3.eu-central-1.amazonaws.com')) {
+      result = await this.s3Client.send(
+        new DeleteObjectCommand({
+          Bucket: this.configService.getOrThrow('AWS_S3_BUCKET_NAME'),
+          Key: storePath,
+        }),
+      );
+    } else {
+      result.$metadata.httpStatusCode = 204;
+    }
+    if (result.$metadata.httpStatusCode === 204) {
+      return await this.filesRepository.deleteFile(id);
+    }
+    return { message: 'deleted unsuccessfully' };
   }
 
   private async uploadToS3(filePath: any, fileName: string, fileType: string) {

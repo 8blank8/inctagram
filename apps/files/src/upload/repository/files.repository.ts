@@ -7,6 +7,12 @@ export type FolderType = 'avatar' | 'post';
 export class FilesRepository {
   constructor(private prisma: PrismaService) {}
 
+  async getFile(fileId: string) {
+    return this.prisma.file.findUniqueOrThrow({ where: { id: fileId } });
+  }
+  async deleteFile(fileId: string) {
+    return this.prisma.file.delete({ where: { id: fileId } });
+  }
   async deleteEntityFiles(entityId: string) {
     return this.prisma.file.deleteMany({
       where: {

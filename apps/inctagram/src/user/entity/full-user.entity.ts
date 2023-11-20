@@ -1,6 +1,7 @@
-import { UserEntity } from '@app/main/user/entity/user-entity';
+import { UserEntity, userSelect } from '@app/main/user/entity/user-entity';
 import {
   userProfileExample,
+  userProfileSelect,
   UserProfileViewEntity,
 } from '@app/main/user/entity/user-profile-view-entity';
 import { ApiProperty } from '@nestjs/swagger';
@@ -13,3 +14,8 @@ export class FullUserEntity extends UserEntity {
   })
   userProfile: UserProfileViewEntity;
 }
+
+export const selectFullUser = {
+  ...userSelect,
+  userProfile: { select: userProfileSelect },
+};

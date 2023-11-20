@@ -6,6 +6,7 @@ import {
   UserProfileViewEntity,
 } from '../entity/user-profile-view-entity';
 import { userSelect } from '@app/main/user/entity/user-entity';
+import { selectFullUser } from '@app/main/user/entity/full-user.entity';
 
 @Injectable()
 export class UserQueryRepository {
@@ -52,9 +53,7 @@ export class UserQueryRepository {
   async findMe(userId: string) {
     const user = await this.prisma.user.findFirstOrThrow({
       where: { id: userId },
-      select: {
-        userProfile: { select: userProfileSelect },
-      },
+      select: selectFullUser,
     });
 
     if (!user) return null;
