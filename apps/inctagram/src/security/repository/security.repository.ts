@@ -6,11 +6,18 @@ export class SecurityRepository {
   constructor(private prisma: PrismaService) {}
 
   async saveDevice(device) {
-    const { id, ...data } = device;
-    if (!id) return this.prisma.device.create({ data: data });
-    return this.prisma.device.update({
-      where: { id: id },
-      data,
+    const { id, userId, ...data } = device;
+    console.log(id);
+    return this.prisma.device.upsert({
+      where: {
+        titleIpIdentifier: {
+          ip: device.ip,
+          title: device.title,
+          userId: userId,
+        },
+      },
+      update: data,
+      create: data,
     });
   }
 

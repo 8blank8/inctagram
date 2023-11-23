@@ -31,9 +31,10 @@ export class UserQueryRepository {
     return user[0];
   }
 
-  async findUserById(userId: string): Promise<User | null> {
+  async findUserById(userId: string, devices?: boolean): Promise<User | null> {
     const user = await this.prisma.user.findFirstOrThrow({
       where: { id: userId },
+      include: { devices: devices },
     });
     if (!user) return null;
     return user;

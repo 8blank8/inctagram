@@ -35,6 +35,7 @@ model UserProfile {
   photos      File[]
   firstName   String?
   familyName  String?
+  city        String?
   aboutMe     String?
   dateOfBirth String?
 }
@@ -63,6 +64,7 @@ model Device {
   title          String
   user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId         String
+  @@unique([ip, title, userId], name: "titleIpIdentifier")
 }
 
 model Post {

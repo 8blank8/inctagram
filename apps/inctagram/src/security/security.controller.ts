@@ -16,8 +16,8 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { SecurityQueryRepository } from '@app/main/security/repository/secutity.query.repository';
-import { DeleteDeviceCommand } from '@app/main/security/use_cases/delete.device.use.case';
+import { SecurityQueryRepository } from '@app/main/security/repository/secutity-query.repository';
+import { DeleteDeviceCommand } from '@app/main/security/use_cases/delete-device.use-case';
 import { DeleteAllDevicesCommand } from '@app/main/security/use_cases/delete.all.device.use.case';
 import { JwtAuthGuard } from '@app/auth';
 import { DeviceEntity } from '@app/main/security/entity/device.entity';
@@ -55,7 +55,7 @@ export class SecurityController {
     @Res() res: Response,
   ) {
     const isDelete = await this.commandBus.execute(
-      new DeleteDeviceCommand(id, req.user.userId),
+      new DeleteDeviceCommand(req.user.userId, id),
     );
     if (!isDelete) return res.sendStatus(HttpStatus.NOT_FOUND);
 
@@ -66,7 +66,7 @@ export class SecurityController {
   @Delete('/devices')
   async deleteAllDevices(@Request() req, @Res() res: Response) {
     await this.commandBus.execute(
-      new DeleteAllDevicesCommand(req.user.userId, req.user.deviceId),
+      new DeleteAllDevicesCommand(req.user.id, req.user.deviceId),
     );
     res.sendStatus(204);
   }

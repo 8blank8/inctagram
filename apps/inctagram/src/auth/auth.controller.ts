@@ -3,6 +3,7 @@ import {
   Controller,
   Get,
   HttpStatus,
+  Ip,
   Post,
   Query,
   Req,
@@ -39,6 +40,7 @@ import { PasswordResetMail } from '@app/main/user/use_cases/password-reset-email
 import { ResetPasswordDto } from '@app/main/auth/dto/reset-password.dto';
 import { ResetUserPassword } from '@app/main/user/use_cases/reset-user-password.use-case';
 import { FullUserEntity } from '@app/main/user/entity/full-user.entity';
+import { LogOutUserCommand } from '@app/main/auth/use_cases/log-out.use-case';
 
 @ApiTags('Auth')
 @Controller('/auth')
@@ -66,12 +68,28 @@ export class AuthController {
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @ApiResponse({ status: HttpStatus.OK, type: TokenEntity })
   @Post('/login')
-  async login(@Req() req, @Body() body: LoginDataEntity, @Res() res: Response) {
+  async login(
+    @Req() req,
+    @Body() body: LoginDataEntity,
+    @Ip() ip,
+    @Res() res: Response,
+  ) {
     const token = await this.commandBus.execute(
-      new AuthorizeUserCommand(req.user.id, req),
+      new AuthorizeUserCommand(req.user.id, req, ip),
     );
     setAuthTokens(res, token);
     res.status(HttpStatus.OK).send(token);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Log out route' })
+  @ApiResponse({ status: 403, description: 'Forbidden.' })
+  @ApiResponse({ status: HttpStatus.OK })
+  @Get('/logout')
+  async logout(@Req() req, @Ip() ip) {
+    return this.commandBus.execute(
+      new LogOutUserCommand(req.user.id, ip ?? req.user.deviceId),
+    );
   }
 
   @ApiOperation({ summary: 'Register route' })
@@ -202,12 +220,12 @@ export class AuthController {
   })
   @Get('google/callback')
   @UseGuards(GoogleOauthGuard)
-  async googleAuthCallback(@Req() req, @Res() res: Response) {
+  async googleAuthCallback(@Req() req, @Ip() ip, @Res() res: Response) {
     const user = await this.commandBus.execute(
       new RegisterGoogleUserCommand(req.user),
     );
     const token = await this.commandBus.execute(
-      new AuthorizeUserCommand(user.id, req),
+      new AuthorizeUserCommand(user.id, req, ip),
     );
     setAuthTokens(res, token);
     res
@@ -227,6 +245,7 @@ export class AuthController {
   @UseGuards(GithubOathGuard)
   async githubAuthCallback(
     @Req() req,
+    @Ip() ip,
     @Query('code') code: string,
     @Res() res,
   ) {
@@ -236,7 +255,7 @@ export class AuthController {
       new RegisterGithubUserCommand(req.user),
     );
     const token = await this.commandBus.execute(
-      new AuthorizeUserCommand(user.id, req),
+      new AuthorizeUserCommand(user.id, req, ip),
     );
     setAuthTokens(res, token);
     return res.redirect(`${settings_env.FRONT_URL}/`);

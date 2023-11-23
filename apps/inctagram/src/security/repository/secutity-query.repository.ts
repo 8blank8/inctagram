@@ -7,12 +7,12 @@ import { deviceSelect } from '@app/main/security/entity/device.entity';
 export class SecurityQueryRepository {
   constructor(private prisma: PrismaService) {}
 
-  async findDeviceById(deviceId: string): Promise<Device | null> {
-    const device = await this.prisma.device.findFirst({
-      where: { id: deviceId },
+  async findDeviceById(deviceIdOrIp: string): Promise<Device | null> {
+    return this.prisma.device.findFirst({
+      where: {
+        OR: [{ id: deviceIdOrIp }, { ip: deviceIdOrIp }],
+      },
     });
-
-    return device;
   }
 
   async findDevicesUserByUserId(userId: string) {
