@@ -48,7 +48,7 @@ export class UserController {
     const isChange = await this.commandBus.execute(
       new ChangeProfileInfoCommand(userId, inputData),
     );
-    if (!isChange) res.sendStatus(HttpStatus.BAD_REQUEST);
+    if (!isChange) return res.sendStatus(HttpStatus.BAD_REQUEST);
 
     return res.sendStatus(HttpStatus.NO_CONTENT);
   }
