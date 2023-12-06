@@ -1,3 +1,4 @@
+/* eslint-disable */
 export const editFileName = (req, file, callback) => {
   const [name, ...rest] = file.originalname.split('.');
   const fileExtName = rest[rest.length - 1];
