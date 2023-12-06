@@ -9,18 +9,21 @@ export class UploadController {
   constructor(private readonly uploadService: UploadService) {}
   @MessagePattern({ cmd: 'UPLOAD_FILE' })
   async uploadFile(data: {
-    user: User;
     file: Express.Multer.File;
+    user: User;
     prefix?: FolderType;
   }): Promise<any> {
     const { file, user, prefix } = data;
+
     try {
+      console.log(file);
       return await this.uploadService.uploadFile({
         filePath: file.path,
         fileName: file.filename,
         authorId: user.id,
         mimetype: file.mimetype,
         prefix: prefix ?? 'avatar',
+        imageBuffer: file.buffer,
       });
     } catch (err) {
       console.log('[SERVER ERROR][UploadToS3Controller]: ', err);
