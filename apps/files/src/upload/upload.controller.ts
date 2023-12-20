@@ -11,22 +11,19 @@ export class UploadController {
   async uploadFile(data: {
     file: Express.Multer.File;
     user: User;
+    cropProps?: string;
     prefix?: FolderType;
   }): Promise<any> {
-    const { file, user, prefix } = data;
-
+    const { file, user, cropProps, prefix } = data;
     try {
-      console.log(file);
       return await this.uploadService.uploadFile({
-        filePath: file.path,
-        fileName: file.filename,
+        ...file,
         authorId: user.id,
-        mimetype: file.mimetype,
+        cropProps: cropProps,
         prefix: prefix ?? 'avatar',
-        imageBuffer: file.buffer,
       });
     } catch (err) {
-      console.log('[SERVER ERROR][UploadToS3Controller]: ', err);
+      console.log('[SERVER ERROR: UPLOAD CONTROLLER][uploadFile]: ', err);
       return { statusCode: 500, isSuccess: false, error: err.message };
     }
   }

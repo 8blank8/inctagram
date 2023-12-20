@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-// import { readFileSync, unlinkSync, writeFile } from 'fs';
 import * as sharp from 'sharp';
 import { ConfigService } from '@nestjs/config';
 import {
@@ -9,18 +8,17 @@ import {
   S3Client,
 } from '@aws-sdk/client-s3';
 import { FilesRepository, FolderType } from './repository/files.repository';
+import calcImageSize from '@app/common/utils/calcImageSize';
 
 interface DeletePayload {
   id: string;
   prefix: FolderType;
 }
-interface FilePayload {
-  filePath: string;
-  mimetype: string;
-  fileName: string;
-  authorId: string;
+interface FilePayload extends Express.Multer.File {
   prefix: FolderType;
-  imageBuffer: Buffer;
+  authorId: string;
+  cropProps?: string;
+  fileName?: string;
 }
 
 @Injectable()
@@ -38,15 +36,14 @@ export class UploadService {
     private filesRepository: FilesRepository,
   ) {}
 
-  async resize(imageBuffer: Buffer) {
-    // resizing part started from here
-    // const base64 = readFileSync(filePath);
+  async resize(imageBuffer: ArrayBuffer) {
     const img = sharp(imageBuffer);
     let metadata = await img.metadata();
     let buffer;
-    if (metadata.width > 800) {
-      buffer = await img.resize({ width: 800 }).toBuffer(); // resize if too big
-      metadata = await img.metadata();
+    if (metadata.size > 3000) {
+      const size = calcImageSize(metadata.width, metadata.height);
+      buffer = await img.resize(size).toBuffer(); // resize if too big
+      metadata = await sharp(buffer).metadata();
     } else {
       buffer = await img.toBuffer();
     }
@@ -55,32 +52,32 @@ export class UploadService {
 
   async uploadFile(payload: FilePayload) {
     const {
-      //  filePath,
       mimetype,
-      fileName,
+      cropProps,
       prefix,
       authorId,
-      imageBuffer,
+      filename,
+      originalname,
+      buffer,
     } = payload;
+    const fileName = originalname || filename;
     const storePath = [prefix, authorId, fileName].join('/');
+    if (!buffer || !fileName) throw new Error('No image buffer or filename');
     try {
-      const { buffer, metadata } = await this.resize(imageBuffer);
-      // writeFile(filePath, buffer, 'binary', async (error) => {
-      //   if (!error) {
-      await this.uploadToS3(buffer, storePath, mimetype);
-      //   } else {
-      //     return { message: 'uploaded unsuccessfully' };
-      //   }
-      // });
+      const { buffer: sizedBuffer, metadata } = await this.resize(
+        Buffer.from(buffer),
+      );
+      const res = await this.uploadToS3(sizedBuffer, storePath, mimetype);
+      if (res !== 200) throw new Error('Error upload to S3');
       const fileData = {
         url: `https://inctagram-trainee.s3.eu-central-1.amazonaws.com/${storePath}`,
         authorId: authorId,
         title: fileName,
+        cropProps,
         size: metadata.size.toString(),
       };
       return await this.filesRepository.saveFileData(fileData, prefix);
     } catch (err) {
-      // unlinkSync(filePath);
       console.log('[SERVER ERROR][UploadToS3Service:uploadFile]: ', err);
       throw err;
     }
@@ -110,7 +107,7 @@ export class UploadService {
   }
 
   private async uploadToS3(buffer: Buffer, fileName: string, fileType: string) {
-    // const blob = readFileSync(filePath);
+    console.log('uploadToS3 ===>>>', fileName, fileType);
     const uploadedImage: PutObjectCommandOutput = await this.s3Client.send(
       new PutObjectCommand({
         Bucket: this.configService.getOrThrow('AWS_S3_BUCKET_NAME'),
@@ -119,7 +116,6 @@ export class UploadService {
         ContentType: fileType,
       }),
     );
-    // unlinkSync(filePath);
-    return uploadedImage;
+    return uploadedImage['$metadata'].httpStatusCode;
   }
 }

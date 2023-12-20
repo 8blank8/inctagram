@@ -18,7 +18,6 @@ async function main() {
       },
       userProfile: {
         create: {
-          avatarUrl: '',
           familyName: 'Alice',
           firstName: 'Some',
         },
@@ -48,7 +47,6 @@ async function main() {
       },
       userProfile: {
         create: {
-          avatarUrl: '',
           familyName: 'Bob',
           firstName: 'Some',
         },
