@@ -17,11 +17,13 @@ export class ValidateUserUseCase {
     const { email, password } = command;
 
     const user = await this.userQueryRepository.byUserNameOrEmail(email);
-    if (!user) return null;
+
+    if (!user) return 'Wrong email or password';
+    if (!user.emailConfirmed) return 'User email not confirmed!';
 
     const isRightPassword = matchPassword(password, user.password);
 
-    if (!isRightPassword) return null;
+    if (!isRightPassword) return 'Wrong email or password';
 
     return { userId: user.id, ...user };
   }
