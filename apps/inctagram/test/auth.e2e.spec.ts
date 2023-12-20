@@ -84,6 +84,20 @@ describe('AuthService', () => {
       });
 
       describe('POST /auth/confirm-code', () => {
+        it('should not login without mail confirmation, User email not confirmed!', async () => {
+          await request(server)
+            .post(`/auth/login`)
+            .set('user-agent', 'test-user-agent')
+            .send({ email: user1.email, password: user1.password })
+            .expect(HttpStatus.UNAUTHORIZED)
+            .then((res) => {
+              expect(res.body).toEqual({
+                message: 'User email not confirmed!',
+                error: 'Unauthorized',
+                statusCode: 401,
+              });
+            });
+        });
         it('should send code', async () => {
           const data = querystring.parse(mockMailCodes[user1.email]);
           await request(app.getHttpServer())
@@ -106,7 +120,14 @@ describe('AuthService', () => {
           .post(`/auth/login`)
           .set('user-agent', 'test-user-agent')
           .send({ email: 'user1.email', password: user1.password })
-          .expect(HttpStatus.UNAUTHORIZED);
+          .expect(HttpStatus.UNAUTHORIZED)
+          .then((res) => {
+            expect(res.body).toEqual({
+              message: 'Wrong email or password',
+              error: 'Unauthorized',
+              statusCode: 401,
+            });
+          });
       });
 
       it('should login with right data', async () => {
