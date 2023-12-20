@@ -110,9 +110,9 @@ export class AuthController {
     const exists = await this.authService.findUserByEmail(inputData.email);
     if (!!exists && exists.emailConfirmed)
       return res.sendStatus(HttpStatus.BAD_REQUEST);
-
+    // TODO: change to true when mail service will repared
     const user = await this.commandBus.execute(
-      new CreateUserCommand(inputData, true),
+      new CreateUserCommand(inputData, process.env.MODE === 'TESTING'),
     );
 
     if (!user) return res.sendStatus(HttpStatus.BAD_REQUEST);
