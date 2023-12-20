@@ -1,4 +1,5 @@
 import {
+  Body,
   Controller,
   Delete,
   FileTypeValidator,
@@ -24,8 +25,7 @@ import {
 import { AppService } from './app.service';
 import { UserQueryRepository } from '@app/main/user/repository/user-query.repository';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
-import { editFileName } from '@app/common/utils/editFileName';
+import { memoryStorage } from 'multer';
 import { JwtAuthGuard } from '@app/auth';
 import { FullUserEntity } from '@app/main/user/entity/full-user.entity';
 import { ErrorResponseEntity } from '@app/main/auth/entity/error-response.entity';
@@ -68,6 +68,9 @@ export class AppController {
           type: 'string',
           format: 'binary',
         },
+        cropProps: {
+          type: 'string',
+        },
       },
     },
   })
@@ -83,15 +86,13 @@ export class AppController {
   @UseInterceptors(
     FileInterceptor('file', {
       limits: { files: 20 },
-      storage: diskStorage({
-        destination: './dist/files',
-        filename: editFileName,
-      }),
+      storage: memoryStorage(),
     }),
   )
   @Post('avatar/upload')
   async uploadFile(
     @Req() req,
+    @Body() body,
     @UploadedFile(
       new ParseFilePipe({
         validators: [new FileTypeValidator({ fileType: 'image/jpeg' })],
@@ -100,7 +101,10 @@ export class AppController {
     file: Express.Multer.File,
   ): Promise<any> {
     return this.client
-      .send({ cmd: 'UPLOAD_FILE' }, { file, user: req.user })
+      .send(
+        { cmd: 'UPLOAD_FILE' },
+        { file, user: req.user, cropProps: body.cropProps },
+      )
       .toPromise();
   }
   @ApiOperation({ summary: 'delete profile avatar file' })

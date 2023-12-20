@@ -7,6 +7,7 @@ export class DeleteDeviceCommand {
   constructor(
     public userId: string,
     public deviceIdOrIp: string,
+    public compare?: boolean,
   ) {}
 }
 
@@ -18,13 +19,12 @@ export class DeleteDeviceUseCase {
   ) {}
 
   async execute(command: DeleteDeviceCommand): Promise<boolean> {
-    const { deviceIdOrIp, userId } = command;
+    const { deviceIdOrIp, userId, compare = true } = command;
 
     const device =
       await this.securityQueryRepository.findDeviceById(deviceIdOrIp);
     if (!device) return false;
-
-    if (device.userId !== userId) throw new ForbiddenException();
+    if (compare && device.userId !== userId) throw new ForbiddenException();
 
     await this.securityRepository.deleteDeviceById(device.id);
 

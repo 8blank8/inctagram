@@ -15,7 +15,7 @@ export class LogOutUserUseCase {
   async execute(command: LogOutUserCommand) {
     const { userId, deviceIdOrIp } = command;
     await this.commandBus.execute(
-      new DeleteDeviceCommand(userId, deviceIdOrIp),
+      new DeleteDeviceCommand(userId, deviceIdOrIp, false),
     );
 
     return { message: 'Logged out.' };

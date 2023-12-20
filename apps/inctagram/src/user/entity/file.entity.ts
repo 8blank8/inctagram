@@ -37,12 +37,14 @@ export const fileSelect = {
   authorId: true,
   createdAt: true,
   updatedAt: true,
+  cropProps: true,
 };
 
 export const fileExample = {
   url: 'http://photo.com',
   id: '32asdf67-283b-16d7-a546-4266as4400fe',
   title: 'vacations-2004.jpg',
+  cropProps: '{"pos":{"x":1,"y":0.5},"scale":1}',
   authorId: '32asdf67-283b-16d7-a546-4266as4400fe',
   createdAt: '2023-10-26T12:55:21.448Z',
   updatedAt: '2023-10-26T12:55:21.448Z',
