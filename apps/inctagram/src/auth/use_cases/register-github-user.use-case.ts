@@ -19,6 +19,7 @@ export class RegisterGithubUserUseCase {
   constructor(private userRepository: UserRepository) {}
 
   async execute(command: RegisterGithubUserCommand) {
+    //TODO LOGIC without email
     const user = await this.userRepository.saveGitHubUser(command.data);
 
     console.log(user);

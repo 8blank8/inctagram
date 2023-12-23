@@ -17,6 +17,7 @@ export class EmailConfirmationUseCase {
   ) {}
 
   async execute(command: EmailConfirmationCommand): Promise<boolean> {
+    // TODO remove userId from request body and add expire date-time to code
     const {
       payload: { code, userId },
     } = command;

@@ -10,7 +10,12 @@ import {
   Res,
   UseGuards,
 } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiExcludeEndpoint,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { CommandBus } from '@nestjs/cqrs';
 import { Response } from 'express';
 import passport from 'passport';
@@ -117,7 +122,7 @@ export class AuthController {
 
     if (!user) return res.sendStatus(HttpStatus.BAD_REQUEST);
 
-    return res.status(HttpStatus.CREATED).send({ userId: user.id });
+    return res.status(HttpStatus.CREATED).send();
   }
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Get user profile data' })
@@ -149,6 +154,7 @@ export class AuthController {
     const isConfirmed = await this.commandBus.execute(
       new EmailConfirmationCommand(inputData),
     );
+    // TODO: remove userId from request;
     if (!isConfirmed) return res.sendStatus(HttpStatus.BAD_REQUEST);
 
     return res.sendStatus(HttpStatus.OK);
@@ -214,10 +220,11 @@ export class AuthController {
   @UseGuards(GoogleOauthGuard)
   async googleAuth() {}
 
-  @ApiOperation({
-    summary:
-      'after success will redirect to "/auth-confirmed" with accessToken & refreshToken in query',
-  })
+  @ApiExcludeEndpoint()
+  // @ApiOperation({
+  //   summary:
+  //     'after success will redirect to "/auth-confirmed" with accessToken & refreshToken in query',
+  // })
   @Get('google/callback')
   @UseGuards(GoogleOauthGuard)
   async googleAuthCallback(@Req() req, @Ip() ip, @Res() res: Response) {
