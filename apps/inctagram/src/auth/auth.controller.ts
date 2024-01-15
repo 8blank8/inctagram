@@ -237,6 +237,8 @@ export class AuthController {
     setAuthTokens(res, token);
     res
       .status(HttpStatus.OK)
+      .setHeader('access-token', token.accessToken)
+      .setHeader('refresh-token', token.refreshToken)
       .redirect(
         `${settings_env.FRONT_URL}/auth-confirmed?accessToken=${token.accessToken}&refreshToken=${token.refreshToken}`,
       );
