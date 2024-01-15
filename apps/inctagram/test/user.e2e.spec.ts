@@ -25,9 +25,7 @@ describe('User', () => {
         .expect(HttpStatus.CREATED)
         .then((res) => {
           expect(mockMailCodes[user2.email]).toBeDefined();
-          expect(res.body).toEqual({
-            userId: expect.any(String),
-          });
+          expect(res.body).toBeDefined();
         });
     });
 
@@ -65,6 +63,8 @@ describe('User', () => {
           lastname: 'Boba',
           dateOfBirth: '12.12.2020',
           aboutMe: 'about me info',
+          city: 'Minsk',
+          country: 'Belarus',
         });
       expect(res.status).toBe(HttpStatus.BAD_REQUEST);
     });
@@ -79,6 +79,8 @@ describe('User', () => {
           lastname: 'Boba',
           dateOfBirth: '12.12.2000',
           aboutMe: 'about me info',
+          city: 'Minsk',
+          country: 'Belarus',
         });
       expect(res.status).toBe(HttpStatus.NO_CONTENT);
     });
@@ -96,6 +98,8 @@ describe('User', () => {
         familyName: 'Boba',
         dateOfBirth: '12.12.2000',
         aboutMe: 'about me info',
+        country: 'Belarus',
+        city: 'Minsk',
         photos: expect.any(Array),
       });
     });

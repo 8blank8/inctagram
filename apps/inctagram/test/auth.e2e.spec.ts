@@ -69,9 +69,7 @@ describe('AuthService', () => {
           .expect(HttpStatus.CREATED)
           .then((res) => {
             expect(mockMailCodes[user1.email]).toBeDefined();
-            expect(res.body).toEqual({
-              userId: expect.any(String),
-            });
+            expect(res.body).toBeDefined();
           });
       });
 
@@ -100,9 +98,10 @@ describe('AuthService', () => {
         });
         it('should send code', async () => {
           const data = querystring.parse(mockMailCodes[user1.email]);
+          console.log('mockMailCodes[user1.email]', data);
           await request(app.getHttpServer())
             .post(`/auth/confirm-code`)
-            .send(data)
+            .send({ code: data.code.toString() })
             .expect(HttpStatus.OK);
         });
       });

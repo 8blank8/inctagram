@@ -29,7 +29,7 @@ import { memoryStorage } from 'multer';
 import { JwtAuthGuard } from '@app/auth';
 import { FullUserEntity } from '@app/main/user/entity/full-user.entity';
 import { ErrorResponseEntity } from '@app/main/auth/entity/error-response.entity';
-import { UserProfileViewEntity } from '@app/main/user/entity/user-profile-view-entity';
+import { UserProfileViewEntity } from '@app/main/user/entity/user-profile-view.entity';
 
 @Controller()
 export class AppController {

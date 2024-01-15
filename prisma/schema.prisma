@@ -36,6 +36,7 @@ model UserProfile {
   firstName   String?
   familyName  String?
   city        String?
+  country     String?
   aboutMe     String?
   dateOfBirth String?
 }
@@ -64,6 +65,7 @@ model Device {
   title          String
   user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId         String
+
   @@unique([ip, title, userId], name: "titleIpIdentifier")
 }
 

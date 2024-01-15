@@ -16,7 +16,7 @@ import { ChangeProfileInfoCommand } from './use_cases/change-profile-info.use-ca
 import { UserQueryRepository } from './repository/user-query.repository';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ErrorResponseEntity } from '../auth/entity/error-response.entity';
-import { UserProfileViewEntity } from './entity/user-profile-view-entity';
+import { UserProfileViewEntity } from './entity/user-profile-view.entity';
 
 @ApiTags('User')
 @Controller('user')

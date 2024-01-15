@@ -154,13 +154,12 @@ export class UserRepository {
   }
 
   async changeProfileInfo(userId: string, profileData: ChangeProfileInfoDto) {
-    const { firstname, lastname, aboutMe, dateOfBirth, username } = profileData;
+    const { username, firstname, lastname, ...rest } = profileData;
 
     const newProfileData = {
+      ...rest,
       firstName: firstname,
       familyName: lastname,
-      aboutMe: aboutMe,
-      dateOfBirth: dateOfBirth,
     };
 
     return this.prisma.user.update({

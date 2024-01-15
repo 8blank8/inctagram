@@ -11,10 +11,4 @@ export class ConfirmEmailDto {
   @IsString()
   @Validate(IsTrimNotBlank)
   code: string;
-
-  @ApiProperty({ example: 'userId from querystring', description: 'userId' })
-  @IsNotEmpty()
-  @IsString()
-  @Validate(IsTrimNotBlank)
-  userId: string;
 }

@@ -1,6 +1,6 @@
 import { CommandHandler } from '@nestjs/cqrs';
 import {
-  compareVerificationCode,
+  encryptVerificationCode,
   hashPassword,
 } from '@app/main/utils/verification.code.util';
 
@@ -21,18 +21,15 @@ export class ResetUserPasswordUseCase {
 
   async execute(command: ResetUserPassword): Promise<boolean> {
     const {
-      data: { code, userId, password },
+      data: { code, password },
     } = command;
 
-    const user = await this.userQueryRepository.findUserById(userId);
+    const { id, email } = await encryptVerificationCode(code);
+    const user = await this.userQueryRepository.findUserById(id);
+
     if (!user || !user.emailConfirmed) return false;
 
-    const isCompare = await compareVerificationCode({
-      code,
-      id: userId,
-      email: user.email,
-    });
-    if (!isCompare) return false;
+    if (email !== user.email) return false;
 
     // TODO: broke all sessions
     user.password = hashPassword(password);

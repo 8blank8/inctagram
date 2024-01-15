@@ -4,7 +4,7 @@ import { Prisma, User } from '@prisma/client';
 import {
   userProfileSelect,
   UserProfileViewEntity,
-} from '../entity/user-profile-view-entity';
+} from '../entity/user-profile-view.entity';
 import { userSelect } from '@app/main/user/entity/user-entity';
 import { selectFullUser } from '@app/main/user/entity/full-user.entity';
 
@@ -97,6 +97,8 @@ export class UserQueryRepository {
       familyName: userProfile.familyName,
       dateOfBirth: userProfile.dateOfBirth,
       aboutMe: userProfile.aboutMe,
+      country: userProfile.country,
+      city: userProfile.city,
       photos: userProfile.photos ?? [],
     };
   }

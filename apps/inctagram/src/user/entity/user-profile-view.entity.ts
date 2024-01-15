@@ -24,6 +24,12 @@ export class UserProfileViewEntity {
   @ApiProperty({ example: 'about me any text', description: 'user about me' })
   aboutMe: string;
 
+  @ApiProperty({ example: 'Minsk', description: 'user city' })
+  city?: string;
+
+  @ApiProperty({ example: 'Belarus', description: 'user country' })
+  country?: string;
+
   @ApiProperty({
     example: [fileExample],
     description: 'user photo',
@@ -37,6 +43,8 @@ export const userProfileSelect = {
   familyName: true,
   dateOfBirth: true,
   aboutMe: true,
+  city: true,
+  country: true,
   photos: { select: fileSelect },
 };
 

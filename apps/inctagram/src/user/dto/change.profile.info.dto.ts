@@ -58,4 +58,16 @@ export class ChangeProfileInfoDto {
   @Matches(/^[0-9A-Za-zА-Яа-я\s!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~]*$/)
   @Length(0, 200)
   aboutMe: string;
+
+  @ApiProperty({ example: 'Minsk' })
+  @IsString()
+  @Validate(IsTrimNotBlank)
+  @Length(0, 30)
+  city: string;
+
+  @ApiProperty({ example: 'Belarus' })
+  @IsString()
+  @Validate(IsTrimNotBlank)
+  @Length(0, 30)
+  country: string;
 }

@@ -3,7 +3,7 @@ import {
   userProfileExample,
   userProfileSelect,
   UserProfileViewEntity,
-} from '@app/main/user/entity/user-profile-view-entity';
+} from '@app/main/user/entity/user-profile-view.entity';
 import { ApiProperty } from '@nestjs/swagger';
 import { fileExample } from '@app/main/user/entity/file.entity';
 
