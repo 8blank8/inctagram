@@ -47,6 +47,7 @@ export class CreateUserUseCase {
       email: user.email,
       password: password,
       username,
+      userProfile: { create: { firstName: username } },
     };
 
     const result = await this.userRepository.saveUser(createUser);
@@ -61,7 +62,7 @@ export class CreateUserUseCase {
         .catch(async (e) => {
           await this.userRepository.deleteUser(result.id);
           console.log(e);
-          throw new Error('Sending mail error');
+          throw new Error('Sending mail error = ' + JSON.stringify(e));
         });
     }
     return result;

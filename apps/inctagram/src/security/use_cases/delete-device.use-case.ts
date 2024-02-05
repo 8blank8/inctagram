@@ -1,12 +1,13 @@
 import { CommandHandler } from '@nestjs/cqrs';
 import { ForbiddenException } from '@nestjs/common';
-import { SecurityQueryRepository } from '@app/main/security/repository/secutity.query.repository';
+import { SecurityQueryRepository } from '@app/main/security/repository/secutity-query.repository';
 import { SecurityRepository } from '@app/main/security/repository/security.repository';
 
 export class DeleteDeviceCommand {
   constructor(
-    public deviceId: string,
     public userId: string,
+    public deviceIdOrIp: string,
+    public compare?: boolean,
   ) {}
 }
 
@@ -18,12 +19,12 @@ export class DeleteDeviceUseCase {
   ) {}
 
   async execute(command: DeleteDeviceCommand): Promise<boolean> {
-    const { deviceId, userId } = command;
+    const { deviceIdOrIp, userId, compare = true } = command;
 
-    const device = await this.securityQueryRepository.findDeviceById(deviceId);
+    const device =
+      await this.securityQueryRepository.findDeviceById(deviceIdOrIp);
     if (!device) return false;
-
-    if (device.userId !== userId) throw new ForbiddenException();
+    if (compare && device.userId !== userId) throw new ForbiddenException();
 
     await this.securityRepository.deleteDeviceById(device.id);
 

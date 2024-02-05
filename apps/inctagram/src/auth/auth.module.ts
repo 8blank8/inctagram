@@ -15,6 +15,8 @@ import { AuthorizeUserUseCase } from './use_cases/authorize-user.use-case';
 import { ValidateUserUseCase } from './use_cases/validate.user.use.case';
 import { SecurityModule } from '../security/security.module';
 import { UserModule } from '../user/user.module';
+import { LogOutUserUseCase } from '@app/main/auth/use_cases/log-out.use-case';
+import { DeleteDeviceUseCase } from '@app/main/security/use_cases/delete-device.use-case';
 
 @Module({
   imports: [
@@ -34,6 +36,8 @@ import { UserModule } from '../user/user.module';
     MailService,
     RegisterGithubUserUseCase,
     RegisterGoogleUserUseCase,
+    LogOutUserUseCase,
+    DeleteDeviceUseCase,
   ],
   exports: [AuthService],
 })

@@ -1,10 +1,35 @@
-import { Controller, Get, Inject, Param } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  FileTypeValidator,
+  Get,
+  HttpStatus,
+  Inject,
+  Param,
+  ParseFilePipe,
+  Post,
+  Req,
+  UploadedFile,
+  UseGuards,
+  UseInterceptors,
+} from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { ApiOperation, ApiResponse } from '@nestjs/swagger';
-import { UserEntity } from '@app/main/user/entity/user-entity';
+import {
+  ApiBody,
+  ApiConsumes,
+  ApiOperation,
+  ApiResponse,
+} from '@nestjs/swagger';
 
 import { AppService } from './app.service';
 import { UserQueryRepository } from '@app/main/user/repository/user-query.repository';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { memoryStorage } from 'multer';
+import { JwtAuthGuard } from '@app/auth';
+import { FullUserEntity } from '@app/main/user/entity/full-user.entity';
+import { ErrorResponseEntity } from '@app/main/auth/entity/error-response.entity';
+import { UserProfileViewEntity } from '@app/main/user/entity/user-profile-view.entity';
 
 @Controller()
 export class AppController {
@@ -23,7 +48,7 @@ export class AppController {
   @ApiResponse({
     status: 200,
     description: 'The found record',
-    type: UserEntity,
+    type: FullUserEntity,
     isArray: true,
   })
   @Get('users')
@@ -31,8 +56,65 @@ export class AppController {
     return this.userQueryRepository.findAllUsers(queryParam);
   }
 
-  @Get('files')
-  async getFiles(): Promise<any> {
-    return this.client.send({ cmd: 'YOUR_PATTERN' }, {}).toPromise();
+  // TODO: move upload avatar or to separate action, or to separate controller
+  @ApiOperation({ summary: 'upload file, image/jpeg' })
+  @UseGuards(JwtAuthGuard)
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        file: {
+          type: 'string',
+          format: 'binary',
+        },
+        cropProps: {
+          type: 'string',
+        },
+      },
+    },
+  })
+  @ApiResponse({ status: 401, description: 'Forbidden.' })
+  @ApiResponse({
+    type: ErrorResponseEntity,
+    status: 500,
+  })
+  @ApiResponse({
+    type: UserProfileViewEntity,
+    status: HttpStatus.OK,
+  })
+  @UseInterceptors(
+    FileInterceptor('file', {
+      limits: { files: 20 },
+      storage: memoryStorage(),
+    }),
+  )
+  @Post('avatar/upload')
+  async uploadFile(
+    @Req() req,
+    @Body() body,
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [new FileTypeValidator({ fileType: 'image/jpeg' })],
+      }),
+    )
+    file: Express.Multer.File,
+  ): Promise<any> {
+    return this.client
+      .send(
+        { cmd: 'UPLOAD_FILE' },
+        { file, user: req.user, cropProps: body.cropProps },
+      )
+      .toPromise();
+  }
+  @ApiOperation({ summary: 'delete profile avatar file' })
+  @ApiResponse({ status: 401, description: 'Forbidden.' })
+  @ApiResponse({ status: 200, description: 'Deleted' })
+  @UseGuards(JwtAuthGuard)
+  @Delete('avatar/:id')
+  async deleteAvatarFile(@Param() params: any) {
+    return this.client
+      .send({ cmd: 'DELETE_FILE' }, { id: params.id })
+      .toPromise();
   }
 }

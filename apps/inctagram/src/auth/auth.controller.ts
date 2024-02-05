@@ -3,13 +3,19 @@ import {
   Controller,
   Get,
   HttpStatus,
+  Ip,
   Post,
   Query,
   Req,
   Res,
   UseGuards,
 } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiExcludeEndpoint,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { CommandBus } from '@nestjs/cqrs';
 import { Response } from 'express';
 import passport from 'passport';
@@ -38,7 +44,8 @@ import { LoginDataEntity } from '@app/main/auth/entity/login-data.entity';
 import { PasswordResetMail } from '@app/main/user/use_cases/password-reset-email.use-case';
 import { ResetPasswordDto } from '@app/main/auth/dto/reset-password.dto';
 import { ResetUserPassword } from '@app/main/user/use_cases/reset-user-password.use-case';
-import { UserEntity } from '@app/main/user/entity/user-entity';
+import { FullUserEntity } from '@app/main/user/entity/full-user.entity';
+import { LogOutUserCommand } from '@app/main/auth/use_cases/log-out.use-case';
 
 @ApiTags('Auth')
 @Controller('/auth')
@@ -66,12 +73,28 @@ export class AuthController {
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @ApiResponse({ status: HttpStatus.OK, type: TokenEntity })
   @Post('/login')
-  async login(@Req() req, @Body() body: LoginDataEntity, @Res() res: Response) {
+  async login(
+    @Req() req,
+    @Body() body: LoginDataEntity,
+    @Ip() ip,
+    @Res() res: Response,
+  ) {
     const token = await this.commandBus.execute(
-      new AuthorizeUserCommand(req.user.id, req),
+      new AuthorizeUserCommand(req.user.id, req, ip),
     );
     setAuthTokens(res, token);
     res.status(HttpStatus.OK).send(token);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Log out route' })
+  @ApiResponse({ status: 403, description: 'Forbidden.' })
+  @ApiResponse({ status: HttpStatus.OK })
+  @Get('/logout')
+  async logout(@Req() req, @Ip() ip) {
+    return this.commandBus.execute(
+      new LogOutUserCommand(req.user.id, ip ?? req.user.deviceId),
+    );
   }
 
   @ApiOperation({ summary: 'Register route' })
@@ -92,14 +115,14 @@ export class AuthController {
     const exists = await this.authService.findUserByEmail(inputData.email);
     if (!!exists && exists.emailConfirmed)
       return res.sendStatus(HttpStatus.BAD_REQUEST);
-
+    // TODO: change to true when mail service will repared
     const user = await this.commandBus.execute(
-      new CreateUserCommand(inputData, true),
+      new CreateUserCommand(inputData, process.env.MODE === 'TESTING'),
     );
 
     if (!user) return res.sendStatus(HttpStatus.BAD_REQUEST);
 
-    return res.status(HttpStatus.CREATED).send({ userId: user.id });
+    return res.status(HttpStatus.CREATED).send();
   }
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Get user profile data' })
@@ -109,12 +132,13 @@ export class AuthController {
     status: 500,
   })
   @ApiResponse({
-    type: UserEntity,
+    type: FullUserEntity,
     status: HttpStatus.OK,
   })
   @Get('/me')
   async getMe(@Req() req, @Res() res: Response) {
-    return res.status(HttpStatus.OK).send(req.user);
+    const data = await this.authService.getFullUserData(req.user.id);
+    return res.status(HttpStatus.OK).send(data);
   }
 
   @ApiOperation({
@@ -130,6 +154,7 @@ export class AuthController {
     const isConfirmed = await this.commandBus.execute(
       new EmailConfirmationCommand(inputData),
     );
+    // TODO: remove userId from request;
     if (!isConfirmed) return res.sendStatus(HttpStatus.BAD_REQUEST);
 
     return res.sendStatus(HttpStatus.OK);
@@ -195,22 +220,25 @@ export class AuthController {
   @UseGuards(GoogleOauthGuard)
   async googleAuth() {}
 
-  @ApiOperation({
-    summary:
-      'after success will redirect to "/auth-confirmed" with accessToken & refreshToken in query',
-  })
+  @ApiExcludeEndpoint()
+  // @ApiOperation({
+  //   summary:
+  //     'after success will redirect to "/auth-confirmed" with accessToken & refreshToken in query',
+  // })
   @Get('google/callback')
   @UseGuards(GoogleOauthGuard)
-  async googleAuthCallback(@Req() req, @Res() res: Response) {
+  async googleAuthCallback(@Req() req, @Ip() ip, @Res() res: Response) {
     const user = await this.commandBus.execute(
       new RegisterGoogleUserCommand(req.user),
     );
     const token = await this.commandBus.execute(
-      new AuthorizeUserCommand(user.id, req),
+      new AuthorizeUserCommand(user.id, req, ip),
     );
     setAuthTokens(res, token);
     res
       .status(HttpStatus.OK)
+      .setHeader('access-token', token.accessToken)
+      .setHeader('refresh-token', token.refreshToken)
       .redirect(
         `${settings_env.FRONT_URL}/auth-confirmed?accessToken=${token.accessToken}&refreshToken=${token.refreshToken}`,
       );
@@ -226,6 +254,7 @@ export class AuthController {
   @UseGuards(GithubOathGuard)
   async githubAuthCallback(
     @Req() req,
+    @Ip() ip,
     @Query('code') code: string,
     @Res() res,
   ) {
@@ -235,7 +264,7 @@ export class AuthController {
       new RegisterGithubUserCommand(req.user),
     );
     const token = await this.commandBus.execute(
-      new AuthorizeUserCommand(user.id, req),
+      new AuthorizeUserCommand(user.id, req, ip),
     );
     setAuthTokens(res, token);
     return res.redirect(`${settings_env.FRONT_URL}/`);

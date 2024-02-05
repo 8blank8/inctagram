@@ -15,8 +15,8 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
       new ValidateUserCommand(username, password),
     );
 
-    if (!user) {
-      throw new UnauthorizedException();
+    if (!user || typeof user == 'string') {
+      throw new UnauthorizedException(user);
     }
     return user;
   }

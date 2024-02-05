@@ -16,12 +16,6 @@ export class ResetPasswordDto {
   @Validate(IsTrimNotBlank)
   code: string;
 
-  @ApiProperty({ example: 'userId from querystring', description: 'userId' })
-  @IsNotEmpty()
-  @IsString()
-  @Validate(IsTrimNotBlank)
-  userId: string;
-
   @ApiProperty({ example: 'some1p@sSword', description: 'User password' })
   @IsNotEmpty()
   @IsString()

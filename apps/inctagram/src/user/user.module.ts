@@ -12,10 +12,12 @@ import { EmailConfirmationUseCase } from './use_cases/email-confirmation.use-cas
 import { MailService } from '@app/common';
 import { PasswordResetMailUseCase } from '@app/main/user/use_cases/password-reset-email.use-case';
 import { ResetUserPasswordUseCase } from '@app/main/user/use_cases/reset-user-password.use-case';
+import { UserController } from './user.controller';
+import { ChangeProfileInfoUseCase } from './use_cases/change-profile-info.use-case';
 
 @Module({
   imports: [ConfigModule.forRoot(), JwtModule.register({}), CqrsModule],
-  controllers: [],
+  controllers: [UserController],
   providers: [
     PrismaService,
     UserQueryRepository,
@@ -26,6 +28,7 @@ import { ResetUserPasswordUseCase } from '@app/main/user/use_cases/reset-user-pa
     EmailConfirmationUseCase,
     PasswordResetMailUseCase,
     ResetUserPasswordUseCase,
+    ChangeProfileInfoUseCase,
     MailService,
   ],
   exports: [UserQueryRepository, UserRepository],

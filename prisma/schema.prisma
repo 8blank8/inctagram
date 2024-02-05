@@ -29,12 +29,16 @@ model GitHubProvider {
 }
 
 model UserProfile {
-  id         String  @id @default(uuid())
-  userId     String  @unique
-  user       User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  avatarUrl  String
-  firstName  String?
-  familyName String?
+  id          String  @id @default(uuid())
+  userId      String  @unique
+  user        User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  photos      File[]
+  firstName   String?
+  familyName  String?
+  city        String?
+  country     String?
+  aboutMe     String?
+  dateOfBirth String?
 }
 
 model User {
@@ -61,6 +65,8 @@ model Device {
   title          String
   user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId         String
+
+  @@unique([ip, title, userId], name: "titleIpIdentifier")
 }
 
 model Post {
@@ -72,4 +78,20 @@ model Post {
   published Boolean? @default(false)
   author    User?    @relation(fields: [authorId], references: [id])
   authorId  String?
+  photos    File[]
+}
+
+model File {
+  id            String       @id @default(uuid())
+  title         String
+  url           String       @unique
+  size          String
+  cropProps     String?
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  authorId      String
+  Post          Post?        @relation(fields: [postId], references: [id])
+  postId        String?
+  UserProfile   UserProfile? @relation(fields: [userProfileId], references: [id])
+  userProfileId String?
 }

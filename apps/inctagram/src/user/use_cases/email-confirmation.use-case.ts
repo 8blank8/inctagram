@@ -1,9 +1,9 @@
 import { CommandHandler } from '@nestjs/cqrs';
 
+import { encryptVerificationCode } from '@app/main/utils/verification.code.util';
 import { UserRepository } from '../repository/user.repository';
 import { UserQueryRepository } from '../repository/user-query.repository';
 import { ConfirmEmailDto } from '../../auth/dto/confirm-email.dto';
-import { compareVerificationCode } from '@app/main/utils/verification.code.util';
 
 export class EmailConfirmationCommand {
   constructor(public payload: ConfirmEmailDto) {}
@@ -18,18 +18,13 @@ export class EmailConfirmationUseCase {
 
   async execute(command: EmailConfirmationCommand): Promise<boolean> {
     const {
-      payload: { code, userId },
+      payload: { code },
     } = command;
-    const user = await this.userQueryRepository.findUserById(userId);
-    if (!user) return false;
 
-    const isComapre = await compareVerificationCode({
-      code,
-      id: userId,
-      email: user.email,
-    });
-
-    if (!isComapre) return false;
+    const { email, id } = await encryptVerificationCode(code);
+    if (!id) return false;
+    const user = await this.userQueryRepository.findUserById(id);
+    if (!user || email !== user.email) return false;
 
     user.emailConfirmed = true;
     await this.userRepository.saveUser(user);

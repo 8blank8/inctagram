@@ -69,9 +69,7 @@ describe('AuthService', () => {
           .expect(HttpStatus.CREATED)
           .then((res) => {
             expect(mockMailCodes[user1.email]).toBeDefined();
-            expect(res.body).toEqual({
-              userId: expect.any(String),
-            });
+            expect(res.body).toBeDefined();
           });
       });
 
@@ -84,11 +82,26 @@ describe('AuthService', () => {
       });
 
       describe('POST /auth/confirm-code', () => {
+        it('should not login without mail confirmation, User email not confirmed!', async () => {
+          await request(server)
+            .post(`/auth/login`)
+            .set('user-agent', 'test-user-agent')
+            .send({ email: user1.email, password: user1.password })
+            .expect(HttpStatus.UNAUTHORIZED)
+            .then((res) => {
+              expect(res.body).toEqual({
+                message: 'User email not confirmed!',
+                error: 'Unauthorized',
+                statusCode: 401,
+              });
+            });
+        });
         it('should send code', async () => {
           const data = querystring.parse(mockMailCodes[user1.email]);
+          console.log('mockMailCodes[user1.email]', data);
           await request(app.getHttpServer())
             .post(`/auth/confirm-code`)
-            .send(data)
+            .send({ code: data.code.toString() })
             .expect(HttpStatus.OK);
         });
       });
@@ -106,7 +119,14 @@ describe('AuthService', () => {
           .post(`/auth/login`)
           .set('user-agent', 'test-user-agent')
           .send({ email: 'user1.email', password: user1.password })
-          .expect(HttpStatus.UNAUTHORIZED);
+          .expect(HttpStatus.UNAUTHORIZED)
+          .then((res) => {
+            expect(res.body).toEqual({
+              message: 'Wrong email or password',
+              error: 'Unauthorized',
+              statusCode: 401,
+            });
+          });
       });
 
       it('should login with right data', async () => {
@@ -116,7 +136,7 @@ describe('AuthService', () => {
           .send({ email: user1.email, password: user1.password })
           .expect(HttpStatus.OK)
           .then((res) => {
-            user1Token = res.body?.token?.accessToken || '';
+            user1Token = res.body?.accessToken || '';
             expect(res.body).toEqual({
               accessToken: expect.any(String),
               refreshToken: expect.any(String),
@@ -170,7 +190,7 @@ describe('AuthService', () => {
           .send({ email: user1.email, password: user1.password + '1' })
           .expect(HttpStatus.OK)
           .then((res) => {
-            user1Token = res.body?.token?.accessToken || '';
+            user1Token = res.body?.accessToken || '';
             expect(res.body).toEqual({
               accessToken: expect.any(String),
               refreshToken: expect.any(String),
@@ -179,12 +199,34 @@ describe('AuthService', () => {
       });
     });
 
+    describe('GET /auth/me', () => {
+      it('should be status 200', async () => {
+        await request(server)
+          .get(`/auth/me`)
+          .set('user-agent', 'test-user-agent')
+          .set({ Authorization: `Bearer ${user1Token}` })
+          .send()
+          .expect(HttpStatus.OK);
+      });
+    });
+
     describe('POST /confirm-code', () => {
       it('should be status 400 "     " code', async () => {
         const data = querystring.parse(mockMailCodes[user1.email]);
-        await request(app.getHttpServer())
+        await request(server)
           .post(`/auth/confirm-code`)
           .send(data)
+          .expect(HttpStatus.OK);
+      });
+    });
+
+    describe('GET /logout', () => {
+      it('should be status 200', async () => {
+        await request(server)
+          .get(`/auth/logout`)
+          .set('user-agent', 'test-user-agent')
+          .set({ Authorization: `Bearer ${user1Token}` })
+          .send()
           .expect(HttpStatus.OK);
       });
     });

@@ -28,6 +28,7 @@ export class CreateDeviceUseCase {
       user: { connect: { id: user.id } },
       lastActiveDate: date ?? new Date().toISOString(),
       ip: ip,
+      userId: userId,
       title: title,
     };
     return await this.securityRepository.saveDevice(device);

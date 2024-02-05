@@ -7,26 +7,24 @@ import { JwtModule } from '@nestjs/jwt';
 import { CqrsModule } from '@nestjs/cqrs';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { PugAdapter } from '@nestjs-modules/mailer/dist/adapters/pug.adapter';
-
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { UserService } from './user/user.service';
-
+import { AppController } from '@app/main/app.controller';
+import { AppService } from '@app/main/app.service';
+import { UserService } from '@app/main/user/user.service';
 import { GoogleStrategy, JwtStrategy, LocalStrategy } from '@app/auth';
-import { FilesController } from '../../files/src/files.controller';
-import { FilesService } from '../../files/src/files.service';
-import { AuthModule } from './auth/auth.module';
-import { SecurityModule } from './security/security.module';
-import { UserModule } from './user/user.module';
+import { AuthModule } from '@app/main/auth/auth.module';
+import { SecurityModule } from '@app/main/security/security.module';
+import { UserModule } from '@app/main/user/user.module';
 import { MailService } from '@app/common';
 import { GithubStrategy } from '@app/auth/strategies/github.strategy';
 import { RefreshTokenStrategy } from '@app/auth/strategies/refresh-jwt.strategy';
 import { PostModule } from '@app/main/post/post.module';
 import { PostService } from '@app/main/post/post.service';
+import { HttpModule } from '@nestjs/axios';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({ isGlobal: true }),
+    HttpModule,
     PassportModule,
     JwtModule.register({}),
     CqrsModule,
@@ -71,13 +69,12 @@ import { PostService } from '@app/main/post/post.service';
     UserModule,
     PostModule,
   ],
-  controllers: [AppController, FilesController],
+  controllers: [AppController],
   providers: [
     AppService,
     UserService,
     PostService,
     PrismaService,
-    FilesService,
     JwtStrategy,
     LocalStrategy,
     GoogleStrategy,

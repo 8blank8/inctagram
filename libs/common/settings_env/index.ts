@@ -6,6 +6,11 @@ export const settings_env = {
 
   HASH_ROUNDS: process.env.HASH_ROUNDS ?? 16,
 
+  AWS_S3_ACCESS_KEY: process.env.AWS_S3_ACCESS_KEY ?? '',
+  AWS_S3_ACCESS_SECRET: process.env.AWS_S3_ACCESS_SECRET ?? '',
+  AWS_S3_BUCKET_NAME: process.env.AWS_S3_BUCKET_NAME ?? '',
+  AWS_S3_REGION: process.env.AWS_S3_REGION ?? 'eu-central-1',
+
   TTL: process.env.TTL ?? 1000,
   LIMIT: process.env.LIMIT ?? 500,
 

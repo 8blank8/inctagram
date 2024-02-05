@@ -9,6 +9,7 @@ export class AuthorizeUserCommand {
   constructor(
     public userId: string,
     public req: Request,
+    public ip: string,
   ) {}
 }
 
@@ -20,9 +21,8 @@ export class AuthorizeUserUseCase {
   ) {}
 
   async execute(command: AuthorizeUserCommand) {
-    const { userId, req } = command;
+    const { userId, req, ip } = command;
     const title = req.headers['user-agent'];
-    const ip = req.headers['user-agent'];
     const device = await this.commandBus.execute(
       new CreateDeviceCommand(userId, ip, title, new Date().toISOString()),
     );

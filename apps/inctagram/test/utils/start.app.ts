@@ -16,14 +16,17 @@ export const mockMailCodes = {};
 
 const mockMailService = {
   sendEmailConfirmationMessage: async (email: string, code: string) => {
+    console.log('sendEmailConfirmationMessage', email, code);
     mockMailCodes[email] = code;
     return true;
   },
   sendEmailPassRecovery: async (email: string, code: string) => {
+    console.log('sendEmailPassRecovery', email, code);
     mockMailCodes[email] = code;
     return true;
   },
   testMail: (email: string, code: string) => {
+    console.log('testMail', email, code);
     console.log(email, code);
     return true;
   },
@@ -32,9 +35,15 @@ export const startTestConfig = async () => {
   let app: INestApplication;
 
   process.env.DB_URL =
+    process.env.TEST_DB_URL ||
     'postgres://springfield.3298:VRirOjE9BfN2@ep-twilight-wave-02964973.eu-central-1.aws.neon.tech/neondb';
 
+  process.env.AWS_S3_ACCESS_KEY = 'AWS_S3_ACCESS_KEY';
+  process.env.AWS_S3_SECRET_ACCESS_KEY = 'AWS_S3_SECRET_ACCESS_KEY';
+  process.env.AWS_S3_REGION = 'AWS_S3_REGION';
+  process.env.AWS_S3_BUCKET_NAME = 'AWS_S3_BUCKET_NAME';
   process.env.FILES_SERVICE_PORT = '3161';
+  process.env.MODE = 'TESTING';
 
   const moduleRef = await Test.createTestingModule({
     imports: [ConfigModule.forRoot(), AppModule],

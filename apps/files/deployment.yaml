@@ -21,3 +21,29 @@ spec:
            ports:
              - containerPort: PORT_CONTAINER
 
+           env:
+             - name: AWS_S3_SECRET_ACCESS_KEY
+               valueFrom:
+                 secretKeyRef:
+                   name: backend-files-microservice-production-config-secret
+                   key: AWS_S3_SECRET_ACCESS_KEY
+             - name: AWS_S3_REGION
+               valueFrom:
+                 secretKeyRef:
+                   name: backend-files-microservice-production-config-secret
+                   key: AWS_S3_REGION
+             - name: AWS_S3_BUCKET_NAME
+               valueFrom:
+                 secretKeyRef:
+                   name: backend-files-microservice-production-config-secret
+                   key: AWS_S3_BUCKET_NAME
+             - name: DB_URL
+               valueFrom:
+                 secretKeyRef:
+                   name: backend-files-microservice-production-config-secret
+                   key: DB_URL
+             - name: AWS_S3_ACCESS_KEY
+               valueFrom:
+                 secretKeyRef:
+                   name: backend-files-microservice-production-config-secret
+                   key: AWS_S3_ACCESS_KEY
