@@ -30,13 +30,13 @@ import { RegisterGoogleUserCommand } from '@app/main/auth/use_cases/register-goo
 import { ResendConfirmationCodeCommand } from '@app/main/user/use_cases/resend-confirmation-code.use-case';
 import { setAuthTokens } from '@app/main/utils/setAuthTokens';
 
-import { RegisterGithubUserCommand } from './use_cases/register-github-user.use-case';
-import { AuthorizeUserCommand } from './use_cases/authorize-user.use-case';
-import { CreateUserCommand } from '../user/use_cases/create-user.use-case';
-import { EmailConfirmationCommand } from '../user/use_cases/email-confirmation.use-case';
-import { AuthService } from './auth.service';
-import { RegisterUserDto } from './dto/register-user.dto';
-import { ConfirmEmailDto } from './dto/confirm-email.dto';
+import { RegisterGithubUserCommand } from '../use_cases/register-github-user.use-case';
+import { AuthorizeUserCommand } from '../use_cases/authorize-user.use-case';
+import { CreateUserCommand } from '../../user/use_cases/create-user.use-case';
+import { EmailConfirmationCommand } from '../../user/use_cases/email-confirmation.use-case';
+import { AuthService } from '../auth.service';
+import { RegisterUserDto } from '../dto/register-user.dto';
+import { ConfirmEmailDto } from '../dto/confirm-email.dto';
 import { TestMailEntity } from '@app/main/auth/entity/test-mail.entity';
 import { ResendMailEntity } from '@app/main/auth/entity/resend-mail.entity';
 import { TokenEntity } from '@app/main/auth/entity/token.entity';
@@ -46,6 +46,7 @@ import { ResetPasswordDto } from '@app/main/auth/dto/reset-password.dto';
 import { ResetUserPassword } from '@app/main/user/use_cases/reset-user-password.use-case';
 import { FullUserEntity } from '@app/main/user/entity/full-user.entity';
 import { LogOutUserCommand } from '@app/main/auth/use_cases/log-out.use-case';
+import { BadRequestApiResponse, CreatedApiResponse, ForbiddenApiResponse, IternalServerErrorApiResponse, OkApiResponse, UnauthorizedApiResponse } from 'libs/swagger/swagger.decorator';
 
 @ApiTags('Auth')
 @Controller('/auth')
@@ -54,14 +55,9 @@ export class AuthController {
     private authService: AuthService,
     private commandBus: CommandBus,
     private mailService: MailService,
-  ) {}
+  ) { }
 
-  @ApiOperation({ summary: 'Send test mail' })
-  @ApiResponse({
-    status: 201,
-    description: 'Mail sent',
-    type: TestMailEntity,
-  })
+  @CreatedApiResponse('Mail sent', TestMailEntity)
   @Post('test-mail')
   sendTestMail(@Body() mailData: TestMailEntity, @Res() res: Response) {
     this.mailService.testMail(mailData.mailAddress, mailData.content);
@@ -69,9 +65,8 @@ export class AuthController {
   }
 
   @UseGuards(LocalAuthGuard)
-  @ApiOperation({ summary: 'Log in route' })
-  @ApiResponse({ status: 403, description: 'Forbidden.' })
-  @ApiResponse({ status: HttpStatus.OK, type: TokenEntity })
+  @ForbiddenApiResponse()
+  @OkApiResponse(TokenEntity)
   @Post('/login')
   async login(
     @Req() req,
@@ -87,9 +82,8 @@ export class AuthController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @ApiOperation({ summary: 'Log out route' })
-  @ApiResponse({ status: 403, description: 'Forbidden.' })
-  @ApiResponse({ status: HttpStatus.OK })
+  @ForbiddenApiResponse()
+  @OkApiResponse()
   @Get('/logout')
   async logout(@Req() req, @Ip() ip) {
     return this.commandBus.execute(
@@ -97,16 +91,9 @@ export class AuthController {
     );
   }
 
-  @ApiOperation({ summary: 'Register route' })
-  @ApiResponse({ status: 403, description: 'Forbidden.' })
-  @ApiResponse({
-    type: ErrorResponseEntity,
-    status: 400,
-  })
-  @ApiResponse({
-    type: AuthCreatedEntity,
-    status: HttpStatus.CREATED,
-  })
+  @ForbiddenApiResponse()
+  @BadRequestApiResponse()
+  @CreatedApiResponse('', AuthCreatedEntity)
   @Post('/registration')
   async registrationUser(
     @Body() inputData: RegisterUserDto,
@@ -124,28 +111,19 @@ export class AuthController {
 
     return res.status(HttpStatus.CREATED).send();
   }
+
   @UseGuards(JwtAuthGuard)
-  @ApiOperation({ summary: 'Get user profile data' })
-  @ApiResponse({ status: 401, description: 'Forbidden.' })
-  @ApiResponse({
-    type: ErrorResponseEntity,
-    status: 500,
-  })
-  @ApiResponse({
-    type: FullUserEntity,
-    status: HttpStatus.OK,
-  })
+  @UnauthorizedApiResponse()
+  @IternalServerErrorApiResponse()
+  @OkApiResponse(FullUserEntity)
   @Get('/me')
   async getMe(@Req() req, @Res() res: Response) {
     const data = await this.authService.getFullUserData(req.user.id);
     return res.status(HttpStatus.OK).send(data);
   }
 
-  @ApiOperation({
-    summary: 'Post Request to confirm code from mail and get access to login',
-  })
-  @ApiResponse({ status: 403, description: 'Forbidden.' })
-  @ApiResponse({ status: 200 })
+  @ForbiddenApiResponse()
+  @OkApiResponse()
   @Post('/confirm-code')
   async confirmationEmail(
     @Body() inputData: ConfirmEmailDto,
@@ -160,11 +138,8 @@ export class AuthController {
     return res.sendStatus(HttpStatus.OK);
   }
 
-  @ApiOperation({
-    summary: 'Re-request for confirmation email',
-  })
-  @ApiResponse({ status: 403, description: 'Forbidden.' })
-  @ApiResponse({ status: HttpStatus.OK, description: 'Mail sent' })
+  @ForbiddenApiResponse()
+  @OkApiResponse(null, 'Mail sent')
   @Post('/resend-email-code')
   async requestEmailCode(
     @Body() inputData: ResendMailEntity,
@@ -177,11 +152,8 @@ export class AuthController {
     return res.sendStatus(HttpStatus.OK);
   }
 
-  @ApiOperation({
-    summary: 'Password recovery email',
-  })
-  @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Forbidden.' })
-  @ApiResponse({ status: HttpStatus.OK, description: 'Mail sent' })
+  @BadRequestApiResponse()
+  @OkApiResponse(null, 'Mail sent')
   @Post('/password-recovery-email')
   async passwordRecoveryEmailCode(
     @Body() inputData: ResendMailEntity,
@@ -194,11 +166,8 @@ export class AuthController {
     return res.sendStatus(HttpStatus.OK);
   }
 
-  @ApiOperation({
-    summary: 'Password recovery email',
-  })
-  @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Forbidden.' })
-  @ApiResponse({ status: HttpStatus.OK, description: 'New password applied' })
+  @BadRequestApiResponse()
+  @OkApiResponse(null, 'New password applied')
   @Post('/change-password')
   async changePassword(
     @Body() inputData: ResetPasswordDto,
@@ -211,14 +180,10 @@ export class AuthController {
     return res.sendStatus(HttpStatus.OK);
   }
 
-  @ApiOperation({ summary: 'google auth' })
-  @ApiResponse({
-    status: 200,
-    description: 'will redirect to google auth page',
-  })
+  @OkApiResponse(null, 'will redirect to google auth page')
   @Get('google')
   @UseGuards(GoogleOauthGuard)
-  async googleAuth() {}
+  async googleAuth() { }
 
   @ApiExcludeEndpoint()
   // @ApiOperation({
