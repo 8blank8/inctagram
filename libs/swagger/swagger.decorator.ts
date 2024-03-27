@@ -44,12 +44,16 @@ export const IternalServerErrorApiResponse = () =>
     status: HttpStatus.INTERNAL_SERVER_ERROR,
   });
 
-export const OkApiResponse = (type?: any, description = '') =>
-  ApiResponse({
-    status: HttpStatus.OK,
-    type: type,
-    description: description,
-  });
+export const OkApiResponse = (
+  type?: any,
+  description = '',
+  isArray = false,
+) => ApiResponse({
+  status: HttpStatus.OK,
+  type: type,
+  description: description,
+  isArray: isArray,
+});
 
 export const CreatedApiResponse = (description = '', type?: any) =>
   ApiResponse({
