@@ -1,4 +1,4 @@
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiTags } from '@nestjs/swagger';
 import {
   Body,
   Controller,
@@ -13,44 +13,32 @@ import { PostService } from '@app/main/post/post.service';
 import { Post as PostModel } from '.prisma/client';
 import { JwtAuthGuard } from '@app/auth';
 import { PostEntity } from '@app/main/post/entity/post.entity';
+import {
+  CreatedApiResponse,
+  OkApiResponse,
+} from 'libs/swagger/swagger.decorator';
 
 @ApiTags('post')
 @Controller('post')
 export class PostController {
   constructor(private postService: PostService) {}
 
-  @ApiOperation({ summary: 'Get post by Id, protected!!!!' })
-  @ApiResponse({
-    status: 200,
-    description: 'post',
-    type: PostEntity,
-  })
+  @OkApiResponse(PostEntity, 'post')
   @UseGuards(JwtAuthGuard)
   @Get('post/:id')
   async getPostById(@Param('id') id: string): Promise<PostModel> {
     return this.postService.post({ id: id });
   }
 
-  @ApiOperation({ summary: 'Get feed data, not protected' })
-  @ApiResponse({
-    status: 200,
-    description: 'The found records',
-    type: PostEntity,
-    isArray: true,
-  })
+  @OkApiResponse(PostEntity, 'The found records', true)
   @Get('feed')
   async getPublishedPosts(): Promise<PostModel[]> {
     return this.postService.posts({
       where: { published: true },
     });
   }
-  @ApiOperation({ summary: 'Get posts, protected!!!!' })
-  @ApiResponse({
-    status: 200,
-    description: 'The found records',
-    type: PostEntity,
-    isArray: true,
-  })
+
+  @OkApiResponse(PostEntity, 'The found records', true)
   @UseGuards(JwtAuthGuard)
   @Get('filtered-posts:searchString')
   async getFilteredPosts(
@@ -70,13 +58,7 @@ export class PostController {
     });
   }
 
-  @ApiOperation({ summary: 'Create Post, protected!!!!' })
-  @ApiResponse({
-    status: 200,
-    description: 'Created record',
-    type: PostEntity,
-    isArray: true,
-  })
+  @CreatedApiResponse('Created record', PostEntity)
   @UseGuards(JwtAuthGuard)
   @Post('post')
   async createDraft(
