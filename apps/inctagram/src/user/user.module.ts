@@ -12,7 +12,7 @@ import { EmailConfirmationUseCase } from './use_cases/email-confirmation.use-cas
 import { MailService } from '@app/common';
 import { PasswordResetMailUseCase } from '@app/main/user/use_cases/password-reset-email.use-case';
 import { ResetUserPasswordUseCase } from '@app/main/user/use_cases/reset-user-password.use-case';
-import { UserController } from './user.controller';
+import { UserController } from './conroller/user.controller';
 import { ChangeProfileInfoUseCase } from './use_cases/change-profile-info.use-case';
 
 @Module({
