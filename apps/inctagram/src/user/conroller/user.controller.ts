@@ -32,9 +32,9 @@ export class UserController {
     private userQueryRepo: UserQueryRepository,
   ) {}
 
-  @UnauthorizedApiResponse
+  @UnauthorizedApiResponse()
   @NoContentApiResponse('profile changed')
-  @ErrorApiResponse
+  @ErrorApiResponse()
   @UseGuards(JwtAuthGuard)
   @Put('profile')
   async changeProfileInfo(
@@ -52,7 +52,7 @@ export class UserController {
     return res.sendStatus(HttpStatus.NO_CONTENT);
   }
 
-  @UnauthorizedApiResponse
+  @UnauthorizedApiResponse()
   @NotFoundApiResponse("if user doesn't not exist")
   @OkApiResponse(UserProfileViewEntity, 'user is found')
   @UseGuards(JwtAuthGuard)
