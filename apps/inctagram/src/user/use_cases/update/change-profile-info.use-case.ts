@@ -1,16 +1,9 @@
-import { CommandHandler } from '@nestjs/cqrs';
-import { ChangeProfileInfoDto } from '../dto/change.profile.info.dto';
-import { UserQueryRepository } from '../repository/user-query.repository';
-import { UserRepository } from '../repository/user.repository';
+import { Injectable } from '@nestjs/common';
+import { UserQueryRepository } from '../../repository/user-query.repository';
+import { UserRepository } from '../../repository/user.repository';
+import { ChangeProfileInfoCommand } from './change-profile-info.command';
 
-export class ChangeProfileInfoCommand {
-  constructor(
-    public userId: string,
-    public inputData: ChangeProfileInfoDto,
-  ) {}
-}
-
-@CommandHandler(ChangeProfileInfoCommand)
+@Injectable()
 export class ChangeProfileInfoUseCase {
   constructor(
     private userQueryRepo: UserQueryRepository,
