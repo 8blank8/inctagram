@@ -33,4 +33,4 @@ import { ChangeProfileInfoUseCase } from './use_cases/update/change-profile-info
   ],
   exports: [UserQueryRepository, UserRepository],
 })
-export class UserModule { }
+export class UserModule {}

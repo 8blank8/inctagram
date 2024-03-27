@@ -11,8 +11,7 @@ import {
 import { Response } from 'express';
 import { ChangeProfileInfoDto } from '../dto/change.profile.info.dto';
 import { JwtAuthGuard } from '@app/auth';
-import { CommandBus } from '@nestjs/cqrs';
-import { ChangeProfileInfoCommand } from '../use_cases/change-profile-info.use-case';
+import { ChangeProfileInfoUseCase } from '../use_cases/update/change-profile-info.use-case';
 import { UserQueryRepository } from '../repository/user-query.repository';
 import { ApiTags } from '@nestjs/swagger';
 import { UserProfileViewEntity } from '../entity/user-profile-view.entity';
@@ -23,13 +22,15 @@ import {
   OkApiResponse,
   UnauthorizedApiResponse,
 } from 'libs/swagger/swagger.decorator';
+import { ChangeProfileInfoCommand } from '../use_cases/update/change-profile-info.command';
+import { ReqWithUser } from 'libs/types/types';
 
 @ApiTags('User')
 @Controller('user')
 export class UserController {
   constructor(
-    private commandBus: CommandBus,
     private userQueryRepo: UserQueryRepository,
+    private changeProfileInfoUseCase: ChangeProfileInfoUseCase,
   ) {}
 
   @UnauthorizedApiResponse()
@@ -38,15 +39,16 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   @Put('profile')
   async changeProfileInfo(
-    @Req() req,
+    @Req() req: ReqWithUser,
     @Res() res: Response,
-    @Body() inputData: ChangeProfileInfoDto,
+    @Body() dto: ChangeProfileInfoDto,
   ) {
-    const userId = req.user.id;
+    const command: ChangeProfileInfoCommand = {
+      userId: req.user.id,
+      inputData: dto,
+    };
 
-    const isChange = await this.commandBus.execute(
-      new ChangeProfileInfoCommand(userId, inputData),
-    );
+    const isChange = await this.changeProfileInfoUseCase.execute(command);
     if (!isChange) return res.sendStatus(HttpStatus.BAD_REQUEST);
 
     return res.sendStatus(HttpStatus.NO_CONTENT);
@@ -57,7 +59,7 @@ export class UserController {
   @OkApiResponse(UserProfileViewEntity, 'user is found')
   @UseGuards(JwtAuthGuard)
   @Get('profile')
-  async getMyProfile(@Req() req, @Res() res: Response) {
+  async getMyProfile(@Req() req: ReqWithUser, @Res() res: Response) {
     const userId = req.user.id;
 
     const user = await this.userQueryRepo.findUserProfileByUserId(userId);
