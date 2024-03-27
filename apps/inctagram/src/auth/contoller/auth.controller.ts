@@ -10,12 +10,7 @@ import {
   Res,
   UseGuards,
 } from '@nestjs/common';
-import {
-  ApiExcludeEndpoint,
-  ApiOperation,
-  ApiResponse,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiExcludeEndpoint, ApiTags } from '@nestjs/swagger';
 import { CommandBus } from '@nestjs/cqrs';
 import { Response } from 'express';
 import passport from 'passport';
@@ -23,7 +18,6 @@ import passport from 'passport';
 import { JwtAuthGuard, LocalAuthGuard } from '@app/auth';
 import { GoogleOauthGuard } from '@app/auth/guards/google.oauth.guard';
 import { GithubOathGuard } from '@app/auth/guards/github.oauth.guard';
-import { ErrorResponseEntity } from '@app/main/auth/entity/error-response.entity';
 import { AuthCreatedEntity } from '@app/main/auth/entity/auth-created-entity';
 import { MailService, settings_env } from '@app/common';
 import { RegisterGoogleUserCommand } from '@app/main/auth/use_cases/register-google-user.use-case';
@@ -46,7 +40,14 @@ import { ResetPasswordDto } from '@app/main/auth/dto/reset-password.dto';
 import { ResetUserPassword } from '@app/main/user/use_cases/reset-user-password.use-case';
 import { FullUserEntity } from '@app/main/user/entity/full-user.entity';
 import { LogOutUserCommand } from '@app/main/auth/use_cases/log-out.use-case';
-import { BadRequestApiResponse, CreatedApiResponse, ForbiddenApiResponse, IternalServerErrorApiResponse, OkApiResponse, UnauthorizedApiResponse } from 'libs/swagger/swagger.decorator';
+import {
+  BadRequestApiResponse,
+  CreatedApiResponse,
+  ForbiddenApiResponse,
+  IternalServerErrorApiResponse,
+  OkApiResponse,
+  UnauthorizedApiResponse,
+} from 'libs/swagger/swagger.decorator';
 
 @ApiTags('Auth')
 @Controller('/auth')
@@ -55,7 +56,7 @@ export class AuthController {
     private authService: AuthService,
     private commandBus: CommandBus,
     private mailService: MailService,
-  ) { }
+  ) {}
 
   @CreatedApiResponse('Mail sent', TestMailEntity)
   @Post('test-mail')
@@ -183,7 +184,7 @@ export class AuthController {
   @OkApiResponse(null, 'will redirect to google auth page')
   @Get('google')
   @UseGuards(GoogleOauthGuard)
-  async googleAuth() { }
+  async googleAuth() {}
 
   @ApiExcludeEndpoint()
   // @ApiOperation({

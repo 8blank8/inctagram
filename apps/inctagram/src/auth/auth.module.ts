@@ -10,7 +10,7 @@ import { RegisterGithubUserUseCase } from '@app/main/auth/use_cases/register-git
 import { CreateDeviceUseCase } from '@app/main/security/use_cases/create.device.use.case';
 
 import { AuthService } from './auth.service';
-import { AuthController } from './auth.controller';
+import { AuthController } from './contoller/auth.controller';
 import { AuthorizeUserUseCase } from './use_cases/authorize-user.use-case';
 import { ValidateUserUseCase } from './use_cases/validate.user.use.case';
 import { SecurityModule } from '../security/security.module';
