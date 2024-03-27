@@ -21,4 +21,4 @@ import { SecurityController } from './controller/security.controller';
   ],
   exports: [SecurityQueryRepository, SecurityRepository],
 })
-export class SecurityModule { }
+export class SecurityModule {}
