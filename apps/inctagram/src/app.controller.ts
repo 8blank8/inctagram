@@ -30,6 +30,7 @@ import { JwtAuthGuard } from '@app/auth';
 import { FullUserEntity } from '@app/main/user/entity/full-user.entity';
 import { ErrorResponseEntity } from '@app/main/auth/entity/error-response.entity';
 import { UserProfileViewEntity } from '@app/main/user/entity/user-profile-view.entity';
+import { OkApiResponse } from 'libs/swagger/swagger.decorator';
 
 @Controller()
 export class AppController {
@@ -37,27 +38,20 @@ export class AppController {
     @Inject('FILE_SERVICE') private client: ClientProxy,
     private readonly userQueryRepository: UserQueryRepository,
     private appService: AppService,
-  ) {}
+  ) { }
 
   @Get()
   getHello() {
     return this.appService.getHello();
   }
 
-  @ApiOperation({ summary: 'get all users' })
-  @ApiResponse({
-    status: 200,
-    description: 'The found record',
-    type: FullUserEntity,
-    isArray: true,
-  })
+  @OkApiResponse(FullUserEntity, 'The found record', true)
   @Get('users')
   getUsers(@Param() queryParam) {
     return this.userQueryRepository.findAllUsers(queryParam);
   }
 
   // TODO: move upload avatar or to separate action, or to separate controller
-  @ApiOperation({ summary: 'upload file, image/jpeg' })
   @UseGuards(JwtAuthGuard)
   @ApiConsumes('multipart/form-data')
   @ApiBody({
@@ -107,6 +101,8 @@ export class AppController {
       )
       .toPromise();
   }
+
+
   @ApiOperation({ summary: 'delete profile avatar file' })
   @ApiResponse({ status: 401, description: 'Forbidden.' })
   @ApiResponse({ status: 200, description: 'Deleted' })
