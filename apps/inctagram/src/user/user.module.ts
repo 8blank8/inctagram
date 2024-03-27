@@ -13,7 +13,7 @@ import { MailService } from '@app/common';
 import { PasswordResetMailUseCase } from '@app/main/user/use_cases/password-reset-email.use-case';
 import { ResetUserPasswordUseCase } from '@app/main/user/use_cases/reset-user-password.use-case';
 import { UserController } from './conroller/user.controller';
-import { ChangeProfileInfoUseCase } from './use_cases/change-profile-info.use-case';
+import { ChangeProfileInfoUseCase } from './use_cases/update/change-profile-info.use-case';
 
 @Module({
   imports: [ConfigModule.forRoot(), JwtModule.register({}), CqrsModule],
@@ -33,4 +33,4 @@ import { ChangeProfileInfoUseCase } from './use_cases/change-profile-info.use-ca
   ],
   exports: [UserQueryRepository, UserRepository],
 })
-export class UserModule {}
+export class UserModule { }
