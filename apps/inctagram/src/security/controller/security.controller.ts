@@ -10,16 +10,16 @@ import {
 } from '@nestjs/common';
 import { Response } from 'express';
 import { CommandBus } from '@nestjs/cqrs';
-import {
-  ApiBearerAuth,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { SecurityQueryRepository } from '@app/main/security/repository/secutity-query.repository';
 import { DeleteDeviceCommand } from '@app/main/security/use_cases/delete-device.use-case';
 import { DeleteAllDevicesCommand } from '@app/main/security/use_cases/delete.all.device.use.case';
 import { JwtAuthGuard } from '@app/auth';
 import { DeviceEntity } from '@app/main/security/entity/device.entity';
-import { ForbiddenApiResponse, OkApiResponse } from 'libs/swagger/swagger.decorator';
+import {
+  ForbiddenApiResponse,
+  OkApiResponse,
+} from 'libs/swagger/swagger.decorator';
 
 @ApiBearerAuth()
 @ApiTags('security')
@@ -28,7 +28,7 @@ export class SecurityController {
   constructor(
     private securityQueryRepository: SecurityQueryRepository,
     private commandBus: CommandBus,
-  ) { }
+  ) {}
 
   @ForbiddenApiResponse()
   @OkApiResponse(DeviceEntity, '', true)
