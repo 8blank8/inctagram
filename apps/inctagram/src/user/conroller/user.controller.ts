@@ -16,7 +16,13 @@ import { ChangeProfileInfoCommand } from '../use_cases/change-profile-info.use-c
 import { UserQueryRepository } from '../repository/user-query.repository';
 import { ApiTags } from '@nestjs/swagger';
 import { UserProfileViewEntity } from '../entity/user-profile-view.entity';
-import { ErrorApiResponse, NoContentApiResponse, NotFoundApiResponse, OkApiResponse, UnauthorizedApiResponse } from 'libs/swagger/swagger.decorator';
+import {
+  ErrorApiResponse,
+  NoContentApiResponse,
+  NotFoundApiResponse,
+  OkApiResponse,
+  UnauthorizedApiResponse,
+} from 'libs/swagger/swagger.decorator';
 
 @ApiTags('User')
 @Controller('user')
@@ -24,7 +30,7 @@ export class UserController {
   constructor(
     private commandBus: CommandBus,
     private userQueryRepo: UserQueryRepository,
-  ) { }
+  ) {}
 
   @UnauthorizedApiResponse
   @NoContentApiResponse('profile changed')
