@@ -2,15 +2,17 @@ import { ErrorResponseEntity } from '@app/main/auth/entity/error-response.entity
 import { HttpStatus } from '@nestjs/common';
 import { ApiResponse } from '@nestjs/swagger';
 
-export const UnauthorizedApiResponse = ApiResponse({
-  description: 'Unauthorized',
-  status: HttpStatus.UNAUTHORIZED,
-});
+export const UnauthorizedApiResponse = () =>
+  ApiResponse({
+    description: 'Unauthorized',
+    status: HttpStatus.UNAUTHORIZED,
+  });
 
-export const ErrorApiResponse = ApiResponse({
-  type: ErrorResponseEntity,
-  status: HttpStatus.BAD_REQUEST,
-});
+export const ErrorApiResponse = () =>
+  ApiResponse({
+    type: ErrorResponseEntity,
+    status: HttpStatus.BAD_REQUEST,
+  });
 
 export const NoContentApiResponse = (description = '') =>
   ApiResponse({
@@ -24,9 +26,34 @@ export const NotFoundApiResponse = (description = '') =>
     description: description,
   });
 
-export const OkApiResponse = (type: any, description = '') =>
+export const ForbiddenApiResponse = () =>
+  ApiResponse({
+    status: HttpStatus.FORBIDDEN,
+    description: 'Forbidden.',
+  });
+
+export const BadRequestApiResponse = () =>
+  ApiResponse({
+    type: ErrorResponseEntity,
+    status: HttpStatus.BAD_REQUEST,
+  });
+
+export const IternalServerErrorApiResponse = () =>
+  ApiResponse({
+    type: ErrorResponseEntity,
+    status: HttpStatus.INTERNAL_SERVER_ERROR,
+  });
+
+export const OkApiResponse = (type?: any, description = '') =>
   ApiResponse({
     status: HttpStatus.OK,
     type: type,
+    description: description,
+  });
+
+export const CreatedApiResponse = (description = '', type?: any) =>
+  ApiResponse({
+    type: type || null,
+    status: HttpStatus.CREATED,
     description: description,
   });
