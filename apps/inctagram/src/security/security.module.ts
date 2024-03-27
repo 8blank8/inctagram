@@ -6,8 +6,8 @@ import { ConfigModule } from '@nestjs/config';
 import { SecurityService } from './security.service';
 import { SecurityQueryRepository } from './repository/secutity-query.repository';
 import { SecurityRepository } from './repository/security.repository';
-import { SecurityController } from '@app/main/security/security.controller';
 import { DeleteAllDevicesUseCase } from '@app/main/security/use_cases/delete.all.device.use.case';
+import { SecurityController } from './controller/security.controller';
 
 @Module({
   imports: [ConfigModule.forRoot(), CqrsModule],
@@ -21,4 +21,4 @@ import { DeleteAllDevicesUseCase } from '@app/main/security/use_cases/delete.all
   ],
   exports: [SecurityQueryRepository, SecurityRepository],
 })
-export class SecurityModule {}
+export class SecurityModule { }

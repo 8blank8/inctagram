@@ -38,7 +38,7 @@ export class AppController {
     @Inject('FILE_SERVICE') private client: ClientProxy,
     private readonly userQueryRepository: UserQueryRepository,
     private appService: AppService,
-  ) { }
+  ) {}
 
   @Get()
   getHello() {
@@ -101,7 +101,6 @@ export class AppController {
       )
       .toPromise();
   }
-
 
   @ApiOperation({ summary: 'delete profile avatar file' })
   @ApiResponse({ status: 401, description: 'Forbidden.' })
