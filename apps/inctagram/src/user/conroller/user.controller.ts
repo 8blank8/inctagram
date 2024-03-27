@@ -9,14 +9,14 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { Response } from 'express';
-import { ChangeProfileInfoDto } from './dto/change.profile.info.dto';
+import { ChangeProfileInfoDto } from '../dto/change.profile.info.dto';
 import { JwtAuthGuard } from '@app/auth';
 import { CommandBus } from '@nestjs/cqrs';
-import { ChangeProfileInfoCommand } from './use_cases/change-profile-info.use-case';
-import { UserQueryRepository } from './repository/user-query.repository';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { ErrorResponseEntity } from '../auth/entity/error-response.entity';
-import { UserProfileViewEntity } from './entity/user-profile-view.entity';
+import { ChangeProfileInfoCommand } from '../use_cases/change-profile-info.use-case';
+import { UserQueryRepository } from '../repository/user-query.repository';
+import { ApiTags } from '@nestjs/swagger';
+import { UserProfileViewEntity } from '../entity/user-profile-view.entity';
+import { ErrorApiResponse, NoContentApiResponse, NotFoundApiResponse, OkApiResponse, UnauthorizedApiResponse } from 'libs/swagger/swagger.decorator';
 
 @ApiTags('User')
 @Controller('user')
@@ -24,18 +24,11 @@ export class UserController {
   constructor(
     private commandBus: CommandBus,
     private userQueryRepo: UserQueryRepository,
-  ) {}
+  ) { }
 
-  @ApiOperation({ summary: 'Change Profile' })
-  @ApiResponse({ status: HttpStatus.UNAUTHORIZED, description: 'Unauthorized' })
-  @ApiResponse({
-    type: ErrorResponseEntity,
-    status: HttpStatus.BAD_REQUEST,
-  })
-  @ApiResponse({
-    description: 'profile changed',
-    status: HttpStatus.NO_CONTENT,
-  })
+  @UnauthorizedApiResponse
+  @NoContentApiResponse('profile changed')
+  @ErrorApiResponse
   @UseGuards(JwtAuthGuard)
   @Put('profile')
   async changeProfileInfo(
@@ -53,17 +46,9 @@ export class UserController {
     return res.sendStatus(HttpStatus.NO_CONTENT);
   }
 
-  @ApiOperation({ summary: 'Get my profile' })
-  @ApiResponse({ status: HttpStatus.UNAUTHORIZED, description: 'Unauthorized' })
-  @ApiResponse({
-    status: HttpStatus.NOT_FOUND,
-    description: "if user doesn't not exist",
-  })
-  @ApiResponse({
-    status: HttpStatus.OK,
-    type: UserProfileViewEntity,
-    description: 'user is found',
-  })
+  @UnauthorizedApiResponse
+  @NotFoundApiResponse("if user doesn't not exist")
+  @OkApiResponse(UserProfileViewEntity, 'user is found')
   @UseGuards(JwtAuthGuard)
   @Get('profile')
   async getMyProfile(@Req() req, @Res() res: Response) {
