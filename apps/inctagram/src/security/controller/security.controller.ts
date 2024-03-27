@@ -28,7 +28,7 @@ export class SecurityController {
   constructor(
     private securityQueryRepository: SecurityQueryRepository,
     private commandBus: CommandBus,
-  ) { }
+  ) {}
 
   @ForbiddenApiResponse()
   @OkApiResponse(DeviceEntity, '', true)

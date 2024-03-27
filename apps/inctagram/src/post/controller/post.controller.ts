@@ -21,7 +21,7 @@ import {
 @ApiTags('post')
 @Controller('post')
 export class PostController {
-  constructor(private postService: PostService) { }
+  constructor(private postService: PostService) {}
 
   @OkApiResponse(PostEntity, 'post')
   @UseGuards(JwtAuthGuard)

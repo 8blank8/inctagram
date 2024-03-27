@@ -31,7 +31,7 @@ export class UserController {
   constructor(
     private userQueryRepo: UserQueryRepository,
     private changeProfileInfoUseCase: ChangeProfileInfoUseCase,
-  ) { }
+  ) {}
 
   @UnauthorizedApiResponse()
   @NoContentApiResponse('profile changed')
