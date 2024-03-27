@@ -19,7 +19,7 @@ import { DeviceEntity } from '@app/main/security/entity/device.entity';
 import {
   ForbiddenApiResponse,
   OkApiResponse,
-} from 'libs/swagger/swagger.decorator';
+} from '../../../../../libs/swagger/swagger.decorator';
 
 @ApiBearerAuth()
 @ApiTags('security')
@@ -28,7 +28,7 @@ export class SecurityController {
   constructor(
     private securityQueryRepository: SecurityQueryRepository,
     private commandBus: CommandBus,
-  ) {}
+  ) { }
 
   @ForbiddenApiResponse()
   @OkApiResponse(DeviceEntity, '', true)

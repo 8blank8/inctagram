@@ -16,12 +16,12 @@ import { PostEntity } from '@app/main/post/entity/post.entity';
 import {
   CreatedApiResponse,
   OkApiResponse,
-} from 'libs/swagger/swagger.decorator';
+} from '../../../../../libs/swagger/swagger.decorator';
 
 @ApiTags('post')
 @Controller('post')
 export class PostController {
-  constructor(private postService: PostService) {}
+  constructor(private postService: PostService) { }
 
   @OkApiResponse(PostEntity, 'post')
   @UseGuards(JwtAuthGuard)

@@ -47,7 +47,7 @@ import {
   IternalServerErrorApiResponse,
   OkApiResponse,
   UnauthorizedApiResponse,
-} from 'libs/swagger/swagger.decorator';
+} from '../../../../../libs/swagger/swagger.decorator';
 
 @ApiTags('Auth')
 @Controller('/auth')
@@ -56,7 +56,7 @@ export class AuthController {
     private authService: AuthService,
     private commandBus: CommandBus,
     private mailService: MailService,
-  ) {}
+  ) { }
 
   @CreatedApiResponse('Mail sent', TestMailEntity)
   @Post('test-mail')
@@ -184,7 +184,7 @@ export class AuthController {
   @OkApiResponse(null, 'will redirect to google auth page')
   @Get('google')
   @UseGuards(GoogleOauthGuard)
-  async googleAuth() {}
+  async googleAuth() { }
 
   @ApiExcludeEndpoint()
   // @ApiOperation({

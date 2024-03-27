@@ -21,9 +21,9 @@ import {
   NotFoundApiResponse,
   OkApiResponse,
   UnauthorizedApiResponse,
-} from 'libs/swagger/swagger.decorator';
+} from '../../../../../libs/swagger/swagger.decorator';
 import { ChangeProfileInfoCommand } from '../use_cases/update/change-profile-info.command';
-import { ReqWithUser } from 'libs/types/types';
+import { ReqWithUser } from '../../../../../libs/types/types';
 
 @ApiTags('User')
 @Controller('user')
@@ -31,7 +31,7 @@ export class UserController {
   constructor(
     private userQueryRepo: UserQueryRepository,
     private changeProfileInfoUseCase: ChangeProfileInfoUseCase,
-  ) {}
+  ) { }
 
   @UnauthorizedApiResponse()
   @NoContentApiResponse('profile changed')

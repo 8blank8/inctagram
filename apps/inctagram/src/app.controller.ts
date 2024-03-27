@@ -30,7 +30,7 @@ import { JwtAuthGuard } from '@app/auth';
 import { FullUserEntity } from '@app/main/user/entity/full-user.entity';
 import { ErrorResponseEntity } from '@app/main/auth/entity/error-response.entity';
 import { UserProfileViewEntity } from '@app/main/user/entity/user-profile-view.entity';
-import { OkApiResponse } from 'libs/swagger/swagger.decorator';
+import { OkApiResponse } from '../../../libs/swagger/swagger.decorator';
 
 @Controller()
 export class AppController {
@@ -38,7 +38,7 @@ export class AppController {
     @Inject('FILE_SERVICE') private client: ClientProxy,
     private readonly userQueryRepository: UserQueryRepository,
     private appService: AppService,
-  ) {}
+  ) { }
 
   @Get()
   getHello() {
