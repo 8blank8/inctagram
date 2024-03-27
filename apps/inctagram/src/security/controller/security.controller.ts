@@ -12,8 +12,6 @@ import { Response } from 'express';
 import { CommandBus } from '@nestjs/cqrs';
 import {
   ApiBearerAuth,
-  ApiOperation,
-  ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
 import { SecurityQueryRepository } from '@app/main/security/repository/secutity-query.repository';
@@ -21,6 +19,7 @@ import { DeleteDeviceCommand } from '@app/main/security/use_cases/delete-device.
 import { DeleteAllDevicesCommand } from '@app/main/security/use_cases/delete.all.device.use.case';
 import { JwtAuthGuard } from '@app/auth';
 import { DeviceEntity } from '@app/main/security/entity/device.entity';
+import { ForbiddenApiResponse, OkApiResponse } from 'libs/swagger/swagger.decorator';
 
 @ApiBearerAuth()
 @ApiTags('security')
@@ -29,16 +28,11 @@ export class SecurityController {
   constructor(
     private securityQueryRepository: SecurityQueryRepository,
     private commandBus: CommandBus,
-  ) {}
+  ) { }
 
+  @ForbiddenApiResponse()
+  @OkApiResponse(DeviceEntity, '', true)
   @UseGuards(JwtAuthGuard)
-  @ApiOperation({ summary: 'Get user active devices' })
-  @ApiResponse({ status: 403, description: 'Forbidden.' })
-  @ApiResponse({
-    type: DeviceEntity,
-    isArray: true,
-    status: HttpStatus.OK,
-  })
   @Get('/devices')
   async findDevices(@Request() req) {
     const devices = this.securityQueryRepository.findDevicesUserByUserId(
