@@ -22,6 +22,7 @@ import { ResendConfirmationCodeUseCase } from '../user/use_cases/email/resend-co
 import { PasswordResetMailUseCase } from '../user/use_cases/password/password-reset-email.use-case';
 import { ResetUserPasswordUseCase } from '../user/use_cases/password/reset-user-password.use-case';
 import { CreateUserUseCase } from '../user/use_cases/registration/create-user.use-case';
+import { CreateTokensUseCase } from './use_cases/token/create-tokens.use-case';
 
 @Module({
   imports: [
@@ -48,7 +49,8 @@ import { CreateUserUseCase } from '../user/use_cases/registration/create-user.us
     PasswordResetMailUseCase,
     ResetUserPasswordUseCase,
     CreateUserUseCase,
+    CreateTokensUseCase
   ],
   exports: [AuthService, ValidateUserUseCase],
 })
-export class AuthModule {}
+export class AuthModule { }
