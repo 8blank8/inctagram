@@ -26,10 +26,6 @@
     "prisma:deploy": "yarn prisma migrate deploy",
     "prisma:seed": "ts-node prisma/seed.ts"
   },
-  "pre-commit": {
-    "run": "lint",
-    "silent": false
-  },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.451.0",
     "@nestjs-modules/mailer": "^1.9.1",
@@ -78,7 +74,6 @@
     "@types/supertest": "^2.0.12",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
-    "dotenv": "^16.3.1",
     "eslint": "^8.42.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-prettier": "^5.0.0",
