@@ -28,7 +28,6 @@ import { AuthService } from '../auth.service';
 import { RegisterUserDto } from '../dto/register-user.dto';
 import { TestMailEntity } from '@app/main/auth/entity/test-mail.entity';
 import { TokenEntity } from '@app/main/auth/entity/token.entity';
-import { LoginDataEntity } from '@app/main/auth/entity/login-data.entity';
 import { FullUserEntity } from '@app/main/user/entity/full-user.entity';
 import {
   BadRequestApiResponse,
@@ -51,13 +50,14 @@ import { PasswordResetMailUseCase } from '@app/main/user/use_cases/password/pass
 import { ResetUserPasswordUseCase } from '@app/main/user/use_cases/password/reset-user-password.use-case';
 import { ResetUserPasswordCommand } from '@app/main/user/use_cases/password/dto/reset-user-password.command';
 import { CreateUserUseCase } from '@app/main/user/use_cases/registration/create-user.use-case';
+import { CreateTokensUseCase } from '../use_cases/token/create-tokens.use-case';
+import { RefreshTokenGuard } from '@app/auth/guards/refrest-token.guard';
 
 @ApiTags('Auth')
 @Controller('/auth')
 export class AuthController {
   constructor(
     private authService: AuthService,
-    private commandBus: CommandBus,
     private mailService: MailService,
     private authorizeUserUseCase: AuthorizeUserUseCase,
     private registerGoogleUserUseCase: RegisterGoogleUserUseCase,
@@ -68,7 +68,8 @@ export class AuthController {
     private passwordResetMailUseCase: PasswordResetMailUseCase,
     private resetUserPasswordUseCase: ResetUserPasswordUseCase,
     private createUserUseCase: CreateUserUseCase,
-  ) {}
+    private createTokensUseCase: CreateTokensUseCase
+  ) { }
 
   @CreatedApiResponse('Mail sent', TestMailEntity)
   @Post('test-mail')
@@ -83,7 +84,6 @@ export class AuthController {
   @Post('/login')
   async login(
     @Req() req: ReqWithUser,
-    @Body() body: LoginDataEntity,
     @Ip() ip,
     @Res() res: Response,
   ) {
@@ -93,20 +93,20 @@ export class AuthController {
       ip: ip,
     };
 
-    const token = await this.authorizeUserUseCase.execute(command);
+    const { refreshToken, accessToken } = await this.authorizeUserUseCase.execute(command);
 
-    setAuthTokens(res, token);
-    res.status(HttpStatus.OK).send(token);
+    setAuthTokens(res, refreshToken);
+    res.status(HttpStatus.OK).send({ accessToken });
   }
 
   @UseGuards(JwtAuthGuard)
   @ForbiddenApiResponse()
   @OkApiResponse()
   @Get('/logout')
-  async logout(@Req() req, @Ip() ip) {
+  async logout(@Req() req: ReqWithUser, @Ip() ip) {
     return this.logoutUserUseCase.execute({
       userId: req.user.id,
-      deviceIdOrIp: ip ?? req.user.deviceId,
+      deviceIdOrIp: ip ?? req.deviceId,
     });
   }
 
@@ -137,7 +137,7 @@ export class AuthController {
   @IternalServerErrorApiResponse()
   @OkApiResponse(FullUserEntity)
   @Get('/me')
-  async getMe(@Req() req, @Res() res: Response) {
+  async getMe(@Req() req: ReqWithUser, @Res() res: Response) {
     const data = await this.authService.getFullUserData(req.user.id);
     return res.status(HttpStatus.OK).send(data);
   }
@@ -194,10 +194,29 @@ export class AuthController {
     return res.sendStatus(HttpStatus.OK);
   }
 
+  @UseGuards(RefreshTokenGuard)
+  @OkApiResponse(TokenEntity)
+  @Get('/refresh-token')
+  async refreshToken(
+    @Req() req: ReqWithUser,
+    @Res() res: Response
+  ) {
+    const { accessToken, refreshToken } = await this.createTokensUseCase.execute({
+      deviceId: req.deviceId,
+      userId: req.user.id
+    })
+
+    setAuthTokens(res, refreshToken)
+
+    return res
+      .status(HttpStatus.OK)
+      .send({ accessToken })
+  }
+
   @OkApiResponse(null, 'will redirect to google auth page')
   @Get('google')
   @UseGuards(GoogleOauthGuard)
-  async googleAuth() {}
+  async googleAuth() { }
 
   @ApiExcludeEndpoint()
   // @ApiOperation({
@@ -209,20 +228,19 @@ export class AuthController {
   async googleAuthCallback(@Req() req, @Ip() ip, @Res() res: Response) {
     const user = await this.registerGoogleUserUseCase.execute(req.user);
 
-    const token = await this.authorizeUserUseCase.execute({
+    const { accessToken, refreshToken } = await this.authorizeUserUseCase.execute({
       userId: user.id,
       userAgent: req.headers['user-agent'],
       ip: ip,
     });
 
-    setAuthTokens(res, token);
+    setAuthTokens(res, refreshToken);
 
     res
       .status(HttpStatus.OK)
-      .setHeader('access-token', token.accessToken)
-      .setHeader('refresh-token', token.refreshToken)
+      .setHeader('access-token', accessToken)
       .redirect(
-        `${settings_env.FRONT_URL}/auth-confirmed?accessToken=${token.accessToken}&refreshToken=${token.refreshToken}`,
+        `${settings_env.FRONT_URL}/auth-confirmed?accessToken=${accessToken}&refreshToken=${refreshToken}`,
       );
   }
 
@@ -244,13 +262,13 @@ export class AuthController {
 
     const user = await this.registerGithubUserUseCase.execute(req.user);
 
-    const token = await this.authorizeUserUseCase.execute({
+    const { refreshToken } = await this.authorizeUserUseCase.execute({
       userId: user.id,
       userAgent: req.headers['user-agent'],
       ip: ip,
     });
 
-    setAuthTokens(res, token);
+    setAuthTokens(res, refreshToken);
     return res.redirect(`${settings_env.FRONT_URL}/`);
   }
 }
