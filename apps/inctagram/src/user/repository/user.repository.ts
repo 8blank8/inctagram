@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@app/db';
-import { GoogleUserData } from '@app/main/auth/use_cases/register-google-user.use-case';
-import { GitUserData } from '@app/main/auth/use_cases/register-github-user.use-case';
 import { ChangeProfileInfoDto } from '../dto/change.profile.info.dto';
+import { GoogleUserData } from '@app/main/auth/use_cases/google/dto/register-google-user.command';
+import { GitUserData } from '@app/main/auth/use_cases/github/dto/register-github-user.command';
 
 interface SaveUserDTO {
   email: string;

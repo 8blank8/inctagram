@@ -57,5 +57,6 @@ export const matchPassword = (password: string, hash: string): boolean => {
   const salt = hash.slice(keylen);
   const originalPassHash = hash.slice(0, keylen);
   const currentPassHash = encryptPassword(password, salt);
+
   return originalPassHash === currentPassHash;
 };

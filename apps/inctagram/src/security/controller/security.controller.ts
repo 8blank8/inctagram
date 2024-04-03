@@ -12,7 +12,6 @@ import { Response } from 'express';
 import { CommandBus } from '@nestjs/cqrs';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { SecurityQueryRepository } from '@app/main/security/repository/secutity-query.repository';
-import { DeleteDeviceCommand } from '@app/main/security/use_cases/delete-device.use-case';
 import { DeleteAllDevicesCommand } from '@app/main/security/use_cases/delete.all.device.use.case';
 import { JwtAuthGuard } from '@app/auth';
 import { DeviceEntity } from '@app/main/security/entity/device.entity';
@@ -20,6 +19,7 @@ import {
   ForbiddenApiResponse,
   OkApiResponse,
 } from '../../../../../libs/swagger/swagger.decorator';
+import { DeleteDeviceUseCase } from '../use_cases/delete/delete-device.use-case';
 
 @ApiBearerAuth()
 @ApiTags('security')
@@ -28,6 +28,7 @@ export class SecurityController {
   constructor(
     private securityQueryRepository: SecurityQueryRepository,
     private commandBus: CommandBus,
+    private deleteDeviceUseCase: DeleteDeviceUseCase,
   ) {}
 
   @ForbiddenApiResponse()
@@ -48,9 +49,10 @@ export class SecurityController {
     @Request() req,
     @Res() res: Response,
   ) {
-    const isDelete = await this.commandBus.execute(
-      new DeleteDeviceCommand(req.user.userId, id),
-    );
+    const isDelete = await this.deleteDeviceUseCase.execute({
+      userId: req.user.userId,
+      deviceIdOrIp: id,
+    });
     if (!isDelete) return res.sendStatus(HttpStatus.NOT_FOUND);
 
     return res.sendStatus(HttpStatus.NO_CONTENT);

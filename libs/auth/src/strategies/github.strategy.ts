@@ -1,8 +1,8 @@
+import { GitUserData } from '@app/main/auth/use_cases/github/dto/register-github-user.command';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { Profile, Strategy } from 'passport-github';
-import { GitUserData } from '@app/main/auth/use_cases/register-github-user.use-case';
 
 interface GitProfile extends Profile {
   email: string;
