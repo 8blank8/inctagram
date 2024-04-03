@@ -8,6 +8,7 @@ import { SecurityQueryRepository } from './repository/secutity-query.repository'
 import { SecurityRepository } from './repository/security.repository';
 import { DeleteAllDevicesUseCase } from '@app/main/security/use_cases/delete.all.device.use.case';
 import { SecurityController } from './controller/security.controller';
+import { DeleteDeviceUseCase } from './use_cases/delete/delete-device.use-case';
 
 @Module({
   imports: [ConfigModule.forRoot(), CqrsModule],
@@ -18,6 +19,7 @@ import { SecurityController } from './controller/security.controller';
     SecurityService,
     SecurityRepository,
     DeleteAllDevicesUseCase,
+    DeleteDeviceUseCase,
   ],
   exports: [SecurityQueryRepository, SecurityRepository],
 })
