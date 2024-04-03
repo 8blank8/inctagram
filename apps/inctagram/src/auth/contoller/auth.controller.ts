@@ -20,26 +20,16 @@ import { GoogleOauthGuard } from '@app/auth/guards/google.oauth.guard';
 import { GithubOathGuard } from '@app/auth/guards/github.oauth.guard';
 import { AuthCreatedEntity } from '@app/main/auth/entity/auth-created-entity';
 import { MailService, settings_env } from '@app/common';
-import { RegisterGoogleUserCommand } from '@app/main/auth/use_cases/register-google-user.use-case';
-import { ResendConfirmationCodeCommand } from '@app/main/user/use_cases/resend-confirmation-code.use-case';
 import { setAuthTokens } from '@app/main/utils/setAuthTokens';
 
-import { RegisterGithubUserCommand } from '../use_cases/register-github-user.use-case';
-import { AuthorizeUserCommand } from '../use_cases/authorize-user.use-case';
-import { CreateUserCommand } from '../../user/use_cases/create-user.use-case';
-import { EmailConfirmationCommand } from '../../user/use_cases/email-confirmation.use-case';
+import { RegisterGithubUserUseCase } from '../use_cases/github/register-github-user.use-case';
+import { AuthorizeUserUseCase } from '../use_cases/login/authorize-user.use-case';
 import { AuthService } from '../auth.service';
 import { RegisterUserDto } from '../dto/register-user.dto';
-import { ConfirmEmailDto } from '../dto/confirm-email.dto';
 import { TestMailEntity } from '@app/main/auth/entity/test-mail.entity';
-import { ResendMailEntity } from '@app/main/auth/entity/resend-mail.entity';
 import { TokenEntity } from '@app/main/auth/entity/token.entity';
 import { LoginDataEntity } from '@app/main/auth/entity/login-data.entity';
-import { PasswordResetMail } from '@app/main/user/use_cases/password-reset-email.use-case';
-import { ResetPasswordDto } from '@app/main/auth/dto/reset-password.dto';
-import { ResetUserPassword } from '@app/main/user/use_cases/reset-user-password.use-case';
 import { FullUserEntity } from '@app/main/user/entity/full-user.entity';
-import { LogOutUserCommand } from '@app/main/auth/use_cases/log-out.use-case';
 import {
   BadRequestApiResponse,
   CreatedApiResponse,
@@ -48,6 +38,19 @@ import {
   OkApiResponse,
   UnauthorizedApiResponse,
 } from '../../../../../libs/swagger/swagger.decorator';
+import { AuthorizeUserCommand } from '../use_cases/login/dto/authorize-user.command';
+import { ReqWithUser } from 'libs/types/types';
+import { RegisterGoogleUserUseCase } from '../use_cases/google/register-google-user.use-case';
+import { LogOutUserUseCase } from '../use_cases/logout/log-out.use-case';
+import { EmailConfirmationUseCase } from '@app/main/user/use_cases/email/email-confirmation.use-case';
+import { ResendConfirmationCodeUseCase } from '@app/main/user/use_cases/email/resend-confirmation-code.use-case';
+import { EmailConfirmationCommand } from '@app/main/user/use_cases/email/dto/email-confirmation.command';
+import { ResendConfirmationCodeCommand } from '@app/main/user/use_cases/email/dto/resend-confirmation-code.command';
+import { PasswordResetEmailCommand } from '@app/main/user/use_cases/password/dto/password-reset-email.command';
+import { PasswordResetMailUseCase } from '@app/main/user/use_cases/password/password-reset-email.use-case';
+import { ResetUserPasswordUseCase } from '@app/main/user/use_cases/password/reset-user-password.use-case';
+import { ResetUserPasswordCommand } from '@app/main/user/use_cases/password/dto/reset-user-password.command';
+import { CreateUserUseCase } from '@app/main/user/use_cases/registration/create-user.use-case';
 
 @ApiTags('Auth')
 @Controller('/auth')
@@ -56,6 +59,15 @@ export class AuthController {
     private authService: AuthService,
     private commandBus: CommandBus,
     private mailService: MailService,
+    private authorizeUserUseCase: AuthorizeUserUseCase,
+    private registerGoogleUserUseCase: RegisterGoogleUserUseCase,
+    private registerGithubUserUseCase: RegisterGithubUserUseCase,
+    private logoutUserUseCase: LogOutUserUseCase,
+    private emailConfirmationUseCase: EmailConfirmationUseCase,
+    private resendConfirmationCodeUseCase: ResendConfirmationCodeUseCase,
+    private passwordResetMailUseCase: PasswordResetMailUseCase,
+    private resetUserPasswordUseCase: ResetUserPasswordUseCase,
+    private createUserUseCase: CreateUserUseCase,
   ) {}
 
   @CreatedApiResponse('Mail sent', TestMailEntity)
@@ -70,14 +82,19 @@ export class AuthController {
   @OkApiResponse(TokenEntity)
   @Post('/login')
   async login(
-    @Req() req,
+    @Req() req: ReqWithUser,
     @Body() body: LoginDataEntity,
     @Ip() ip,
     @Res() res: Response,
   ) {
-    const token = await this.commandBus.execute(
-      new AuthorizeUserCommand(req.user.id, req, ip),
-    );
+    const command: AuthorizeUserCommand = {
+      userId: req.user.id,
+      userAgent: req.headers['user-agent'],
+      ip: ip,
+    };
+
+    const token = await this.authorizeUserUseCase.execute(command);
+
     setAuthTokens(res, token);
     res.status(HttpStatus.OK).send(token);
   }
@@ -87,9 +104,10 @@ export class AuthController {
   @OkApiResponse()
   @Get('/logout')
   async logout(@Req() req, @Ip() ip) {
-    return this.commandBus.execute(
-      new LogOutUserCommand(req.user.id, ip ?? req.user.deviceId),
-    );
+    return this.logoutUserUseCase.execute({
+      userId: req.user.id,
+      deviceIdOrIp: ip ?? req.user.deviceId,
+    });
   }
 
   @ForbiddenApiResponse()
@@ -104,9 +122,10 @@ export class AuthController {
     if (!!exists && exists.emailConfirmed)
       return res.sendStatus(HttpStatus.BAD_REQUEST);
     // TODO: change to true when mail service will repared
-    const user = await this.commandBus.execute(
-      new CreateUserCommand(inputData, process.env.MODE === 'TESTING'),
-    );
+    const user = await this.createUserUseCase.execute({
+      user: inputData,
+      sendMail: process.env.MODE === 'TESTING',
+    });
 
     if (!user) return res.sendStatus(HttpStatus.BAD_REQUEST);
 
@@ -127,12 +146,10 @@ export class AuthController {
   @OkApiResponse()
   @Post('/confirm-code')
   async confirmationEmail(
-    @Body() inputData: ConfirmEmailDto,
+    @Body() inputData: EmailConfirmationCommand,
     @Res() res: Response,
   ) {
-    const isConfirmed = await this.commandBus.execute(
-      new EmailConfirmationCommand(inputData),
-    );
+    const isConfirmed = await this.emailConfirmationUseCase.execute(inputData);
     // TODO: remove userId from request;
     if (!isConfirmed) return res.sendStatus(HttpStatus.BAD_REQUEST);
 
@@ -143,12 +160,10 @@ export class AuthController {
   @OkApiResponse(null, 'Mail sent')
   @Post('/resend-email-code')
   async requestEmailCode(
-    @Body() inputData: ResendMailEntity,
+    @Body() inputData: ResendConfirmationCodeCommand,
     @Res() res: Response,
   ) {
-    await this.commandBus.execute(
-      new ResendConfirmationCodeCommand(inputData.email),
-    );
+    await this.resendConfirmationCodeUseCase.execute(inputData);
 
     return res.sendStatus(HttpStatus.OK);
   }
@@ -157,13 +172,12 @@ export class AuthController {
   @OkApiResponse(null, 'Mail sent')
   @Post('/password-recovery-email')
   async passwordRecoveryEmailCode(
-    @Body() inputData: ResendMailEntity,
+    @Body() inputData: PasswordResetEmailCommand,
     @Res() res: Response,
   ) {
-    const sent = await this.commandBus.execute(
-      new PasswordResetMail(inputData.email),
-    );
+    const sent = await this.passwordResetMailUseCase.execute(inputData);
     if (!sent) return res.sendStatus(HttpStatus.BAD_REQUEST);
+
     return res.sendStatus(HttpStatus.OK);
   }
 
@@ -171,13 +185,12 @@ export class AuthController {
   @OkApiResponse(null, 'New password applied')
   @Post('/change-password')
   async changePassword(
-    @Body() inputData: ResetPasswordDto,
+    @Body() inputData: ResetUserPasswordCommand,
     @Res() res: Response,
   ) {
-    const result = await this.commandBus.execute(
-      new ResetUserPassword(inputData),
-    );
+    const result = await this.resetUserPasswordUseCase.execute(inputData);
     if (!result) return res.sendStatus(HttpStatus.BAD_REQUEST);
+
     return res.sendStatus(HttpStatus.OK);
   }
 
@@ -194,13 +207,16 @@ export class AuthController {
   @Get('google/callback')
   @UseGuards(GoogleOauthGuard)
   async googleAuthCallback(@Req() req, @Ip() ip, @Res() res: Response) {
-    const user = await this.commandBus.execute(
-      new RegisterGoogleUserCommand(req.user),
-    );
-    const token = await this.commandBus.execute(
-      new AuthorizeUserCommand(user.id, req, ip),
-    );
+    const user = await this.registerGoogleUserUseCase.execute(req.user);
+
+    const token = await this.authorizeUserUseCase.execute({
+      userId: user.id,
+      userAgent: req.headers['user-agent'],
+      ip: ip,
+    });
+
     setAuthTokens(res, token);
+
     res
       .status(HttpStatus.OK)
       .setHeader('access-token', token.accessToken)
@@ -226,12 +242,14 @@ export class AuthController {
   ) {
     console.log('code => ', code);
 
-    const user = await this.commandBus.execute(
-      new RegisterGithubUserCommand(req.user),
-    );
-    const token = await this.commandBus.execute(
-      new AuthorizeUserCommand(user.id, req, ip),
-    );
+    const user = await this.registerGithubUserUseCase.execute(req.user);
+
+    const token = await this.authorizeUserUseCase.execute({
+      userId: user.id,
+      userAgent: req.headers['user-agent'],
+      ip: ip,
+    });
+
     setAuthTokens(res, token);
     return res.redirect(`${settings_env.FRONT_URL}/`);
   }
