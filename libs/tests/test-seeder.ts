@@ -20,10 +20,11 @@ export class TestSeeder {
   createUser(userDto: RegisterUserDto): Promise<User> {
     return this.testDataCreator.createUser(userDto);
   }
+
 }
 
 class TestDataCreator {
-  constructor(private prisma: PrismaClient) {}
+  constructor(private prisma: PrismaClient) { }
 
   createUser(dto: RegisterUserDto): Promise<User> {
     return this.prisma.user.create({

@@ -1,7 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 
-export const clearTestDB = async () => {
-  const prisma = new PrismaClient();
+export const clearTestDB = async (prisma: PrismaClient) => {
 
   try {
     await prisma.user.deleteMany({});
@@ -13,7 +12,5 @@ export const clearTestDB = async () => {
     await prisma.googleProvider.deleteMany({});
   } catch (e) {
     console.error('test database not clear', e);
-  } finally {
-    await prisma.$disconnect();
   }
 };

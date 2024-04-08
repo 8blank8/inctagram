@@ -4,6 +4,7 @@ import { MailerService } from '@nestjs-modules/mailer';
 import { BadRequestException, ValidationPipe } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import { useContainer } from 'class-validator';
+import * as cookieParser from 'cookie-parser';
 
 export const mockMailCodes = {};
 
@@ -49,6 +50,8 @@ export const createTestingModule = async () => {
     .compile();
 
   const app = moduleRef.createNestApplication();
+
+  app.use(cookieParser())
 
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
   app.useGlobalPipes(

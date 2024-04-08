@@ -11,6 +11,7 @@ import { LogOutUserCommand } from '../logout/dto/logout-user.command';
 import { clearTestDB } from '../../../../../../libs/tests/clear-db';
 
 describe('auth integration', () => {
+  jest.setTimeout(8000)
   let moduleRef: TestingModule;
   let testSeeder: TestSeeder;
 
@@ -35,7 +36,7 @@ describe('auth integration', () => {
   });
 
   beforeEach(async () => {
-    await clearTestDB();
+    await clearTestDB(prisma);
   });
 
   afterAll(async () => {

@@ -17,7 +17,7 @@ export class CreateUserUseCase {
     private userRepository: UserRepository,
     private userQueryRepository: UserQueryRepository,
     private mailService: MailService,
-  ) {}
+  ) { }
 
   async execute(command: CreateUserCommand): Promise<User> {
     const { user, sendMail } = command;
@@ -45,7 +45,6 @@ export class CreateUserUseCase {
 
     const result = await this.userRepository.saveUser(createUser);
     if (sendMail) {
-      console.log('code is sending ===============+>');
       const query = await getVerificationCode({
         id: result.id,
         email: result.email,

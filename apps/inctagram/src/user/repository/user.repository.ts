@@ -3,6 +3,7 @@ import { PrismaService } from '@app/db';
 import { ChangeProfileInfoDto } from '../dto/change.profile.info.dto';
 import { GoogleUserData } from '@app/main/auth/use_cases/google/dto/register-google-user.command';
 import { GitUserData } from '@app/main/auth/use_cases/github/dto/register-github-user.command';
+import { User } from '@prisma/client';
 
 interface SaveUserDTO {
   email: string;
@@ -14,7 +15,15 @@ interface SaveUserDTO {
 
 @Injectable()
 export class UserRepository {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
+
+  async findUserById(userId: string): Promise<User | null> {
+    return this.prisma.user.findFirst({
+      where: {
+        id: userId
+      }
+    })
+  }
 
   async saveUser({ userProfile, ...user }: SaveUserDTO) {
     return this.prisma.user.upsert({

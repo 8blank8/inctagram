@@ -34,7 +34,7 @@ export class UploadService {
   constructor(
     private configService: ConfigService,
     private filesRepository: FilesRepository,
-  ) {}
+  ) { }
 
   async resize(imageBuffer: ArrayBuffer) {
     const img = sharp(imageBuffer);
@@ -60,15 +60,20 @@ export class UploadService {
       originalname,
       buffer,
     } = payload;
+
     const fileName = originalname || filename;
     const storePath = [prefix, authorId, fileName].join('/');
+
     if (!buffer || !fileName) throw new Error('No image buffer or filename');
+
     try {
       const { buffer: sizedBuffer, metadata } = await this.resize(
         Buffer.from(buffer),
       );
+
       const res = await this.uploadToS3(sizedBuffer, storePath, mimetype);
       if (res !== 200) throw new Error('Error upload to S3');
+
       const fileData = {
         url: `https://inctagram-trainee.s3.eu-central-1.amazonaws.com/${storePath}`,
         authorId: authorId,
@@ -76,7 +81,9 @@ export class UploadService {
         cropProps,
         size: metadata.size.toString(),
       };
+
       return await this.filesRepository.saveFileData(fileData, prefix);
+
     } catch (err) {
       console.log('[SERVER ERROR][UploadToS3Service:uploadFile]: ', err);
       throw err;
