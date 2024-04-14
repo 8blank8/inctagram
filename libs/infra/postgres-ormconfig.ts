@@ -1,7 +1,7 @@
-import { DeviceEntity } from '../../apps/inctagram/src/modules/device/entities/device.entity';
-import { UserEntity } from '../../apps/inctagram/src/modules/user/entities/user.entity';
 import { config } from 'dotenv'
 config()
+import { DeviceEntity } from '../../apps/inctagram/src/modules/device/entities/device.entity';
+import { UserEntity } from '../../apps/inctagram/src/modules/user/entities/user.entity';
 import { DataSource } from "typeorm";
 import { PostgresConnectionOptions } from "typeorm/driver/postgres/PostgresConnectionOptions";
 
@@ -11,7 +11,7 @@ export const allEntities = [
 ]
 
 const isTest = process.env.MODE === 'develop';
-console.log(process.env[isTest ? 'PG_DATABASE_TEST' : 'PG_DATABASE'])
+console.log('=============================> database name', process.env[isTest ? 'PG_DATABASE_TEST' : 'PG_DATABASE'])
 export const primaryPostgresConnectionOptions: PostgresConnectionOptions = {
     name: "default",
     type: 'postgres',
