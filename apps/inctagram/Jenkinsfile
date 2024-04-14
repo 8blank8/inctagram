@@ -20,10 +20,12 @@ pipeline {
                 checkout scm
             }
         }
+        
         stage('Unit tests') {
             steps {
                 script {
                     sh "npm install"
+                    sh "npm run primary:db:migrate" 
                     sh "npm run test"
                 }
             }
