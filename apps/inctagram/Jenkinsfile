@@ -19,9 +19,26 @@ pipeline {
             steps {
                 checkout scm
             }
+            steps {
+                environment {
+                    MODE = 'production'
+                    PG_USER = 'inctagram_owner'
+                    PG_PASSWORD = 'aENIcz9gZSO6'
+                    PG_PORT = 5432
+                    PG_HOST = 'ep-damp-mountain-a2d67ybd.eu-central-1.aws.neon.tech'
+                    PG_DATABASE = 'inctagram'
+                }
+                script {
+                    sh "npm install"
+                    sh "npm run primary:db:migrate" 
+                }
+            }
         }
         
         stage('Unit tests') {
+            environment {
+                    MODE = 'develop'
+                }
             steps {
                 script {
                     sh "npm install"
