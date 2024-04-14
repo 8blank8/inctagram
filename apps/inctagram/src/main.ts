@@ -23,7 +23,7 @@ async function bootstrap() {
     credentials: true,
   });
 
-  app.setGlobalPrefix('v1/api');
+  app.setGlobalPrefix('api/v1');
 
   const config = new DocumentBuilder()
     .setTitle('Median')
@@ -32,7 +32,7 @@ async function bootstrap() {
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('v1/api/documentation', app, document);
+  SwaggerModule.setup('api/v1/documentation', app, document);
 
   const MODE = process.env.MODE || 'production';
   const PORT = process.env.PORT || 3000;
