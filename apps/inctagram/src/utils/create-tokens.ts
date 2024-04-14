@@ -11,8 +11,8 @@ export const createJwtTokens = async (jwtService: JwtService, userId: string, de
                 deviceId: deviceId,
             },
             {
-                secret: process.env.JWT_SECRET,
-                expiresIn: process.env.JWT_ACCESS_EXP,
+                secret: process.env.JWT_SECRET || '123',
+                expiresIn: process.env.JWT_ACCESS_EXP || '5m',
             },
         ),
         jwtService.signAsync(
@@ -21,8 +21,8 @@ export const createJwtTokens = async (jwtService: JwtService, userId: string, de
                 deviceId: deviceId,
             },
             {
-                secret: process.env.JWT_REFRESH_SECRET,
-                expiresIn: process.env.JWT_REFRESH_EXP,
+                secret: process.env.JWT_REFRESH_SECRET || '123',
+                expiresIn: process.env.JWT_REFRESH_EXP || '7d',
             },
         ),
     ]);

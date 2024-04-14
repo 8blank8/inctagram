@@ -202,15 +202,19 @@ describe('auth', () => {
         })
 
         it('login user is success', async () => {
-            const { status, body } = await request(_httpServer)
+            const { status, body, headers } = await request(_httpServer)
                 .post('/auth/login')
                 .set('user-agent', 'test-agent')
                 .send(loginDto)
+
+            let refreshTokenCookie: string | null = null
+            refreshTokenCookie = headers['set-cookie'][0]
 
             expect(status).toBe(HttpStatus.CREATED)
             expect(body.data).toEqual({
                 accessToken: expect.any(String)
             })
+            expect(refreshTokenCookie).not.toBe(null)
 
             const findedUserWithDevices = await manager.findOne(UserEntity, {
                 where: { id: userEntity.id },
@@ -312,93 +316,93 @@ describe('auth', () => {
         })
     })
 
-    // describe('logout', () => {
-    //     let accessToken: string
-    //     let userDto: CreateUserCommand;
-    //     let userEntity: UserEntity;
-    //     let device: DeviceEntity;
+    describe('logout', () => {
+        let accessToken: string
+        let userDto: CreateUserCommand;
+        let userEntity: UserEntity;
+        let device: DeviceEntity;
 
-    //     beforeEach(async () => {
-    //         userDto = testSeeder.getUserDto()
-    //         userEntity = await testSeeder.createUser(userDto)
+        beforeEach(async () => {
+            userDto = testSeeder.getUserDto()
+            userEntity = await testSeeder.createUser(userDto)
 
-    //         const loginDto = {
-    //             email: userDto.email,
-    //             password: userDto.password
-    //         }
+            const loginDto = {
+                email: userDto.email,
+                password: userDto.password
+            }
 
-    //         const { body, headers } = await request(_httpServer)
-    //             .post('/auth/login')
-    //             .set('user-agent', 'test-agent')
-    //             .send(loginDto)
+            const { body, headers } = await request(_httpServer)
+                .post('/auth/login')
+                .set('user-agent', 'test-agent')
+                .send(loginDto)
 
-    //         accessToken = body.data.accessToken
+            accessToken = body.data.accessToken
 
-    //         const devices = await manager.find(DeviceEntity, { relations: { user: true } })
-    //         device = devices[0]
+            const devices = await manager.find(DeviceEntity, { relations: { user: true } })
+            device = devices[0]
 
-    //     })
+        })
 
-    //     it('logout user is success', async () => {
-    //         const { status, body } = await request(_httpServer)
-    //             .post('/auth/logout')
-    //             .set('Authorization', `Bearer ${accessToken}`)
+        it('logout user is success', async () => {
+            const { status, body } = await request(_httpServer)
+                .post('/auth/logout')
+                .set('Authorization', `Bearer ${accessToken}`)
 
-    //         expect(status).toBe(HttpStatus.CREATED)
-    //         expect(body.errors.length).toBe(0)
+            expect(status).toBe(HttpStatus.CREATED)
+            expect(body.errors.length).toBe(0)
 
-    //         const findedDevice = await manager.findOneBy(DeviceEntity, { id: device.id })
-    //         expect(findedDevice).toBe(null)
+            const findedDevice = await manager.findOneBy(DeviceEntity, { id: device.id })
+            expect(findedDevice).toBe(null)
 
-    //         const findedUserWithDevices = await manager.findOne(UserEntity, {
-    //             where: { id: userEntity.id },
-    //             relations: { devices: true }
-    //         })
+            const findedUserWithDevices = await manager.findOne(UserEntity, {
+                where: { id: userEntity.id },
+                relations: { devices: true }
+            })
 
-    //         expect(findedUserWithDevices.devices.length).toBe(0)
-    //     })
-    // })
+            expect(findedUserWithDevices.devices.length).toBe(0)
+        })
+    })
 
-    // describe('refresh-token', () => {
-    //     let accessToken: string
-    //     let userDto: CreateUserCommand;
-    //     let userEntity: UserEntity;
-    //     let device: DeviceEntity;
-    //     let refreshToken: string;
+    describe('refresh-token', () => {
+        let accessToken: string
+        let userDto: CreateUserCommand;
+        let userEntity: UserEntity;
+        let device: DeviceEntity;
+        let refreshToken: string;
 
-    //     beforeEach(async () => {
-    //         userDto = testSeeder.getUserDto()
-    //         userEntity = await testSeeder.createUser(userDto)
+        beforeEach(async () => {
+            userDto = testSeeder.getUserDto()
+            userEntity = await testSeeder.createUser(userDto)
 
-    //         const loginDto = {
-    //             email: userDto.email,
-    //             password: userDto.password
-    //         }
+            const loginDto = {
+                email: userDto.email,
+                password: userDto.password
+            }
 
-    //         const { body, headers } = await request(_httpServer)
-    //             .post('/auth/login')
-    //             .set('user-agent', 'test-agent')
-    //             .send(loginDto)
+            const { body, headers } = await request(_httpServer)
+                .post('/auth/login')
+                .set('user-agent', 'test-agent')
+                .send(loginDto)
 
-    //         accessToken = body.data.accessToken
-    //         refreshToken = headers['set-cookie'][0]
+            accessToken = body.data.accessToken
+            refreshToken = headers['set-cookie'][0]
 
-    //         const devices = await manager.find(DeviceEntity, { relations: { user: true } })
-    //         device = devices[0]
+            const devices = await manager.find(DeviceEntity, { relations: { user: true } })
+            device = devices[0]
 
-    //     })
+        })
 
-    //     it('create new tokens is success', async () => {
-    //         await new Promise((resolve) => setTimeout(resolve, 1000));
+        it('create new tokens is success', async () => {
+            await new Promise((resolve) => setTimeout(resolve, 1000));
 
-    //         const { status, body, headers } = await request(_httpServer)
-    //             .get('/auth/refresh-token')
-    //             .set('Cookie', `refreshToken=${refreshToken}`)
+            const { status, body, headers } = await request(_httpServer)
+                .get('/auth/refresh-token')
+                .set('Cookie', `refreshToken=${refreshToken}`)
 
-    //         console.log(headers['set-cookie'][0])
-    //         expect(status).toBe(HttpStatus.CREATED)
-    //         expect(body.data?.accessToken).not.toBe(accessToken)
-    //         expect(headers['set-cookie'][0]).not.toBe(refreshToken)
-    //     })
-    // })
+            console.log(headers['set-cookie'][0])
+            expect(status).toBe(HttpStatus.CREATED)
+            expect(body.data?.accessToken).not.toBe(accessToken)
+            expect(headers['set-cookie'][0]).not.toBe(refreshToken)
+        })
+    })
 })
