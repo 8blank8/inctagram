@@ -12,22 +12,18 @@ pipeline {
         DEPLOYMENT_NAME = "back-incta-main-deployment"
         IMAGE_NAME = "${env.BUILD_ID}_${env.ENV_TYPE}_${env.GIT_COMMIT}"
         DOCKER_BUILD_NAME = "${env.REGISTRY_HOSTNAME}/${env.PROJECT}:${env.IMAGE_NAME}"
+        MODE = 'production'
+        PG_USER = 'inctagram_owner'
+        PG_PASSWORD = 'aENIcz9gZSO6'
+        PG_PORT = 5432
+        PG_HOST = 'ep-damp-mountain-a2d67ybd.eu-central-1.aws.neon.tech'
+        PG_DATABASE = 'inctagram'
     }
 
     stages {
         stage('Clone repository') {
             steps {
                 checkout scm
-            }
-            steps {
-                environment {
-                    MODE = 'production'
-                    PG_USER = 'inctagram_owner'
-                    PG_PASSWORD = 'aENIcz9gZSO6'
-                    PG_PORT = 5432
-                    PG_HOST = 'ep-damp-mountain-a2d67ybd.eu-central-1.aws.neon.tech'
-                    PG_DATABASE = 'inctagram'
-                }
                 script {
                     sh "npm install"
                     sh "npm run primary:db:migrate" 
@@ -38,7 +34,7 @@ pipeline {
         stage('Unit tests') {
             environment {
                     MODE = 'develop'
-                }
+            }
             steps {
                 script {
                     sh "npm install"
