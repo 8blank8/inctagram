@@ -1,7 +1,7 @@
 import { genSalt, hash } from "bcrypt"
 
 export const hashPassword = async (password: string, salt?: string) => {
-    if (!salt) salt = await genSalt(Number(process.env.SALT_ROUNDS))
+    if (!salt) salt = await genSalt(Number(process.env.SALT_ROUNDS) || 10)
 
     const passwordHash = await hash(password, salt)
 

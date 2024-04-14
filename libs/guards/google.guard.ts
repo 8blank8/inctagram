@@ -14,8 +14,8 @@ export type GoogleUserOauthType = {
 export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     constructor() {
         super({
-            clientID: process.env.GOOGLE_CLIENT_ID,
-            clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+            clientID: process.env.GOOGLE_CLIENT_ID ?? '12302464307-ki4pubgel8l89iduogbpv5ifql8p918a.apps.googleusercontent.com',
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET || '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',
             callbackURL: process.env.GOOGLE_CALBACK_URL || 'http://localhost:3001/api/v1/auth/google-redirect',
             scope: ['profile', 'email'],
         });

@@ -16,7 +16,7 @@ import { JwtService } from "@nestjs/jwt";
         CreateUserGoogleOauthUseCase,
         CreateDeviceUseCase,
         UserRepository,
-        JwtService
+        JwtService,
     ],
     exports: [
         CreateUserUseCase,

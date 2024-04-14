@@ -2,15 +2,15 @@ import { Injectable } from "@nestjs/common";
 import { RefreshTokenCommand } from "./dto/refresh-token.command";
 import { Result } from "@libs/core/result";
 import { UserRepository } from "../../../user/repository/user.repository";
-import { createJwtTokens } from "../../../../utils/create-tokens";
 import { JwtService } from "@nestjs/jwt";
+import { createJwtTokens } from "@inctagram/src/utils/create-tokens";
 
 
 @Injectable()
 export class RefreshTokenUseCase {
     constructor(
         private userRepo: UserRepository,
-        private jwtService: JwtService,
+        private jwtService: JwtService
     ) { }
 
     async execute(command: RefreshTokenCommand): Promise<Result<{ accessToken: string, refreshToken: string }>> {

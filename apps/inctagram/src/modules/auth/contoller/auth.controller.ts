@@ -24,6 +24,7 @@ import { RefreshTokenCommand } from "../use-cases/refresh-token/dto/refresh-toke
 import { AuthGuard } from "@nestjs/passport";
 import { CreateUserGoogleOauthUseCase } from "../../user/use-cases/create/create-user-google-ouath.use-case";
 import { CreateUserGoogleOauthCommand } from "../../user/use-cases/create/dto/create-user-google-ouath.command";
+import { appSetting } from "@libs/core/app-setting";
 
 @ApiTags('auth')
 @Controller('auth')
@@ -163,11 +164,11 @@ export class AuthContoller {
         }
 
         const result = await this.createUserGoogleOauthUseCase.execute(command)
-        if (!result.isSuccess) return res.status(HttpStatus.BAD_REQUEST).redirect(`${process.env.FRONT_URL}/`)
+        if (!result.isSuccess) return res.status(HttpStatus.BAD_REQUEST).redirect(`${appSetting.FRONT_URL}/`)
 
         return res
             .cookie('refreshToken', result.value.refreshToken, { httpOnly: true, secure: true })
             .status(HttpStatus.CREATED)
-            .redirect(`${process.env.FRONT_URL}/`)
+            .redirect(`${appSetting.FRONT_URL}/`)
     }
 }
