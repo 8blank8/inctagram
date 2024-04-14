@@ -10,7 +10,7 @@
   "monorepo": true,
   "root": "apps/inctagram",
   "projects": {
-    "inctagramm": {
+    "inctagram": {
       "type": "application",
       "root": "apps/inctagram",
       "entryFile": "main",
