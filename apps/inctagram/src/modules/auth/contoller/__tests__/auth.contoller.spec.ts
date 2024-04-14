@@ -399,7 +399,6 @@ describe('auth', () => {
                 .get('/auth/refresh-token')
                 .set('Cookie', `refreshToken=${refreshToken}`)
 
-            console.log(headers['set-cookie'][0])
             expect(status).toBe(HttpStatus.CREATED)
             expect(body.data?.accessToken).not.toBe(accessToken)
             expect(headers['set-cookie'][0]).not.toBe(refreshToken)

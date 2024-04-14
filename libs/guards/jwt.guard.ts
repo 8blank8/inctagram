@@ -28,7 +28,7 @@ export const JwtAuthGuard = (): any => {
                 if (!accessToken)
                     throw new UnauthorizedException("Access token is not set");
 
-                const { userId, deviceId } = await this.jwtService.verifyAsync(accessToken, { secret: process.env.JWT_SECRET });
+                const { userId, deviceId } = await this.jwtService.verifyAsync(accessToken, { secret: process.env.JWT_SECRET || '123' });
 
                 req.userId = userId
                 req.deviceId = deviceId

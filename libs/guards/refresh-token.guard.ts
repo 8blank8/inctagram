@@ -40,7 +40,7 @@ export const JwtRefreshAuthGuard = (): any => {
                 if (!refreshToken)
                     throw new UnauthorizedException("Refresh token is not set");
 
-                const { userId, deviceId } = await this.jwtService.verifyAsync(refreshToken, { secret: process.env.JWT_SECRET });
+                const { userId, deviceId } = await this.jwtService.verifyAsync(refreshToken, { secret: process.env.JWT_SECRET || '123' });
 
                 req.userId = userId
                 req.deviceId = deviceId
