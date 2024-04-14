@@ -18,22 +18,27 @@ export class LoginUserUseCase {
     ) { }
 
     async execute(command: LoginUserCommand): Promise<Result<{ accessToken: string, refreshToken: string }>> {
-        const { email, password, title } = command
+        try {
+            const { email, password, title } = command
 
-        const user = await this.userRepo.getUserByEmail(email)
-        if (!user) return Result.Err(new AuthError('The email or password are incorrect. Try again please'))
+            const user = await this.userRepo.getUserByEmail(email)
+            if (!user) return Result.Err(new AuthError('The email or password are incorrect. Try again please'))
 
-        const { passwordHash } = await hashPassword(password, user.passwordSalt)
-        if (passwordHash !== user.passwordHash) return Result.Err(new AuthError('The email or password are incorrect. Try again please'))
+            const { passwordHash } = await hashPassword(password, user.passwordSalt)
+            if (passwordHash !== user.passwordHash) return Result.Err(new AuthError('The email or password are incorrect. Try again please'))
 
-        const device = await this.createDeviceUseCase.execute({
-            title,
-            userId: user.id
-        })
-        if (!device.isSuccess) return Result.Err(device.err)
+            const device = await this.createDeviceUseCase.execute({
+                title,
+                userId: user.id
+            })
+            if (!device.isSuccess) return Result.Err(device.err)
 
-        const { accessToken, refreshToken } = await createJwtTokens(this.jwtService, user.id, device.value.id)
+            const { accessToken, refreshToken } = await createJwtTokens(this.jwtService, user.id, device.value.id)
 
-        return Result.Ok({ accessToken, refreshToken })
+            return Result.Ok({ accessToken, refreshToken })
+        } catch (e) {
+            console.log(e)
+            return Result.Err('something wrong')
+        }
     }
 }
