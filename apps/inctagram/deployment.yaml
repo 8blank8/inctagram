@@ -22,63 +22,118 @@ spec:
              - containerPort: PORT_CONTAINER
 
            env:
-             - name: FILES_SERVICE_PORT
+             - name: PG_USER_TEST
                valueFrom:
                  secretKeyRef:
-                   name: backend-inctagram-production-config-secret
-                   key: FILES_SERVICE_PORT
-             - name: FILES_SERVICE_HOST
+                   name: backend-inctagram-trainee-production-config-secret
+                   key: PG_USER_TEST
+             - name: PG_HOST_TEST
                valueFrom:
                  secretKeyRef:
-                   name: backend-inctagram-production-config-secret
-                   key: FILES_SERVICE_HOST
-             - name: GOOGLE_API_KEY
+                   name: backend-inctagram-trainee-production-config-secret
+                   key: PG_HOST_TEST
+             - name: PG_DATABASE_TEST
                valueFrom:
                  secretKeyRef:
-                   name: backend-inctagram-production-config-secret
-                   key: GOOGLE_API_KEY
-             - name: GOOGLE_OAUTH_CLIENT_ID
+                   name: backend-inctagram-trainee-production-config-secret
+                   key: PG_DATABASE_TEST
+             - name: PG_PASSWORD_TEST
                valueFrom:
                  secretKeyRef:
-                   name: backend-inctagram-production-config-secret
-                   key: GOOGLE_OAUTH_CLIENT_ID
-             - name: GOOGLE_OAUTH_CLIENT_SECRET
+                   name: backend-inctagram-trainee-production-config-secret
+                   key: PG_PASSWORD_TEST
+             - name: PG_PORT_TEST
                valueFrom:
                  secretKeyRef:
-                   name: backend-inctagram-production-config-secret
-                   key: GOOGLE_OAUTH_CLIENT_SECRET
-             - name: EMAIL_HOST
+                   name: backend-inctagram-trainee-production-config-secret
+                   key: PG_PORT_TEST
+             - name: PG_USER
                valueFrom:
                  secretKeyRef:
-                   name: backend-inctagram-production-config-secret
-                   key: EMAIL_HOST
-             - name: EMAIL_PORT
+                   name: backend-inctagram-trainee-production-config-secret
+                   key: PG_USER
+             - name: PG_PASSWORD
                valueFrom:
                  secretKeyRef:
-                   name: backend-inctagram-production-config-secret
-                   key: EMAIL_PORT
-             - name: EMAIL_ID
+                   name: backend-inctagram-trainee-production-config-secret
+                   key: PG_PASSWORD
+             - name: PG_PORT
                valueFrom:
                  secretKeyRef:
-                   name: backend-inctagram-production-config-secret
-                   key: EMAIL_ID
-             - name: EMAIL_PASS
+                   name: backend-inctagram-trainee-production-config-secret
+                   key: PG_PORT
+             - name: PG_HOST
                valueFrom:
                  secretKeyRef:
-                   name: backend-inctagram-production-config-secret
-                   key: EMAIL_PASS
+                   name: backend-inctagram-trainee-production-config-secret
+                   key: PG_HOST
+             - name: PG_DATABASE
+               valueFrom:
+                 secretKeyRef:
+                   name: backend-inctagram-trainee-production-config-secret
+                   key: PG_DATABASE
+             - name: MAILER_HOST
+               valueFrom:
+                 secretKeyRef:
+                   name: backend-inctagram-trainee-production-config-secret
+                   key: MAILER_HOST
+             - name: MAILER_PORT
+               valueFrom:
+                 secretKeyRef:
+                   name: backend-inctagram-trainee-production-config-secret
+                   key: MAILER_PORT
+             - name: MAILER_USER
+               valueFrom:
+                 secretKeyRef:
+                   name: backend-inctagram-trainee-production-config-secret
+                   key: MAILER_USER
+             - name: MAILER_PASS
+               valueFrom:
+                 secretKeyRef:
+                   name: backend-inctagram-trainee-production-config-secret
+                   key: MAILER_PASS
+             - name: JWT_SECRET
+               valueFrom:
+                 secretKeyRef:
+                   name: backend-inctagram-trainee-production-config-secret
+                   key: JWT_SECRET
+             - name: JWT_ACCESS_EXP
+               valueFrom:
+                 secretKeyRef:
+                   name: backend-inctagram-trainee-production-config-secret
+                   key: JWT_ACCESS_EXP
+             - name: JWT_REFRESH_SECRET
+               valueFrom:
+                 secretKeyRef:
+                   name: backend-inctagram-trainee-production-config-secret
+                   key: JWT_REFRESH_SECRET
+             - name: JWT_REFRESH_EXP
+               valueFrom:
+                 secretKeyRef:
+                   name: backend-inctagram-trainee-production-config-secret
+                   key: JWT_REFRESH_EXP
              - name: FRONT_URL
                valueFrom:
                  secretKeyRef:
-                   name: backend-inctagram-production-config-secret
+                   name: backend-inctagram-trainee-production-config-secret
                    key: FRONT_URL
-             - name: TEST_DB_URL
+             - name: GOOGLE_CLIENT_ID
                valueFrom:
                  secretKeyRef:
-                   name: backend-inctagram-production-config-secret
-                   key: TEST_DB_URL
-             - name: DB_URL
+                   name: backend-inctagram-trainee-production-config-secret
+                   key: GOOGLE_CLIENT_ID
+             - name: GOOGLE_CLIENT_SECRET
                valueFrom:
                  secretKeyRef:
-                   name: backend-inctagram-production-config-secret
-                   key: DB_URL
+                   name: backend-inctagram-trainee-production-config-secret
+                   key: GOOGLE_CLIENT_SECRET
+             - name: GOOGLE_CALBACK_URL
+               valueFrom:
+                 secretKeyRef:
+                   name: backend-inctagram-trainee-production-config-secret
+                   key: GOOGLE_CALBACK_URL
+             - name: SALT_ROUNDS
+               valueFrom:
+                 secretKeyRef:
+                   name: backend-inctagram-trainee-production-config-secret
+                   key: SALT_ROUNDS

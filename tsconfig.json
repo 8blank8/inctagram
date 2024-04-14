@@ -12,42 +12,17 @@
     "baseUrl": "./",
     "incremental": true,
     "skipLibCheck": true,
-    "allowJs": true,
     "strictNullChecks": false,
     "noImplicitAny": false,
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
     "paths": {
-      "@app/main": [
-        "apps/inctagram/src"
+      "@libs/*": [
+        "libs/*"
       ],
-      "@app/main/*": [
-        "apps/inctagram/src/*"
-      ],
-      "@app/user": [
-        "libs/user/src"
-      ],
-      "@app/user/*": [
-        "libs/user/src/*"
-      ],
-      "@app/common": [
-        "libs/common"
-      ],
-      "@app/common/*": [
-        "libs/common/*"
-      ],
-      "@app/db": [
-        "libs/db/src"
-      ],
-      "@app/db/*": [
-        "libs/db/src/*"
-      ],
-      "@app/auth": [
-        "libs/auth/src"
-      ],
-      "@app/auth/*": [
-        "libs/auth/src/*"
+      "@inctagram/*": [
+        "apps/inctagram/*"
       ]
     }
   }
