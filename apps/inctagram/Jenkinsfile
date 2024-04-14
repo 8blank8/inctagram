@@ -12,10 +12,10 @@ pipeline {
         DEPLOYMENT_NAME = "backend-inctagram-trainee-deployment"
         IMAGE_NAME = "${env.BUILD_ID}_${env.ENV_TYPE}_${env.GIT_COMMIT}"
         DOCKER_BUILD_NAME = "${env.REGISTRY_HOSTNAME}/${env.PROJECT}:${env.IMAGE_NAME}"
-        PG_USER_TEST = springfield.3298
-        PG_HOST_TEST = ep-twilight-wave-02964973.eu-central-1.aws.neon.tech
-        PG_DATABASE_TEST = neondb
-        PG_PASSWORD_TEST = VRirOjE9BfN2
+        PG_USER_TEST = 'springfield.3298'
+        PG_HOST_TEST = 'ep-twilight-wave-02964973.eu-central-1.aws.neon.tech'
+        PG_DATABASE_TEST = 'neondb'
+        PG_PASSWORD_TEST = 'VRirOjE9BfN2'
         PG_PORT_TEST = 5432
 
     }
