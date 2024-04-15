@@ -48,7 +48,7 @@ export class CreateUserGoogleOauthUseCase {
 
             await manager.save(user)
         }
-
+        console.log({ user })
         const device = await this.createDeviceUseCase.execute({
             title: userAgent,
             userId: user.id
