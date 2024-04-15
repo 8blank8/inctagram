@@ -31,6 +31,7 @@ export class ConfirmationUserUseCase {
         if (user.emailConfirmed) return Result.Err('user is confirmed')
 
         user.emailConfirmed = true
+        user.confirmationCode = null
 
         await manager.save(user)
 
