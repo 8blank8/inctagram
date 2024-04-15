@@ -11,21 +11,33 @@ export class CreateDeviceUseCase {
     async execute(command: CreateDeviceCommand, manager: EntityManager): Promise<Result<DeviceEntity>> {
         const { title, userId } = command
 
-        const user = await manager.findOneBy(UserEntity, { id: userId })
+        const user = await manager.findOne(UserEntity, {
+            where: { id: userId },
+            relations: { devices: true }
+        })
         if (!user) return Result.Err('CreateDeviceUseCase: user not found')
 
-        const device = new DeviceEntity()
-        device.createdAt = new Date()
-        device.title = title
-        device.user = user
+        let device: DeviceEntity;
+
+        device = await manager.findOne(DeviceEntity, {
+            where: {
+                title: title,
+                user: user
+            }
+        })
+
+        if (!device) {
+            device = new DeviceEntity()
+            device.createdAt = new Date()
+            device.title = title
+            device.user = user
+        } else {
+            device.updatedAt = new Date()
+        }
 
         await manager.save(device)
 
-        if (!user.devices) {
-            user.devices = [device]
-        } else {
-            user.devices.push(device)
-        }
+        user.devices.push(device)
 
         await manager.save(user)
 
