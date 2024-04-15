@@ -36,7 +36,6 @@ export class CreateUserGoogleOauthUseCase {
         let user: UserEntity;
 
         user = await this.userRepo.getUserByEmail(email)
-
         if (!user) {
             user = new UserEntity()
 
@@ -45,31 +44,16 @@ export class CreateUserGoogleOauthUseCase {
             user.createdAt = new Date()
             user.firstname = firstname
             user.lastname = lastname
+            user.username = generateUniqueUsername()
 
-            let username: string
-            do {
-                username = generateUniqueUsername()
-                console.log(1)
-            }
-            while (!!(await this.userRepo.getUserByUsername(username)))
-
-            user.username = username
+            await manager.save(user)
         }
-
 
         const device = await this.createDeviceUseCase.execute({
             title: userAgent,
             userId: user.id
-        })
+        }, manager)
         if (!device.isSuccess) return Result.Err(device.err)
-
-        if (user.devices) {
-            user.devices.push(device.value)
-        } else {
-            user.devices = [device.value]
-        }
-
-        await manager.save(user)
 
         const { accessToken, refreshToken } = await createJwtTokens(this.jwtService, user.id, device.value.id)
 
