@@ -150,8 +150,8 @@ export class AuthContoller {
     @UseGuards(AuthGuard('google'))
     async googleAuth(@Req() req: ReqWithGoogleUser) { }
 
-    @Get('/google/callback')
     @UseGuards(AuthGuard('google'))
+    @Get('/google/callback')
     async googleAuthRedirect(
         @Req() req: ReqWithGoogleUser,
         @Res() res: Response
