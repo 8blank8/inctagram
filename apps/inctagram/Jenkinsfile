@@ -38,12 +38,14 @@ pipeline {
             steps {
                 script {
                     sh "npm install"
-                    sh "npm run primary:db:migrate" 
                     sh "npm run test"
                 }
             }
         }
         stage('e2e tests') {
+            environment {
+                    MODE = 'develop'
+            }
             steps {
                 script {
                     sh "npm run test:e2e"

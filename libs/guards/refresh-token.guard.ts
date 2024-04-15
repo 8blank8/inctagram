@@ -14,12 +14,16 @@ import { JwtService } from "@nestjs/jwt";
 export class ExtractJwt {
 
     static fromAuthHeaderAsBearerToken(request: Request): string | undefined {
+        if (!request.headers?.authorization) return undefined
+
         const [type, token] = request.headers.authorization?.split(' ') ?? [];
         return type === 'Bearer' ? token : undefined;
     }
 
     static fromCookieAsRefreshToken(request: Request): string | undefined {
-        const [title, token] = request.cookies?.refreshToken.split('=') ?? undefined
+        if (!request.cookies?.refreshToken) return undefined
+
+        const [title, token] = request.cookies.refreshToken.split('=') ?? undefined
         return title === 'refreshToken' ? token : undefined
     }
 }
