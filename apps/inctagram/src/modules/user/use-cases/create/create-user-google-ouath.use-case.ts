@@ -48,12 +48,11 @@ export class CreateUserGoogleOauthUseCase {
 
             await manager.save(user)
         }
-        console.log({ user })
+
         const device = await this.createDeviceUseCase.execute({
             title: userAgent,
             userId: user.id
         }, manager)
-        console.log(device)
         if (!device.isSuccess) return Result.Err(device.err)
 
         const { accessToken, refreshToken } = await createJwtTokens(this.jwtService, user.id, device.value.id)
