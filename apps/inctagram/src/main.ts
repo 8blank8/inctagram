@@ -3,6 +3,9 @@ config()
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { BadRequestException, ValidationError, ValidationPipe } from '@nestjs/common';
+import * as cookieParser from 'cookie-parser';
+
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -23,7 +26,32 @@ async function bootstrap() {
     credentials: true,
   });
 
+  app.use(cookieParser())
+
   app.setGlobalPrefix('api/v1');
+
+  app.useGlobalPipes(new ValidationPipe({
+    transform: true,
+    transformOptions: {
+      enableImplicitConversion: true,
+    },
+    exceptionFactory: (errors: ValidationError[]) => {
+      const errorsMessages = errors.map(e => {
+        let message = null;
+
+        if (e.constraints && Object.keys(e.constraints).length) {
+          message = e.constraints[Object.keys(e.constraints)[0]]
+        }
+
+        return {
+          field: e.property,
+          message
+        }
+      })
+
+      throw new BadRequestException(errorsMessages)
+    }
+  }));
 
   const config = new DocumentBuilder()
     .setTitle('Median')
@@ -42,9 +70,3 @@ async function bootstrap() {
   await app.listen(PORT);
 }
 bootstrap();
-
-
-
-
-// app.useGlobalPipes(new ValidationPipe({ stopAtFirstError: false }));
-
