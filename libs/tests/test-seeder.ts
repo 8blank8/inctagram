@@ -6,6 +6,7 @@ import { EntityManager } from "typeorm";
 export class CreateUserOptions {
     emailConfirmed?: boolean
     resetPasswordCode?: string
+    emailConfirmationCode?: string
 }
 
 export class TestSeeder {
@@ -41,7 +42,8 @@ export class TestCreator {
         user.createdAt = new Date()
         user.passwordHash = passwordHash
         user.passwordSalt = passwordSalt
-        user.confirmationCode = options?.resetPasswordCode ?? null
+        user.confirmationCode = options?.emailConfirmationCode ?? null
+        user.passwordRecoveryCode = options?.resetPasswordCode ?? null
 
         return this.manager.save(user)
     }
