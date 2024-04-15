@@ -109,7 +109,7 @@ describe('auth', () => {
 
             const { body, status } = await request(_httpServer)
                 .post('/auth/resend-email-code')
-                .send(user.email)
+                .send({ email: user.email })
 
             expect(status).toBe(HttpStatus.CREATED)
             expect(body.errors.length).toBe(0)
@@ -120,7 +120,7 @@ describe('auth', () => {
 
             const { body, status } = await request(_httpServer)
                 .post('/auth/resend-email-code')
-                .send(user.email)
+                .send({ email: user.email })
 
             expect(status).toBe(HttpStatus.CREATED)
             expect(body.resultCode).toBe(1)
@@ -130,7 +130,7 @@ describe('auth', () => {
         it('resend confirmation code fail user not found', async () => {
             const { body, status } = await request(_httpServer)
                 .post('/auth/resend-email-code')
-                .send('tes@gmail.com')
+                .send({ email: 'tes@gmail.com' })
 
             expect(status).toBe(HttpStatus.CREATED)
             expect(body.resultCode).toBe(1)
@@ -140,10 +140,10 @@ describe('auth', () => {
 
     describe('confirm email code', () => {
         it('confirmation email is success', async () => {
-            const user = await testSeeder.createUser(testSeeder.getUserDto(), { emailConfirmed: false })
+            const user = await testSeeder.createUser(testSeeder.getUserDto(), { emailConfirmed: false, emailConfirmationCode: '123' })
 
             const confirmCodeDto: ConfirmationUserCommand = {
-                code: user.confirmationCode
+                code: '123'
             }
 
             const { status, body } = await request(_httpServer)
@@ -171,7 +171,7 @@ describe('auth', () => {
         })
 
         it('confirmation email user is confirmed', async () => {
-            const user = await testSeeder.createUser(testSeeder.getUserDto())
+            const user = await testSeeder.createUser(testSeeder.getUserDto(), { emailConfirmationCode: '123' })
 
             const confirmCodeDto: ConfirmationUserCommand = {
                 code: user.confirmationCode
@@ -285,7 +285,7 @@ describe('auth', () => {
 
             const changePasswordDto: ResetUserPasswordCommand = {
                 code: user.passwordRecoveryCode,
-                password: 'passwo$.'
+                password: 'passwo1$.'
             }
 
             const { status, body } = await request(_httpServer)
