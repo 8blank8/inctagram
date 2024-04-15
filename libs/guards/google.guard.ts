@@ -32,7 +32,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
             firstname: name.givenName,
             lastname: name.familyName,
         };
-        console.log(user)
+
         done(null, user);
     }
 }
