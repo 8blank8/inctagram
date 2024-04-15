@@ -21,10 +21,10 @@ import { ReqWithGoogleUser, ReqWithUser } from "@libs/types/req-with-user";
 import { JwtRefreshAuthGuard } from "@libs/guards/refresh-token.guard";
 import { RefreshTokenUseCase } from "../use-cases/refresh-token/refresh-token.use-case";
 import { RefreshTokenCommand } from "../use-cases/refresh-token/dto/refresh-token.command";
-import { AuthGuard } from "@nestjs/passport";
 import { CreateUserGoogleOauthUseCase } from "../../user/use-cases/create/create-user-google-ouath.use-case";
 import { CreateUserGoogleOauthCommand } from "../../user/use-cases/create/dto/create-user-google-ouath.command";
 import { appSetting } from "@libs/core/app-setting";
+import { GoogleOAuthGuard } from "@libs/guards/google.guard";
 
 @ApiTags('auth')
 @Controller('auth')
@@ -147,10 +147,10 @@ export class AuthContoller {
     }
 
     @Get('/google')
-    @UseGuards(AuthGuard('google'))
+    @UseGuards(GoogleOAuthGuard)
     async googleAuth(@Req() req: ReqWithGoogleUser) { }
 
-    @UseGuards(AuthGuard('google'))
+    @UseGuards(GoogleOAuthGuard)
     @Get('/google/callback')
     async googleAuthRedirect(
         @Req() req: ReqWithGoogleUser,
@@ -168,7 +168,6 @@ export class AuthContoller {
 
         return res
             .cookie('refreshToken', result.value.refreshToken, { httpOnly: true, secure: true })
-            .status(HttpStatus.CREATED)
             .redirect(`${appSetting.FRONT_URL}/`)
     }
 }
