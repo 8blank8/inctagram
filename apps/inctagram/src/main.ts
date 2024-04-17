@@ -63,7 +63,7 @@ async function bootstrap() {
   SwaggerModule.setup('api/v1/documentation', app, document);
 
   const MODE = process.env.MODE || 'production';
-  const PORT = process.env.PORT || 3000;
+  const PORT = process.env.PORT || 3001;
 
   console.log(`Server listen on ${PORT} port in ${MODE} mode.`);
 

@@ -34,6 +34,10 @@ export class AppSetting {
     GOOGLE_CLIENT_ID: string
     GOOGLE_CLIENT_SECRET: string
     GOOGLE_CALBACK_URL: string
+
+    FILES_HOST: string
+    MAIN_HOST: string
+
     constructor() {
         this.MODE = process.env.MODE ?? 'develop'
 
@@ -66,6 +70,9 @@ export class AppSetting {
         this.GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || '12302464307-ki4pubgel8l89iduogbpv5ifql8p918a.apps.googleusercontent.com'
         this.GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET || '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'
         this.GOOGLE_CALBACK_URL = process.env.GOOGLE_CALBACK_URL || `http://localhost:${this.PORT}/api/v1/auth/google-redirect`
+
+        this.FILES_HOST = process.env.FILES_HOST || 'files.localhost'
+        this.MAIN_HOST = process.env.MAIN_HOST || 'localhost'
     }
 }
 

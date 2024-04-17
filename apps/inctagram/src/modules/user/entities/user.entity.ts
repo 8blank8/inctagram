@@ -17,6 +17,12 @@ export class UserEntity extends BaseEntity {
     @Column({ unique: true })
     email: string
 
+    @Column({ nullable: true })
+    aboutMe: string | null
+
+    @Column({ type: 'timestamp without time zone', nullable: true, default: null })
+    dateOfBirth: Date | null
+
     @Column({ default: false })
     emailConfirmed: boolean
 

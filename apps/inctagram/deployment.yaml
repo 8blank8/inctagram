@@ -137,6 +137,11 @@ spec:
                  secretKeyRef:
                    name: back-incta-main-production-config-secret
                    key: GOOGLE_CALBACK_URL
+             - name: MAIN_HOST
+               valueFrom:
+                 secretKeyRef:
+                   name: back-incta-main-production-config-secret
+                   key: MAIN_HOST
              - name: MODE
                valueFrom:
                  secretKeyRef:

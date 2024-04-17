@@ -15,16 +15,35 @@ export class TestSeeder {
         this.testCreator = new TestCreator(this.manager)
     }
 
-    getUserDto(): CreateUserCommand {
+    getUserDto(num: number = 1): CreateUserCommand {
         return {
-            email: "roc.32@yandex.ru",
+            email: `test${num}@yandex.ru`,
             password: 'password1$',
-            username: 'username1'
+            username: `username${num}`
         }
+    }
+
+    getUserDtos(num: number): CreateUserCommand[] {
+        const users: Array<CreateUserCommand> = []
+
+        for (let i = 1; i <= num + 1; i++) {
+            users.push(this.getUserDto(i))
+        }
+        return users
     }
 
     async createUser(dto: CreateUserCommand, options?: CreateUserOptions): Promise<UserEntity> {
         return this.testCreator.createUser(dto, options)
+    }
+
+    async createUsers(dtos: CreateUserCommand[]): Promise<UserEntity[]> {
+        const users = []
+
+        dtos.forEach(user => {
+            users.push(this.createUser(user))
+        });
+
+        return users
     }
 }
 
