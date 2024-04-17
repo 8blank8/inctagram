@@ -9,6 +9,7 @@ import { TestingModule } from "@nestjs/testing"
 import { createJwtTokens } from "@inctagram/src/utils/create-tokens"
 import { UserEntity } from "../../entities/user.entity"
 import { createAndConfigureAppForE2eTests } from "@libs/tests/create-and-configure-app-for-e2e"
+import { appSetting } from "@libs/core/app-setting"
 
 
 describe('user', () => {
@@ -64,7 +65,10 @@ describe('user', () => {
 
             const { status, body } = await request(_httpServer)
                 .put('/users/profile')
-                .set('Authorization', `Bearer ${accessToken}`)
+                .set({
+                    'Authorization': `Bearer ${accessToken}`,
+                    'host': appSetting.MAIN_HOST
+                })
                 .send(dto)
 
             expect(status).toBe(HttpStatus.OK)
@@ -96,7 +100,10 @@ describe('user', () => {
 
             const { status, body } = await request(_httpServer)
                 .put('/users/profile')
-                .set('Authorization', `Bearer ${accessToken}`)
+                .set({
+                    'Authorization': `Bearer ${accessToken}`,
+                    'host': appSetting.MAIN_HOST
+                })
                 .send(dto)
 
             expect(status).toBe(HttpStatus.OK)
@@ -129,7 +136,10 @@ describe('user', () => {
 
             const { status, body } = await request(_httpServer)
                 .put('/users/profile')
-                .set('Authorization', `Bearer ${accessToken}`)
+                .set({
+                    'Authorization': `Bearer ${accessToken}`,
+                    'host': appSetting.MAIN_HOST
+                })
                 .send(dto)
 
             expect(status).toBe(HttpStatus.OK)
@@ -161,7 +171,10 @@ describe('user', () => {
 
             const { status, body } = await request(_httpServer)
                 .put('/users/profile')
-                .set('Authorization', `Bearer ${accessToken}`)
+                .set({
+                    'Authorization': `Bearer ${accessToken}`,
+                    'host': appSetting.MAIN_HOST
+                })
                 .send(dto)
 
             expect(status).toBe(HttpStatus.OK)

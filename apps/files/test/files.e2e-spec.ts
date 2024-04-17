@@ -1,7 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
-import { FilesModule } from './../src/files.module';
+import { FilesModule } from '../src/files.module';
+import { appSetting } from '@libs/core/app-setting';
 
 describe('FilesController (e2e)', () => {
   let app: INestApplication;
@@ -18,7 +19,8 @@ describe('FilesController (e2e)', () => {
   it('/ (GET)', () => {
     return request(app.getHttpServer())
       .get('/')
+      .set({ 'host': appSetting.FILES_HOST })
       .expect(200)
-      .expect('Hello World!');
+      .expect('Hello World! Files');
   });
 });
