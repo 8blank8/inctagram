@@ -5,10 +5,11 @@ import { UpdateUserCommand } from "../use-cases/update/dto/update-user.command";
 import { ReqWithUser } from "@libs/types/req-with-user";
 import { UpdateUserUseCase } from "../use-cases/update/update-user.use-case";
 import { UpdateUserDto } from "../dto/input/update-user.dto";
+import { appSetting } from "@libs/core/app-setting";
 
 
 @ApiTags('users')
-@Controller('users')
+@Controller({ path: 'users', host: appSetting.MAIN_HOST })
 export class UserContoller {
 
     constructor(
