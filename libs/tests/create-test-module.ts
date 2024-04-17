@@ -21,6 +21,7 @@ import { RefreshTokenUseCase } from "@inctagram/src/modules/auth/use-cases/refre
 import { CreateUserGoogleOauthUseCase } from "@inctagram/src/modules/user/use-cases/create/create-user-google-ouath.use-case"
 import { UserRepository } from "@inctagram/src/modules/user/repository/user.repository"
 import { DeviceRepository } from "@inctagram/src/modules/device/repository/device.repository"
+import { AppModule } from "@inctagram/src/app.module"
 
 export class MailServiceMock {
     async sendEmailConfirmationMessage(email: string, query: string): Promise<void> {
@@ -44,7 +45,7 @@ export const CreateTestModule = () => {
             ])
         ],
         controllers: [
-            AuthContoller
+            AuthContoller,
         ],
         providers: [
             CreateUserUseCase,
@@ -71,4 +72,12 @@ export const CreateTestModule = () => {
             JwtService,
         ]
     })
+}
+
+export const CreateModuleForControllerTest = () => {
+    return Test.createTestingModule({
+        imports: [AppModule],
+    })
+        .overrideProvider(MailService)
+        .useClass(MailServiceMock)
 }
