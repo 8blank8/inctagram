@@ -10,6 +10,7 @@ import { DeviceEntity } from "../../../device/entities/device.entity"
 import { CreateUserCommand } from "../../../user/use-cases/create/dto/create-user.command"
 import { ConfirmationUserCommand } from "../../use-cases/confirmation/dto/confirmation-user.command"
 import { ResetUserPasswordCommand } from "../../use-cases/recovery-password/dto/reset-user-password.command"
+import { createAndConfigureAppForE2eTests } from "@libs/tests/create-and-configure-app-for-e2e"
 
 
 describe('auth', () => {
@@ -22,7 +23,7 @@ describe('auth', () => {
 
     beforeAll(async () => {
 
-        ({ httpServer: _httpServer, app: app, queryRunner: _queryRunner, manager: manager } = await createAndConfigureAppForTests())
+        ({ httpServer: _httpServer, app: app, queryRunner: _queryRunner, manager: manager } = await createAndConfigureAppForE2eTests())
         testSeeder = new TestSeeder(manager)
 
         await app.init()
