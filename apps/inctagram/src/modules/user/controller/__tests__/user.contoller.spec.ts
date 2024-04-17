@@ -11,7 +11,7 @@ import { UserEntity } from "../../entities/user.entity"
 import { createAndConfigureAppForE2eTests } from "@libs/tests/create-and-configure-app-for-e2e"
 
 
-describe('auth', () => {
+describe('user', () => {
     let app: INestApplication
     let _httpServer
     let _queryRunner: QueryRunner
