@@ -170,6 +170,6 @@ export class AuthContoller {
 
         return res
             .cookie('refreshToken', result.value.refreshToken, { httpOnly: true, secure: true })
-            .redirect('http://localhost:3000/`')
+            .redirect('http://localhost:3000/')
     }
 }
