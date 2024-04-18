@@ -46,6 +46,7 @@ export class AuthContoller {
     async registration(
         @Body() dto: RegistrationUserCommand
     ) {
+        console.error(dto)
         return this.registrationUserUseCase.execute(dto)
     }
 
