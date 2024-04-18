@@ -14,7 +14,7 @@ import { appSetting } from "@libs/core/app-setting";
                         accessKeyId: appSetting.AWS_S3_ID,
                         secretAccessKey: appSetting.AWS_S3_KEY,
                     },
-                    endpoint: 'https://storage.yandexcloud.net/incta-back',
+                    endpoint: 'https://storage.yandexcloud.net/',
                     region: 'ru-central1'
                 };
                 return new S3Client(s3Config);
