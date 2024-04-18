@@ -20,7 +20,7 @@ export class MailService {
             .catch(console.log);
     }
 
-    public async sendEmailConfirmationMessage(email: string, query: string) {
+    public sendEmailConfirmationMessage(email: string, query: string) {
         return this.mailerService
             .sendMail({
                 to: email,
@@ -36,9 +36,9 @@ export class MailService {
            </a>
          </p>`,
             })
-            .then(({ accepted, response }) => {
-                console.log('send Email Confirmation ==> ', query, accepted, response);
-            });
+        // .then(({ accepted, response }) => {
+        //     console.log('send Email Confirmation ==> ', query, accepted, response);
+        // });
     }
 
     public async sendEmailPassRecovery(email: string, query: string) {
