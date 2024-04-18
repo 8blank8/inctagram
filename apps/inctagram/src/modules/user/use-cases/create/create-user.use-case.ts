@@ -100,6 +100,7 @@ export class CreateUserUseCase {
         user.passwordSalt = passwordSalt
         user.confirmationCode = uuid()
 
+        console.log(user)
         return manager.save(user)
     }
 }
