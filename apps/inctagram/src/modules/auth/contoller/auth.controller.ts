@@ -27,7 +27,7 @@ import { appSetting } from "@libs/core/app-setting";
 import { GoogleOAuthGuard } from "@libs/guards/google.guard";
 
 @ApiTags('auth')
-@Controller({ path: 'auth', host: appSetting.MAIN_HOST })
+@Controller('auth')
 export class AuthContoller {
 
     constructor(

@@ -1,13 +1,17 @@
-import { Controller, Get } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { AppService } from './app.service';
-import { appSetting } from '@libs/core/app-setting';
 
-@Controller({ host: appSetting.MAIN_HOST })
+@Controller()
 export class AppController {
   constructor(private readonly appService: AppService) { }
 
   @Get()
   getHello(): string {
     return this.appService.getHello();
+  }
+
+  @Post()
+  g(@Body() dto: any) {
+    return { dto, m: 'main' }
   }
 }

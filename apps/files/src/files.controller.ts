@@ -1,13 +1,17 @@
-import { Controller, Get } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { FilesService } from './files.service';
-import { appSetting } from '@libs/core/app-setting';
 
-@Controller({ host: appSetting.FILES_HOST })
+@Controller()
 export class FilesController {
   constructor(private readonly filesService: FilesService) { }
 
   @Get()
   getHello(): string {
     return this.filesService.getHello();
+  }
+
+  @Post()
+  g(@Body() dto: any) {
+    return { dto, m: 'files' }
   }
 }

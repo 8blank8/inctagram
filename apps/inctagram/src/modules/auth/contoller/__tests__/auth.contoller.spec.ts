@@ -47,7 +47,6 @@ describe('auth', () => {
 
             const { status, body } = await request(_httpServer)
                 .post('/auth/registration')
-                .set('host', appSetting.MAIN_HOST)
                 .send(userDto)
 
             expect(status).toBe(HttpStatus.CREATED)
@@ -71,7 +70,6 @@ describe('auth', () => {
 
             const res = await request(_httpServer)
                 .post('/auth/registration')
-                .set('host', appSetting.MAIN_HOST)
                 .send(userDto)
 
             const user = await manager.findOne(UserEntity, {
@@ -89,7 +87,6 @@ describe('auth', () => {
 
             const { status, body } = await request(_httpServer)
                 .post('/auth/registration')
-                .set('host', appSetting.MAIN_HOST)
                 .send(dto)
 
             expect(status).toBe(HttpStatus.CREATED)
@@ -114,7 +111,6 @@ describe('auth', () => {
 
             const { body, status } = await request(_httpServer)
                 .post('/auth/resend-email-code')
-                .set('host', appSetting.MAIN_HOST)
                 .send({ email: user.email })
 
             expect(status).toBe(HttpStatus.CREATED)
@@ -126,7 +122,6 @@ describe('auth', () => {
 
             const { body, status } = await request(_httpServer)
                 .post('/auth/resend-email-code')
-                .set('host', appSetting.MAIN_HOST)
                 .send({ email: user.email })
 
             expect(status).toBe(HttpStatus.CREATED)
@@ -137,7 +132,6 @@ describe('auth', () => {
         it('resend confirmation code fail user not found', async () => {
             const { body, status } = await request(_httpServer)
                 .post('/auth/resend-email-code')
-                .set('host', appSetting.MAIN_HOST)
                 .send({ email: 'tes@gmail.com' })
 
             expect(status).toBe(HttpStatus.CREATED)
@@ -156,7 +150,6 @@ describe('auth', () => {
 
             const { status, body } = await request(_httpServer)
                 .post('/auth/confirm-code')
-                .set('host', appSetting.MAIN_HOST)
                 .send(confirmCodeDto)
 
             expect(status).toBe(HttpStatus.CREATED)
@@ -173,7 +166,6 @@ describe('auth', () => {
 
             const { status, body } = await request(_httpServer)
                 .post('/auth/confirm-code')
-                .set('host', appSetting.MAIN_HOST)
                 .send(confirmCodeDto)
 
             expect(status).toBe(HttpStatus.CREATED)
@@ -189,7 +181,6 @@ describe('auth', () => {
 
             const { status, body } = await request(_httpServer)
                 .post('/auth/confirm-code')
-                .set('host', appSetting.MAIN_HOST)
                 .send(confirmCodeDto)
 
             expect(status).toBe(HttpStatus.CREATED)
@@ -217,7 +208,6 @@ describe('auth', () => {
                 .post('/auth/login')
                 .set({
                     'user-agent': 'test-agent',
-                    'host': appSetting.MAIN_HOST
                 })
                 .send(loginDto)
 
@@ -249,7 +239,6 @@ describe('auth', () => {
                 .post('/auth/login')
                 .set({
                     'user-agent': 'test-agent',
-                    'host': appSetting.MAIN_HOST
                 })
                 .send({ ...loginDto, password: 'qwerty' })
 
@@ -263,7 +252,6 @@ describe('auth', () => {
                 .post('/auth/login')
                 .set({
                     'user-agent': 'test-agent',
-                    'host': appSetting.MAIN_HOST
                 })
                 .send({ ...loginDto, email: 'fail@gmail.com' })
 
@@ -279,7 +267,6 @@ describe('auth', () => {
 
             const { status, body } = await request(_httpServer)
                 .post('/auth/password-recovery-email')
-                .set('host', appSetting.MAIN_HOST)
                 .send({ email: user.email })
 
             expect(status).toBe(HttpStatus.CREATED)
@@ -292,7 +279,6 @@ describe('auth', () => {
         it('send recovery code is falied user not found', async () => {
             const { status, body } = await request(_httpServer)
                 .post('/auth/password-recovery-email')
-                .set('host', appSetting.MAIN_HOST)
                 .send({ email: 'fail@gmail.com' })
 
             expect(status).toBe(HttpStatus.CREATED)
@@ -312,7 +298,6 @@ describe('auth', () => {
 
             const { status, body } = await request(_httpServer)
                 .post('/auth/change-password')
-                .set('host', appSetting.MAIN_HOST)
                 .send(changePasswordDto)
 
             expect(status).toBe(HttpStatus.CREATED)
@@ -332,7 +317,6 @@ describe('auth', () => {
 
             const { status, body } = await request(_httpServer)
                 .post('/auth/change-password')
-                .set('host', appSetting.MAIN_HOST)
                 .send(changePasswordDto)
 
             expect(status).toBe(HttpStatus.CREATED)
@@ -359,7 +343,6 @@ describe('auth', () => {
                 .post('/auth/login')
                 .set({
                     'user-agent': 'test-agent',
-                    'host': appSetting.MAIN_HOST
                 })
                 .send(loginDto)
 
@@ -375,7 +358,6 @@ describe('auth', () => {
                 .post('/auth/logout')
                 .set({
                     'Authorization': `Bearer ${accessToken}`,
-                    'host': appSetting.MAIN_HOST
                 })
 
             expect(status).toBe(HttpStatus.CREATED)
@@ -413,7 +395,6 @@ describe('auth', () => {
                 .post('/auth/login')
                 .set({
                     'user-agent': 'test-agent',
-                    'host': appSetting.MAIN_HOST
                 })
                 .send(loginDto)
 
@@ -432,7 +413,6 @@ describe('auth', () => {
                 .get('/auth/refresh-token')
                 .set({
                     'Cookie': `refreshToken=${refreshToken}`,
-                    'host': appSetting.MAIN_HOST
                 })
 
             expect(status).toBe(HttpStatus.CREATED)

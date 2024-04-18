@@ -11,7 +11,7 @@ import { DeleteUserAvatarUseCase } from "../use-cases/delete-avatar/delete-user-
 import { ApiConsumes } from "@nestjs/swagger";
 
 
-@Controller({ path: 'users', host: appSetting.FILES_HOST })
+@Controller('users')
 export class UserContoller {
     constructor(
         private createUserAvatarUseCase: CreateUserAvatarUseCase,
