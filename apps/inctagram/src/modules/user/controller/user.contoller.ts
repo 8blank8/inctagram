@@ -1,11 +1,13 @@
 import { JwtAuthGuard } from "@libs/guards/jwt.guard";
-import { Body, Controller, Put, Req, UseGuards } from "@nestjs/common";
-import { ApiTags } from "@nestjs/swagger";
+import { Body, Controller, Get, Put, Req, UseGuards } from "@nestjs/common";
+import { ApiOkResponse, ApiTags } from "@nestjs/swagger";
 import { UpdateUserCommand } from "../use-cases/update/dto/update-user.command";
 import { ReqWithUser } from "@libs/types/req-with-user";
 import { UpdateUserUseCase } from "../use-cases/update/update-user.use-case";
 import { UpdateUserDto } from "../dto/input/update-user.dto";
 import { appSetting } from "@libs/core/app-setting";
+import { UserQueryRepository } from "../repository/user.query.repository";
+import { UserPfofileViewDto } from "../dto/view/user-profile-view.dto";
 
 
 @ApiTags('users')
@@ -14,6 +16,7 @@ export class UserContoller {
 
     constructor(
         private updateUserUseCase: UpdateUserUseCase,
+        private userQueryRepo: UserQueryRepository
     ) { }
 
     @UseGuards(JwtAuthGuard())
@@ -27,5 +30,14 @@ export class UserContoller {
             userId: req.userId
         }
         return this.updateUserUseCase.execute(command)
+    }
+
+    @ApiOkResponse({ type: UserPfofileViewDto })
+    @UseGuards(JwtAuthGuard())
+    @Get('/profile')
+    async getUserProfile(
+        @Req() req: ReqWithUser,
+    ) {
+        return this.userQueryRepo.getUserProfileWithAvatar(req.userId)
     }
 }
