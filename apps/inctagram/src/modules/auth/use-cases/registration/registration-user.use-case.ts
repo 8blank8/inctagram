@@ -15,9 +15,10 @@ export class RegistrationUserUseCase {
 
     async execute(command: RegistrationUserCommand): Promise<Result<IdCreated>> {
         const res = await this.createUserUseCase.execute(command)
+        console.log(res)
         if (!res.isSuccess) return res
 
-        await this.mailService.sendEmailConfirmationMessage(command.email, res.value.confirmationCode)
+        this.mailService.sendEmailConfirmationMessage(command.email, res.value.confirmationCode)
 
         return Result.Ok({ id: res.value.id })
     }
