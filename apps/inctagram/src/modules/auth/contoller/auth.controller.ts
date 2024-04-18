@@ -84,7 +84,7 @@ export class AuthContoller {
         })
 
         return res
-            .cookie('refreshToken', result.value.refreshToken, { httpOnly: true, secure: false })
+            .cookie('refreshToken', result.value.refreshToken)
             .status(HttpStatus.CREATED)
             .send({
                 resultCode: 0,
@@ -139,7 +139,7 @@ export class AuthContoller {
         })
 
         return res
-            .cookie('refreshToken', result.value.refreshToken, { httpOnly: true, secure: true })
+            .cookie('refreshToken', result.value.refreshToken)
             .status(HttpStatus.CREATED)
             .send({
                 resultCode: 0,
@@ -169,7 +169,7 @@ export class AuthContoller {
         if (!result.isSuccess) return res.status(HttpStatus.BAD_REQUEST).redirect(`https://localhost:3000/`)
 
         return res
-            .cookie('refreshToken', result.value.refreshToken, { httpOnly: true, secure: false })
+            .cookie('refreshToken', result.value.refreshToken)
             .redirect('http://localhost:3000/')
     }
 }

@@ -14,17 +14,17 @@ async function bootstrap() {
     },
   });
 
-  app.enableCors({
-    origin: [
-      'http://localhost:3000',
-      'http://localhost:3001',
-      'http://localhost:5173',
-      'http://localhost:8080',
-      'https://incubator-icta-trainee.uk/',
-    ],
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    credentials: true,
-  });
+  // app.enableCors({
+  //   origin: [
+  //     'http://localhost:3000',
+  //     'http://localhost:3001',
+  //     'http://localhost:5173',
+  //     'http://localhost:8080',
+  //     'https://incubator-icta-trainee.uk/',
+  //   ],
+  //   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  //   credentials: true,
+  // });
 
   app.use(cookieParser())
 
