@@ -19,7 +19,6 @@ describe('FilesController (e2e)', () => {
   it('/ (GET)', () => {
     return request(app.getHttpServer())
       .get('/')
-      .set({ 'host': appSetting.FILES_HOST })
       .expect(200)
       .expect('Hello World! Files');
   });

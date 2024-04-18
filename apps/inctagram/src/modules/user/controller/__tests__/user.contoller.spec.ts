@@ -7,7 +7,6 @@ import { UpdateUserDto } from "../../dto/input/update-user.dto"
 import { JwtService } from "@nestjs/jwt"
 import { TestingModule } from "@nestjs/testing"
 import { UserEntity } from "../../entities/user.entity"
-import { appSetting } from "@libs/core/app-setting"
 import { createAndConfigureAppForE2eTests } from "@inctagram/src/utils/test/create-and-configure-app-for-e2e"
 import { createJwtTokens } from "@libs/jwt/create-tokens"
 
@@ -67,7 +66,6 @@ describe('user', () => {
                 .put('/users/profile')
                 .set({
                     'Authorization': `Bearer ${accessToken}`,
-                    'host': appSetting.MAIN_HOST
                 })
                 .send(dto)
 
@@ -102,7 +100,6 @@ describe('user', () => {
                 .put('/users/profile')
                 .set({
                     'Authorization': `Bearer ${accessToken}`,
-                    'host': appSetting.MAIN_HOST
                 })
                 .send(dto)
 
@@ -138,7 +135,6 @@ describe('user', () => {
                 .put('/users/profile')
                 .set({
                     'Authorization': `Bearer ${accessToken}`,
-                    'host': appSetting.MAIN_HOST
                 })
                 .send(dto)
 
@@ -173,7 +169,6 @@ describe('user', () => {
                 .put('/users/profile')
                 .set({
                     'Authorization': `Bearer ${accessToken}`,
-                    'host': appSetting.MAIN_HOST
                 })
                 .send(dto)
 
@@ -200,7 +195,6 @@ describe('user', () => {
                 .get('/users/profile')
                 .set({
                     'Authorization': `Bearer ${accessToken}`,
-                    'host': appSetting.MAIN_HOST
                 })
 
             expect(status).toBe(HttpStatus.OK)
