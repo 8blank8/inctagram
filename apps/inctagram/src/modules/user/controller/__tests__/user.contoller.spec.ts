@@ -6,10 +6,10 @@ import { TestSeeder } from "../../../../../../../libs/tests/test-seeder"
 import { UpdateUserDto } from "../../dto/input/update-user.dto"
 import { JwtService } from "@nestjs/jwt"
 import { TestingModule } from "@nestjs/testing"
-import { createJwtTokens } from "@inctagram/src/utils/create-tokens"
 import { UserEntity } from "../../entities/user.entity"
-import { createAndConfigureAppForE2eTests } from "@libs/tests/create-and-configure-app-for-e2e"
 import { appSetting } from "@libs/core/app-setting"
+import { createAndConfigureAppForE2eTests } from "@inctagram/src/utils/test/create-and-configure-app-for-e2e"
+import { createJwtTokens } from "@libs/jwt/create-tokens"
 
 
 describe('user', () => {

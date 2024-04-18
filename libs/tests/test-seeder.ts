@@ -51,19 +51,23 @@ export class TestCreator {
     constructor(private manager: EntityManager) { }
 
     async createUser(dto: CreateUserCommand, options?: CreateUserOptions) {
-        const user = new UserEntity()
-        const passwordSalt = await genSalt(10)
-        const passwordHash = await hash(dto.password, passwordSalt)
+        try {
+            const user = new UserEntity()
+            const passwordSalt = await genSalt(10)
+            const passwordHash = await hash(dto.password, passwordSalt)
 
-        user.email = dto.email
-        user.username = dto.username
-        user.emailConfirmed = options?.emailConfirmed ?? true
-        user.createdAt = new Date()
-        user.passwordHash = passwordHash
-        user.passwordSalt = passwordSalt
-        user.confirmationCode = options?.emailConfirmationCode ?? null
-        user.passwordRecoveryCode = options?.resetPasswordCode ?? null
+            user.email = dto.email
+            user.username = dto.username
+            user.emailConfirmed = options?.emailConfirmed ?? true
+            user.createdAt = new Date()
+            user.passwordHash = passwordHash
+            user.passwordSalt = passwordSalt
+            user.confirmationCode = options?.emailConfirmationCode ?? null
+            user.passwordRecoveryCode = options?.resetPasswordCode ?? null
 
-        return this.manager.save(user)
+            return this.manager.save(user)
+        } catch (e) {
+            console.log(e)
+        }
     }
 }

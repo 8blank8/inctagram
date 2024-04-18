@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { ConfirmationUserCommand } from "./dto/confirmation-user.command";
 import { UserRepository } from "../../../user/repository/user.repository";
 import { Result } from "../../../../../../../libs/core/result";
-import { TransactionDecorator } from "../../../../infra/inside-transaction";
+import { TransactionDecorator } from "../../../../../../../libs/infra/inside-transaction/inside-transaction";
 import { DataSource, EntityManager } from "typeorm";
 
 

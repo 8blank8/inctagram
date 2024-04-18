@@ -1,6 +1,7 @@
 import { BaseEntity } from "../../../../../../libs/infra/entities/base.entity";
-import { Column, Entity, OneToMany } from "typeorm";
+import { Column, Entity, JoinColumn, OneToMany, OneToOne } from "typeorm";
 import { DeviceEntity } from "../../device/entities/device.entity";
+import { UserAvatarEntity } from "../../../../../files/src/modules/user/entities/user-avatar.entity";
 
 
 @Entity()
@@ -40,6 +41,10 @@ export class UserEntity extends BaseEntity {
 
     @OneToMany(() => DeviceEntity, device => device.user)
     devices: DeviceEntity[]
+
+    @OneToOne(() => UserAvatarEntity, avatar => avatar.user, { nullable: true })
+    @JoinColumn()
+    avatar: UserAvatarEntity
 
     @Column({ default: false })
     isDelete: boolean;

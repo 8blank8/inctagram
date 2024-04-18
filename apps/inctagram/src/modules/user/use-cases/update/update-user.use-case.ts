@@ -2,9 +2,9 @@ import { Injectable } from "@nestjs/common";
 import { UpdateUserCommand } from "./dto/update-user.command";
 import { Result } from "@libs/core/result";
 import { UserRepository } from "../../repository/user.repository";
-import { TransactionDecorator } from "@inctagram/src/infra/inside-transaction";
 import { DataSource, EntityManager } from "typeorm";
 import { userIsOver13 } from "@inctagram/src/utils/is-over-13";
+import { TransactionDecorator } from "@libs/infra/inside-transaction/inside-transaction";
 
 
 @Injectable()

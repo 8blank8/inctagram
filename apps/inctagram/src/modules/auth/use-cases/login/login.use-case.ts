@@ -6,9 +6,9 @@ import { AuthError } from "../../../../../../../libs/core/custom-error";
 import { hashPassword } from "../../../../utils/hash-password";
 import { CreateDeviceUseCase } from "../../../device/use-cases/create/create-device.use-case";
 import { JwtService } from "@nestjs/jwt";
-import { createJwtTokens } from "@inctagram/src/utils/create-tokens";
 import { DataSource, EntityManager } from "typeorm";
-import { TransactionDecorator } from "@inctagram/src/infra/inside-transaction";
+import { TransactionDecorator } from "@libs/infra/inside-transaction/inside-transaction";
+import { createJwtTokens } from "@libs/jwt/create-tokens";
 
 
 @Injectable()
