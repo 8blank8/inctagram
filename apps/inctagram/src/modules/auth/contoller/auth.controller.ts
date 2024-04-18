@@ -84,7 +84,7 @@ export class AuthContoller {
         })
 
         return res
-            .cookie('refreshToken', result.value.refreshToken, { httpOnly: true, secure: true })
+            .cookie('refreshToken', result.value.refreshToken, { httpOnly: true, secure: false })
             .status(HttpStatus.CREATED)
             .send({
                 resultCode: 0,
@@ -166,10 +166,10 @@ export class AuthContoller {
         }
 
         const result = await this.createUserGoogleOauthUseCase.execute(command)
-        if (!result.isSuccess) return res.status(HttpStatus.BAD_REQUEST).redirect(`${appSetting.FRONT_URL}/`)
+        if (!result.isSuccess) return res.status(HttpStatus.BAD_REQUEST).redirect(`https://localhost:3000/`)
 
         return res
-            .cookie('refreshToken', result.value.refreshToken, { httpOnly: true, secure: true })
-            .redirect(`${appSetting.FRONT_URL}/`)
+            .cookie('refreshToken', result.value.refreshToken, { httpOnly: true, secure: false })
+            .redirect('http://localhost:3000/')
     }
 }
