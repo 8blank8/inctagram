@@ -1,4 +1,4 @@
-import { Result } from "../../../../libs/core/result";
+import { Result } from "../../core/result";
 import { DataSource, EntityManager } from "typeorm";
 
 type InsideTransactionReturnType<O> = Promise<Result<O>>;
