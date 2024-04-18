@@ -166,10 +166,10 @@ export class AuthContoller {
         }
 
         const result = await this.createUserGoogleOauthUseCase.execute(command)
-        if (!result.isSuccess) return res.status(HttpStatus.BAD_REQUEST).redirect(`${appSetting.FRONT_URL}/`)
+        if (!result.isSuccess) return res.status(HttpStatus.BAD_REQUEST).redirect(`http://localhost:3000/`)
 
         return res
             .cookie('refreshToken', result.value.refreshToken, { httpOnly: true, secure: true })
-            .redirect(`${appSetting.FRONT_URL}/`)
+            .redirect('http://localhost:3000/`')
     }
 }
