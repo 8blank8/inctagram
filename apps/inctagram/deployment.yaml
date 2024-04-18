@@ -142,6 +142,11 @@ spec:
                  secretKeyRef:
                    name: back-incta-main-production-config-secret
                    key: MAIN_HOST
+             - name: AWS_S3_BASE_URL
+               valueFrom:
+                 secretKeyRef:
+                   name: back-incta-main-production-config-secret
+                   key: AWS_S3_BASE_URL
              - name: MODE
                valueFrom:
                  secretKeyRef:

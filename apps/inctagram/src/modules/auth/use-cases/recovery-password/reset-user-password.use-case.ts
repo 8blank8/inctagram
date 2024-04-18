@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { DataSource, EntityManager } from "typeorm";
 import { ResetUserPasswordCommand } from "./dto/reset-user-password.command";
 import { Result } from "../../../../../../../libs/core/result";
-import { TransactionDecorator } from "../../../../infra/inside-transaction";
+import { TransactionDecorator } from "../../../../../../../libs/infra/inside-transaction/inside-transaction";
 import { UserRepository } from "../../../user/repository/user.repository";
 import { hashPassword } from "../../../../utils/hash-password";
 

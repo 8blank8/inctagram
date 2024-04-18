@@ -6,9 +6,9 @@ import { UserRepository } from "../../repository/user.repository";
 import { CreateDeviceUseCase } from "../../../device/use-cases/create/create-device.use-case";
 import { UserEntity } from "../../entities/user.entity";
 import { generateUniqueUsername } from "../../../../utils/generate-random-username";
-import { TransactionDecorator } from "@inctagram/src/infra/inside-transaction";
-import { createJwtTokens } from "@inctagram/src/utils/create-tokens";
 import { JwtService } from "@nestjs/jwt";
+import { TransactionDecorator } from "@libs/infra/inside-transaction/inside-transaction";
+import { createJwtTokens } from "@libs/jwt/create-tokens";
 
 
 @Injectable()

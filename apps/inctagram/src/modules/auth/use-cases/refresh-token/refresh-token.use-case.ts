@@ -3,7 +3,7 @@ import { RefreshTokenCommand } from "./dto/refresh-token.command";
 import { Result } from "@libs/core/result";
 import { UserRepository } from "../../../user/repository/user.repository";
 import { JwtService } from "@nestjs/jwt";
-import { createJwtTokens } from "@inctagram/src/utils/create-tokens";
+import { createJwtTokens } from "@libs/jwt/create-tokens";
 
 
 @Injectable()

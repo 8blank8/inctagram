@@ -8,6 +8,7 @@ import { CreateDeviceUseCase } from "../device/use-cases/create/create-device.us
 import { JwtService } from "@nestjs/jwt";
 import { UpdateUserUseCase } from "./use-cases/update/update-user.use-case";
 import { UserContoller } from "./controller/user.contoller";
+import { UserQueryRepository } from "./repository/user.query.repository";
 
 @Module({
     imports: [
@@ -23,6 +24,7 @@ import { UserContoller } from "./controller/user.contoller";
         UpdateUserUseCase,
         UserRepository,
         JwtService,
+        UserQueryRepository
     ],
     exports: [
         CreateUserUseCase,

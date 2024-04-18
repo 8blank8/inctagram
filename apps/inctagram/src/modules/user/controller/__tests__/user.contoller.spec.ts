@@ -6,10 +6,10 @@ import { TestSeeder } from "../../../../../../../libs/tests/test-seeder"
 import { UpdateUserDto } from "../../dto/input/update-user.dto"
 import { JwtService } from "@nestjs/jwt"
 import { TestingModule } from "@nestjs/testing"
-import { createJwtTokens } from "@inctagram/src/utils/create-tokens"
 import { UserEntity } from "../../entities/user.entity"
-import { createAndConfigureAppForE2eTests } from "@libs/tests/create-and-configure-app-for-e2e"
 import { appSetting } from "@libs/core/app-setting"
+import { createAndConfigureAppForE2eTests } from "@inctagram/src/utils/test/create-and-configure-app-for-e2e"
+import { createJwtTokens } from "@libs/jwt/create-tokens"
 
 
 describe('user', () => {
@@ -190,6 +190,34 @@ describe('user', () => {
             expect(findedUser.dateOfBirth).toBe(null)
             expect(findedUser.username).toBe(user.username)
             expect(findedUser.updatedAt).toBe(null)
+        })
+
+        it('get user profile is success', async () => {
+            const user = await testSeeder.createUser(testSeeder.getUserDto())
+            const accessToken = (await createJwtTokens(jwtService, user.id, 'asd')).accessToken
+
+            const { status, body } = await request(_httpServer)
+                .get('/users/profile')
+                .set({
+                    'Authorization': `Bearer ${accessToken}`,
+                    'host': appSetting.MAIN_HOST
+                })
+
+            expect(status).toBe(HttpStatus.OK)
+            expect(body.errors.length).toBe(0)
+
+            expect(body.data).toEqual({
+                id: user.id,
+                username: user.username,
+                firstname: user.firstname,
+                lastname: user.lastname,
+                email: user.email,
+                aboutMe: user.aboutMe,
+                dateOfBirth: user.dateOfBirth,
+                createdAt: user.createdAt.toISOString(),
+                updatedAt: null,
+                avatar: null
+            })
         })
     })
 })

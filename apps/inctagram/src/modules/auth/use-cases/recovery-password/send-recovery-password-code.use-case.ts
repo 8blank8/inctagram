@@ -4,7 +4,7 @@ import { UserRepository } from "../../../user/repository/user.repository";
 import { MailService } from "../../../../../../../libs/mailer/mailer.service";
 import { Result } from "../../../../../../../libs/core/result";
 import { v4 as uuid } from 'uuid'
-import { TransactionDecorator } from "../../../../infra/inside-transaction";
+import { TransactionDecorator } from "../../../../../../../libs/infra/inside-transaction/inside-transaction";
 import { DataSource, EntityManager } from "typeorm";
 
 

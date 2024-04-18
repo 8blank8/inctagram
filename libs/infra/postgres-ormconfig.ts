@@ -2,12 +2,14 @@ import { config } from 'dotenv'
 config()
 import { DeviceEntity } from '../../apps/inctagram/src/modules/device/entities/device.entity';
 import { UserEntity } from '../../apps/inctagram/src/modules/user/entities/user.entity';
+import { UserAvatarEntity } from '../../apps/files/src/modules/user/entities/user-avatar.entity'
 import { DataSource } from "typeorm";
 import { PostgresConnectionOptions } from "typeorm/driver/postgres/PostgresConnectionOptions";
 
 export const allEntities = [
     UserEntity,
-    DeviceEntity
+    DeviceEntity,
+    UserAvatarEntity
 ]
 
 const isTest = process.env.MODE !== 'production';

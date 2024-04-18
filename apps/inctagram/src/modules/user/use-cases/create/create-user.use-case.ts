@@ -4,8 +4,8 @@ import { Injectable } from "@nestjs/common";
 import { CreateUserCommand } from "./dto/create-user.command";
 import { UserEntity } from "../../entities/user.entity";
 import { Result } from '../../../../../../../libs/core/result';
-import { IdCreated } from '../../../../core/id-created';
-import { TransactionDecorator } from '../../../../infra/inside-transaction';
+import { IdCreated } from '../../../../../../../libs/core/id-created';
+import { TransactionDecorator } from '../../../../../../../libs/infra/inside-transaction/inside-transaction';
 import { DataSource, EntityManager } from 'typeorm';
 import { UserRepository } from '../../repository/user.repository';
 import { hashPassword } from '../../../../utils/hash-password';
@@ -73,7 +73,7 @@ export class CreateUserUseCase {
             }
 
             const user = new UserEntity()
-
+            console.log(user)
             createdUser = await this.createUser(
                 user,
                 email,

@@ -22,6 +22,76 @@ spec:
              - containerPort: PORT_CONTAINER
 
            env:
+             - name: AWS_S3_ID
+               valueFrom:
+                 secretKeyRef:
+                   name: back-incta-files-production-config-secret
+                   key: AWS_S3_ID
+             - name: AWS_S3_KEY
+               valueFrom:
+                 secretKeyRef:
+                   name: back-incta-files-production-config-secret
+                   key: AWS_S3_KEY
+             - name: AWS_S3_BUCKET_NAME
+               valueFrom:
+                 secretKeyRef:
+                   name: back-incta-files-production-config-secret
+                   key: AWS_S3_BUCKET_NAME
+             - name: MODE
+               valueFrom:
+                 secretKeyRef:
+                   name: back-incta-files-production-config-secret
+                   key: MODE
+             - name: JWT_SECRET
+               valueFrom:
+                 secretKeyRef:
+                   name: back-incta-files-production-config-secret
+                   key: JWT_SECRET
+             - name: JWT_ACCESS_EXP
+               valueFrom:
+                 secretKeyRef:
+                   name: back-incta-files-production-config-secret
+                   key: JWT_ACCESS_EXP
+             - name: JWT_REFRESH_SECRET
+               valueFrom:
+                 secretKeyRef:
+                   name: back-incta-files-production-config-secret
+                   key: JWT_REFRESH_SECRET
+             - name: JWT_REFRESH_EXP
+               valueFrom:
+                 secretKeyRef:
+                   name: back-incta-files-production-config-secret
+                   key: JWT_REFRESH_EXP
+             - name: PG_USER
+               valueFrom:
+                 secretKeyRef:
+                   name: back-incta-files-production-config-secret
+                   key: PG_USER
+             - name: PG_PASSWORD
+               valueFrom:
+                 secretKeyRef:
+                   name: back-incta-files-production-config-secret
+                   key: PG_PASSWORD
+             - name: PG_PORT
+               valueFrom:
+                 secretKeyRef:
+                   name: back-incta-files-production-config-secret
+                   key: PG_PORT
+             - name: PG_HOST
+               valueFrom:
+                 secretKeyRef:
+                   name: back-incta-files-production-config-secret
+                   key: PG_HOST
+             - name: PG_DATABASE
+               valueFrom:
+                 secretKeyRef:
+                   name: back-incta-files-production-config-secret
+                   key: PG_DATABASE
+             - name: AWS_S3_BASE_URL
+               valueFrom:
+                 secretKeyRef:
+                   name: back-incta-files-production-config-secret
+                   key: AWS_S3_BASE_URL
              - name: FILES_HOST
                valueFrom:
                  secretKeyRef:

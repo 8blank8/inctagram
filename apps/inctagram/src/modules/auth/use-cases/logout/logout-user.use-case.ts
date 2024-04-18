@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { LogoutUserCommand } from "./dto/logout-user.command";
-import { TransactionDecorator } from "../../../../infra/inside-transaction";
+import { TransactionDecorator } from "../../../../../../../libs/infra/inside-transaction/inside-transaction";
 import { DataSource, EntityManager } from "typeorm";
 import { DeviceRepository } from "../../../device/repository/device.repository";
 import { Result } from "@libs/core/result";

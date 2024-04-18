@@ -1,5 +1,8 @@
 # Check out https://hub.docker.com/_/node to select a new base image
 FROM node:20.11-alpine
+
+RUN npm install -g npm@latest
+
 ARG port
 ARG service
 ENV SERVICE=$service

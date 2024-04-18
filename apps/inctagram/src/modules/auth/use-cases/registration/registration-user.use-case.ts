@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { RegistrationUserCommand } from "./dto/registration-user.command";
 import { CreateUserUseCase } from "../../../user/use-cases/create/create-user.use-case";
 import { Result } from "../../../../../../../libs/core/result";
-import { IdCreated } from "../../../../core/id-created";
+import { IdCreated } from "../../../../../../../libs/core/id-created";
 import { MailService } from "../../../../../../../libs/mailer/mailer.service";
 
 
