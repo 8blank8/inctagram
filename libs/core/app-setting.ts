@@ -40,6 +40,7 @@ export class AppSetting {
     AWS_S3_ID: string
     AWS_S3_KEY: string
     AWS_S3_BUCKET_NAME: string
+    AWS_S3_BASE_URL: string
 
     constructor() {
         this.MODE = process.env.MODE ?? 'develop'
@@ -80,6 +81,7 @@ export class AppSetting {
         this.AWS_S3_ID = process.env.AWS_S3_ID || 'YCAJEbSTe3BI6YKWpS9J7yWA4'
         this.AWS_S3_KEY = process.env.AWS_S3_KEY || 'YCPGPzeQsk_nG4GCb7Nb8hTKsH473sd1iw4vPhgB'
         this.AWS_S3_BUCKET_NAME = process.env.AWS_S3_BUCKET_NAME || 'incta-back'
+        this.AWS_S3_BASE_URL = process.env.AWS_S3_BASE_URL || 'https://storage.yandexcloud.net/incta-back/'
     }
 }
 
