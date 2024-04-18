@@ -25,6 +25,7 @@ pipeline {
             steps {
                 checkout scm
                 script {
+                    sh "npm install"
                     sh "npm run primary:db:migrate" 
                 }
             }
