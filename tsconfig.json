@@ -23,6 +23,9 @@
       ],
       "@inctagram/*": [
         "apps/inctagram/*"
+      ],
+      "@files/*": [
+        "apps/files/*"
       ]
     }
   }
