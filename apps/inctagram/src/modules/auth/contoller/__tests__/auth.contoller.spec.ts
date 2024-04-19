@@ -46,7 +46,7 @@ describe('auth', () => {
             const userDto = testSeeder.getUserDto()
 
             const { status, body } = await request(_httpServer)
-                .post('/auth/registration')
+                .post('/auth/register')
                 .send(userDto)
 
             expect(status).toBe(HttpStatus.CREATED)
@@ -69,7 +69,7 @@ describe('auth', () => {
             const userDto = testSeeder.getUserDto()
 
             const res = await request(_httpServer)
-                .post('/auth/registration')
+                .post('/auth/register')
                 .send(userDto)
 
             const user = await manager.findOne(UserEntity, {
@@ -86,7 +86,7 @@ describe('auth', () => {
             }
 
             const { status, body } = await request(_httpServer)
-                .post('/auth/registration')
+                .post('/auth/register')
                 .send(dto)
 
             expect(status).toBe(HttpStatus.CREATED)
