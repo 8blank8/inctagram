@@ -1,16 +1,15 @@
-import { genSalt, hash } from "bcrypt"
+import * as crypto from 'crypto'
 
 export const hashPassword = async (password: string, salt?: string) => {
-    try {
-        if (!salt) salt = await genSalt(Number(process.env.SALT_ROUNDS) || 10)
-
-        const passwordHash = await hash(password, salt)
-
-        return {
-            passwordHash,
-            passwordSalt: salt
-        }
-    } catch (e) {
-        console.log(e)
+    if (!salt) {
+        salt = crypto.randomBytes(16).toString('hex');
     }
-}
+
+    const passwordHash = crypto.createHash('sha256').update(password + salt).digest('hex');
+
+    return {
+        passwordHash,
+        passwordSalt: salt
+    };
+
+}   

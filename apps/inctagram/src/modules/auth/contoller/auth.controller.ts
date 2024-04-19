@@ -26,8 +26,8 @@ import { CreateUserGoogleOauthCommand } from "../../user/use-cases/create/dto/cr
 import { appSetting } from "@libs/core/app-setting";
 import { GoogleOAuthGuard } from "@libs/guards/google.guard";
 
-@ApiTags('authorize')
-@Controller('authorize')
+@ApiTags('auth')
+@Controller('auth')
 export class AuthContoller {
 
     constructor(
@@ -42,7 +42,7 @@ export class AuthContoller {
         private createUserGoogleOauthUseCase: CreateUserGoogleOauthUseCase,
     ) { }
 
-    @Post('/register')
+    @Post('/registration')
     async registration(
         @Body() dto: RegistrationUserCommand
     ) {
