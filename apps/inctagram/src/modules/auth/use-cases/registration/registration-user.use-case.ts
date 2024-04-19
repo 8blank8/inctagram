@@ -24,7 +24,7 @@ export class RegistrationUserUseCase {
     async execute(command: RegistrationUserCommand): Promise<Result<IdCreated>> {
 
         const transaction = new TransactionDecorator(this.dataSource)
-
+        console.log(1)
         return transaction.doOperation(
             command,
             this.doOperation.bind(this)
@@ -37,7 +37,7 @@ export class RegistrationUserUseCase {
     ): Promise<Result<IdCreated>> {
 
         try {
-
+            console.log(2)
             const findedUserEmail = await this.userRepo.getUserByEmail(email)
             if (findedUserEmail && findedUserEmail.emailConfirmed) return Result.Err('user with email is exist')
 
@@ -47,7 +47,7 @@ export class RegistrationUserUseCase {
             const { passwordHash, passwordSalt } = await hashPassword(password)
 
             let createdUser: UserEntity
-
+            console.log(3)
             if (findedUserEmail && !findedUserEmail.emailConfirmed) {
                 createdUser = await this.createUser(
                     findedUserEmail,
@@ -60,7 +60,7 @@ export class RegistrationUserUseCase {
 
                 return Result.Ok({ id: createdUser.id })
             }
-
+            console.log(4)
             if (findedUserUsername && !findedUserUsername.emailConfirmed) {
                 createdUser = await this.createUser(
                     findedUserUsername,
@@ -73,7 +73,7 @@ export class RegistrationUserUseCase {
 
                 return Result.Ok({ id: createdUser.id })
             }
-
+            console.log(5)
             const user = new UserEntity()
             console.log(user)
             createdUser = await this.createUser(
@@ -84,9 +84,9 @@ export class RegistrationUserUseCase {
                 passwordSalt,
                 manager
             )
-
+            console.log(6)
             this.mailService.sendEmailConfirmationMessage(email, createdUser.confirmationCode)
-
+            console.log(7)
             return Result.Ok({ id: createdUser.id })
 
         } catch (e) {
