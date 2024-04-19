@@ -27,7 +27,7 @@ import { appSetting } from "@libs/core/app-setting";
 import { GoogleOAuthGuard } from "@libs/guards/google.guard";
 
 @ApiTags('authorize')
-@Controller('auth')
+@Controller('authorize')
 export class AuthContoller {
 
     constructor(
