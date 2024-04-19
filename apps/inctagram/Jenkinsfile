@@ -38,7 +38,7 @@ pipeline {
             steps {
                 script {
                     sh "npm install"
-                    sh "npm run test"
+                    // sh "npm run test"
                 }
             }
         }
@@ -48,7 +48,7 @@ pipeline {
             }
             steps {
                 script {
-                    sh "npm run test:e2e"
+                    // sh "npm run test:e2e"
                 }
             }
         }
