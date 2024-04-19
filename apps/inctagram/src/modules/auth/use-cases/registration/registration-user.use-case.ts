@@ -24,7 +24,7 @@ export class RegistrationUserUseCase {
     async execute(command: RegistrationUserCommand): Promise<Result<IdCreated>> {
 
         const transaction = new TransactionDecorator(this.dataSource)
-        console.log(1)
+
         return transaction.doOperation(
             command,
             this.doOperation.bind(this)
@@ -37,17 +37,17 @@ export class RegistrationUserUseCase {
     ): Promise<Result<IdCreated>> {
 
         try {
-            console.log(2)
+
             const findedUserEmail = await this.userRepo.getUserByEmail(email)
             if (findedUserEmail && findedUserEmail.emailConfirmed) return Result.Err('user with email is exist')
-            console.log({ findedUserEmail })
+
             const findedUserUsername = await this.userRepo.getUserByUsername(username)
             if (findedUserUsername && findedUserUsername.emailConfirmed) return Result.Err('user with username is exist')
-            console.log({ findedUserUsername })
+
             const { passwordHash, passwordSalt } = await hashPassword(password)
-            console.log({ passwordHash, passwordSalt })
+
             let createdUser: UserEntity
-            console.log(3)
+
             if (findedUserEmail && !findedUserEmail.emailConfirmed) {
                 createdUser = await this.createUser(
                     findedUserEmail,
@@ -60,7 +60,7 @@ export class RegistrationUserUseCase {
 
                 return Result.Ok({ id: createdUser.id })
             }
-            console.log(4)
+
             if (findedUserUsername && !findedUserUsername.emailConfirmed) {
                 createdUser = await this.createUser(
                     findedUserUsername,
@@ -73,9 +73,9 @@ export class RegistrationUserUseCase {
 
                 return Result.Ok({ id: createdUser.id })
             }
-            console.log(5)
+
             const user = new UserEntity()
-            console.log(user)
+
             createdUser = await this.createUser(
                 user,
                 email,
@@ -84,9 +84,9 @@ export class RegistrationUserUseCase {
                 passwordSalt,
                 manager
             )
-            console.log(6)
-            this.mailService.sendEmailConfirmationMessage(email, createdUser.confirmationCode)
-            console.log(7)
+
+            await this.mailService.sendEmailConfirmationMessage(email, createdUser.confirmationCode)
+
             return Result.Ok({ id: createdUser.id })
 
         } catch (e) {
@@ -104,7 +104,6 @@ export class RegistrationUserUseCase {
         user.passwordSalt = passwordSalt
         user.confirmationCode = uuid()
 
-        console.log(user)
         return manager.save(user)
     }
 }
