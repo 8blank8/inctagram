@@ -75,7 +75,7 @@ export class RegistrationUserUseCase {
             }
 
             const user = new UserEntity()
-            console.log(user)
+
             createdUser = await this.createUser(
                 user,
                 email,
@@ -85,7 +85,7 @@ export class RegistrationUserUseCase {
                 manager
             )
 
-            this.mailService.sendEmailConfirmationMessage(email, createdUser.confirmationCode)
+            await this.mailService.sendEmailConfirmationMessage(email, createdUser.confirmationCode)
 
             return Result.Ok({ id: createdUser.id })
 
@@ -104,7 +104,6 @@ export class RegistrationUserUseCase {
         user.passwordSalt = passwordSalt
         user.confirmationCode = uuid()
 
-        console.log(user)
         return manager.save(user)
     }
 }

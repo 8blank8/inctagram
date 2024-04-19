@@ -1,6 +1,6 @@
 import { UserEntity } from "@inctagram/src/modules/user/entities/user.entity";
 import { CreateUserCommand } from "@inctagram/src/modules/user/use-cases/create/dto/create-user.command";
-import { genSalt, hash } from "bcrypt";
+import { hashPassword } from "@inctagram/src/utils/hash-password";
 import { EntityManager } from "typeorm";
 
 export class CreateUserOptions {
@@ -53,8 +53,7 @@ export class TestCreator {
     async createUser(dto: CreateUserCommand, options?: CreateUserOptions) {
         try {
             const user = new UserEntity()
-            const passwordSalt = await genSalt(10)
-            const passwordHash = await hash(dto.password, passwordSalt)
+            const { passwordHash, passwordSalt } = await hashPassword(dto.password)
 
             user.email = dto.email
             user.username = dto.username

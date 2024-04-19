@@ -23,7 +23,6 @@ import { RefreshTokenUseCase } from "../use-cases/refresh-token/refresh-token.us
 import { RefreshTokenCommand } from "../use-cases/refresh-token/dto/refresh-token.command";
 import { CreateUserGoogleOauthUseCase } from "../../user/use-cases/create/create-user-google-ouath.use-case";
 import { CreateUserGoogleOauthCommand } from "../../user/use-cases/create/dto/create-user-google-ouath.command";
-import { appSetting } from "@libs/core/app-setting";
 import { GoogleOAuthGuard } from "@libs/guards/google.guard";
 
 @ApiTags('auth')
@@ -46,7 +45,6 @@ export class AuthContoller {
     async registration(
         @Body() dto: RegistrationUserCommand
     ) {
-        console.error(dto)
         return this.registrationUserUseCase.execute(dto)
     }
 
