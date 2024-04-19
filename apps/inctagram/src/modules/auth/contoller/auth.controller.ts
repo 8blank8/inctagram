@@ -42,7 +42,7 @@ export class AuthContoller {
         private createUserGoogleOauthUseCase: CreateUserGoogleOauthUseCase,
     ) { }
 
-    @Post('/registration')
+    @Post('/register')
     async registration(
         @Body() dto: RegistrationUserCommand
     ) {
