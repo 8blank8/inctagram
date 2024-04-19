@@ -40,12 +40,12 @@ export class RegistrationUserUseCase {
             console.log(2)
             const findedUserEmail = await this.userRepo.getUserByEmail(email)
             if (findedUserEmail && findedUserEmail.emailConfirmed) return Result.Err('user with email is exist')
-
+            console.log({ findedUserEmail })
             const findedUserUsername = await this.userRepo.getUserByUsername(username)
             if (findedUserUsername && findedUserUsername.emailConfirmed) return Result.Err('user with username is exist')
-
+            console.log({ findedUserUsername })
             const { passwordHash, passwordSalt } = await hashPassword(password)
-
+            console.log({ passwordHash, passwordSalt })
             let createdUser: UserEntity
             console.log(3)
             if (findedUserEmail && !findedUserEmail.emailConfirmed) {
