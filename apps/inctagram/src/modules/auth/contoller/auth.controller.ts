@@ -26,7 +26,7 @@ import { CreateUserGoogleOauthCommand } from "../../user/use-cases/create/dto/cr
 import { appSetting } from "@libs/core/app-setting";
 import { GoogleOAuthGuard } from "@libs/guards/google.guard";
 
-@ApiTags('auth')
+@ApiTags('authorize')
 @Controller('auth')
 export class AuthContoller {
 
