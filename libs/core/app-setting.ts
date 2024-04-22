@@ -29,6 +29,7 @@ export class AppSetting {
     JWT_REFRESH_EXP: string
 
     FRONT_URL: string
+    BACK_URL: string
 
     GOOGLE_CLIENT_ID: string
     GOOGLE_CLIENT_SECRET: string
@@ -71,6 +72,8 @@ export class AppSetting {
         this.JWT_REFRESH_EXP = process.env.JWT_REFRESH_EXP ?? '7d'
 
         this.FRONT_URL = process.env.FRONT_URL ?? ''
+        this.BACK_URL = process.env.FRONT_URL ?? `http://localhost:${this.PORT}`
+
         this.GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || '12302464307-ki4pubgel8l89iduogbpv5ifql8p918a.apps.googleusercontent.com'
         this.GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET || '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'
         this.GOOGLE_CALBACK_URL = process.env.GOOGLE_CALBACK_URL || `http://localhost:${this.PORT}/api/v1/auth/google-redirect`

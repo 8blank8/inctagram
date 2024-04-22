@@ -57,8 +57,6 @@ export class RegistrationUserUseCase {
                     passwordSalt,
                     manager
                 )
-
-                return Result.Ok({ id: createdUser.id })
             }
 
             if (findedUserUsername && !findedUserUsername.emailConfirmed) {
@@ -70,22 +68,21 @@ export class RegistrationUserUseCase {
                     passwordSalt,
                     manager
                 )
-
-                return Result.Ok({ id: createdUser.id })
             }
 
-            const user = new UserEntity()
+            if (!createdUser) {
+                const user = new UserEntity()
 
-            createdUser = await this.createUser(
-                user,
-                email,
-                username,
-                passwordHash,
-                passwordSalt,
-                manager
-            )
-
-            await this.mailService.sendEmailConfirmationMessage(email, createdUser.confirmationCode)
+                createdUser = await this.createUser(
+                    user,
+                    email,
+                    username,
+                    passwordHash,
+                    passwordSalt,
+                    manager
+                )
+            }
+            await this.mailService.sendEmailConfirmationMessage(email, username, createdUser.confirmationCode)
 
             return Result.Ok({ id: createdUser.id })
 

@@ -17,7 +17,7 @@ export class ResendConfirmationCodeUseCase {
         if (!user) return Result.Err('user with email not found')
         if (user.emailConfirmed) return Result.Err('user email is confirmed')
 
-        await this.mailService.sendEmailConfirmationMessage(user.email, user.confirmationCode)
+        await this.mailService.sendEmailConfirmationMessage(user.email, user.username, user.confirmationCode)
 
         return Result.Ok()
     }
