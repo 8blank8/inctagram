@@ -21,10 +21,10 @@ export class ExtractJwt {
     }
 
     static fromCookieAsRefreshToken(request: Request): string | undefined {
+        console.log(request.cookies)
         if (!request.cookies?.refreshToken) return undefined
 
-        const [title, token] = request.cookies.refreshToken.split('=') ?? undefined
-        return title === 'refreshToken' ? token : undefined
+        return request.cookies.refreshToken
     }
 }
 
