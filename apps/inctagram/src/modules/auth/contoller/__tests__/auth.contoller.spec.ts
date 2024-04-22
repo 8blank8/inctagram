@@ -412,12 +412,36 @@ describe('auth', () => {
             const { status, body, headers } = await request(_httpServer)
                 .get('/auth/refresh-token')
                 .set({
-                    'Cookie': `refreshToken=${refreshToken}`,
+                    'Cookie': refreshToken,
                 })
 
             expect(status).toBe(HttpStatus.CREATED)
             expect(body.data?.accessToken).not.toBe(accessToken)
             expect(headers['set-cookie'][0]).not.toBe(refreshToken)
         })
+
+        it('use old token is fail', async () => {
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+
+            const { status, body, headers } = await request(_httpServer)
+                .get('/auth/refresh-token')
+                .set({
+                    'Cookie': refreshToken,
+                })
+
+            expect(status).toBe(HttpStatus.CREATED)
+            expect(body.data?.accessToken).not.toBe(accessToken)
+            expect(headers['set-cookie'][0]).not.toBe(refreshToken)
+
+            await new Promise((resolve) => setTimeout(resolve, 10000));
+
+            const res = await request(_httpServer)
+                .get('/auth/refresh-token')
+                .set({
+                    'Cookie': refreshToken,
+                })
+
+            expect(res.status).toBe(HttpStatus.UNAUTHORIZED)
+        }, 15000)
     })
 })
