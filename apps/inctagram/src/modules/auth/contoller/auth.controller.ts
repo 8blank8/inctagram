@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpStatus, Post, Req, Res, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, HttpStatus, Post, Query, Req, Res, UseGuards } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
 import { RegistrationUserUseCase } from "../use-cases/registration/registration-user.use-case";
 import { RegistrationUserCommand } from "../use-cases/registration/dto/registration-user.command";
@@ -57,11 +57,13 @@ export class AuthContoller {
         return this.resendConfirmationCodeUseCase.execute(dto)
     }
 
-    @Post('/confirm-code')
+    @Get('/confirm-code')
     async confirmationCode(
-        @Body() dto: ConfirmationUserCommand
+        @Query() dto: ConfirmationUserCommand,
+        @Res() res: Response
     ) {
-        return this.confirmationUserUseCase.execute(dto)
+        await this.confirmationUserUseCase.execute(dto)
+        return res.redirect(`${appSetting.FRONT_URL}`)
     }
 
     @Post('/login')
