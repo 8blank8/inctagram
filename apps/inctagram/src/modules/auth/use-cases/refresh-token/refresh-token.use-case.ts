@@ -4,23 +4,44 @@ import { Result } from "@libs/core/result";
 import { UserRepository } from "../../../user/repository/user.repository";
 import { JwtService } from "@nestjs/jwt";
 import { createJwtTokens } from "@libs/jwt/create-tokens";
+import { DataSource, EntityManager } from "typeorm";
+import { TransactionDecorator } from "@libs/infra/inside-transaction/inside-transaction";
+import { DeviceRepository } from "@inctagram/src/modules/device/repository/device.repository";
 
 
 @Injectable()
 export class RefreshTokenUseCase {
     constructor(
         private userRepo: UserRepository,
-        private jwtService: JwtService
+        private jwtService: JwtService,
+        private deviceRepo: DeviceRepository,
+        private dataSource: DataSource
     ) { }
 
     async execute(command: RefreshTokenCommand): Promise<Result<{ accessToken: string, refreshToken: string }>> {
-        const { deviceId, userId } = command
+        const transaction = new TransactionDecorator(this.dataSource)
+
+        return transaction.doOperation(
+            command,
+            this.doOperation.bind(this)
+        )
+    }
+
+    async doOperation(
+        { deviceId, userId }: RefreshTokenCommand,
+        manager: EntityManager
+    ): Promise<Result<{ accessToken: string, refreshToken: string }>> {
 
         const user = await this.userRepo.getUserWithDevicesById(userId)
         if (!user) return Result.Err('user not found')
 
-        const device = user.devices.find(device => device.id === deviceId)
+        const device = await this.deviceRepo.getDeviceById(deviceId)
         if (!device) return Result.Err('device not found')
+        if (device.user.id !== user.id) return Result.Err('user not owner this device')
+
+        device.updatedAt = new Date()
+
+        await manager.save(device)
 
         const { accessToken, refreshToken } = await createJwtTokens(this.jwtService, user.id, deviceId)
 
