@@ -14,10 +14,15 @@ import { JwtService } from "@nestjs/jwt";
 import { LogoutUserUseCase } from "./use-cases/logout/logout-user.use-case";
 import { RefreshTokenUseCase } from "./use-cases/refresh-token/refresh-token.use-case";
 import { CreateUserGoogleOauthUseCase } from "../user/use-cases/create/create-user-google-ouath.use-case";
+import { TokenService } from "./services/token.service";
+import { TokenRepository } from "./repositories/token.repository";
+import { TypeOrmModule } from "@nestjs/typeorm";
+import { BlackList } from "./entities/black-list.entity";
 
 
 @Module({
     imports: [
+        TypeOrmModule.forFeature([BlackList]),
         UserModule,
         DeviceModule,
     ],
@@ -35,6 +40,8 @@ import { CreateUserGoogleOauthUseCase } from "../user/use-cases/create/create-us
         CreateUserGoogleOauthUseCase,
         MailService,
         JwtService,
+        TokenService,
+        TokenRepository,
     ]
 })
 export class AuthModule { }
