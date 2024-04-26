@@ -40,7 +40,7 @@ export class MailService {
                 <h3 style="color: #fff;">Hello ${username}, thanks for registration!</h3>
                 <p style="color: #D5DAE0">to confirm your email click on the link below</p>
                 <p>
-                    <a style="color: #73A5FF;" href="${appSetting.BACK_URL}/api/v1/auth/confirm-code?code=${query}">
+                    <a style="color: #73A5FF;" href="${appSetting.FRONT_URL}/confirm-registration?code=${query}">
                         Click here to end registration
                     </a>
                 </p>
