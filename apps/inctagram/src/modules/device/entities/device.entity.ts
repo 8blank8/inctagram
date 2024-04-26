@@ -6,6 +6,9 @@ import { UserEntity } from "../../user/entities/user.entity";
 @Entity()
 export class DeviceEntity extends BaseEntity {
 
+    @Column({ default: '' })
+    ip: string
+
     @Column()
     title: string
 
