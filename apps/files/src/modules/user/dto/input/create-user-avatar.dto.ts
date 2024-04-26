@@ -16,8 +16,8 @@ export class CreateUserAvatarDto {
 
     @ApiProperty()
     @IsNumber()
-    @Min(0)
-    @Max(1)
+    @Min(1)
+    @Max(2)
     scale: number
 
     @ApiProperty()
