@@ -9,7 +9,7 @@ import {
     UnauthorizedException,
 } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
-import { DeviceRepository } from '@inctagram/src/modules/device/repository/device.repository';
+import { TokenRepository } from '@inctagram/src/modules/auth/repositories/token.repository';
 
 
 export class ExtractJwt {
@@ -33,7 +33,7 @@ export const JwtRefreshAuthGuard = (): any => {
     class Guard implements CanActivate {
         constructor(
             private readonly jwtService: JwtService,
-            private readonly deviceRepo: DeviceRepository
+            private readonly tokenRepo: TokenRepository
         ) { }
 
         async canActivate(context: ExecutionContext) {
@@ -45,15 +45,12 @@ export const JwtRefreshAuthGuard = (): any => {
                 if (!refreshToken)
                     throw new UnauthorizedException("Refresh token is not set");
 
-                const { deviceId, userId, iat } = await this.jwtService.verifyAsync(refreshToken, { secret: process.env.JWT_SECRET || '123' });
+                const { deviceId, userId } = await this.jwtService.verifyAsync(refreshToken, { secret: process.env.JWT_SECRET || '123' });
                 req.userId = userId
                 req.deviceId = deviceId
 
-                const device = await this.deviceRepo.getDeviceById(deviceId)
-                const createdTokenTime = iat.toString()
-                const updatedDeviceTime = new Date(device.updatedAt).getTime().toString().slice(0, -3)
-
-                if (createdTokenTime !== updatedDeviceTime) throw new UnauthorizedException('token is expired')
+                const token = await this.tokenRepo.getTokenByToken(refreshToken)
+                if (token) throw new UnauthorizedException('token is expired')
 
                 return true;
             } catch (e) {
