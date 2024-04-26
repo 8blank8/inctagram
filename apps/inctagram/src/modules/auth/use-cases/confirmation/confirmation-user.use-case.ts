@@ -26,15 +26,20 @@ export class ConfirmationUserUseCase {
         { code }: ConfirmationUserCommand,
         manager: EntityManager
     ) {
-        const user = await this.userRepo.getUserByConfirmationCode(code)
-        if (!user) return Result.Err('user not found')
-        if (user.emailConfirmed) return Result.Err('user is confirmed')
+        try {
+            const user = await this.userRepo.getUserByConfirmationCode(code)
+            if (!user) return Result.Err('user not found')
+            if (user.emailConfirmed) return Result.Err('user is confirmed')
 
-        user.emailConfirmed = true
-        user.confirmationCode = null
+            user.emailConfirmed = true
+            user.confirmationCode = null
 
-        await manager.save(user)
+            await manager.save(user)
 
-        return Result.Ok()
+            return Result.Ok()
+        } catch (e) {
+            console.log(e)
+            return Result.Err('confirm email some error')
+        }
     }
 }

@@ -142,14 +142,14 @@ describe('auth', () => {
 
     describe('confirm email code', () => {
         it('confirmation email is success', async () => {
-            const user = await testSeeder.createUser(testSeeder.getUserDto(), { emailConfirmed: false, emailConfirmationCode: '123' })
+            const user = await testSeeder.createUser(testSeeder.getUserDto(), { emailConfirmed: false, emailConfirmationCode: '123asd' })
 
             const confirmCodeDto: ConfirmationUserCommand = {
-                code: '123'
+                code: user.confirmationCode
             }
 
             const { status, body } = await request(_httpServer)
-                .post('/auth/confirm-code')
+                .post(`/auth/confirm-code`)
                 .send(confirmCodeDto)
 
             expect(status).toBe(HttpStatus.CREATED)
@@ -173,7 +173,7 @@ describe('auth', () => {
         })
 
         it('confirmation email user is confirmed', async () => {
-            const user = await testSeeder.createUser(testSeeder.getUserDto(), { emailConfirmationCode: '123' })
+            const user = await testSeeder.createUser(testSeeder.getUserDto(), { emailConfirmationCode: '123asd' })
 
             const confirmCodeDto: ConfirmationUserCommand = {
                 code: user.confirmationCode
@@ -326,6 +326,7 @@ describe('auth', () => {
 
     describe('logout', () => {
         let accessToken: string
+        let refreshToken: string
         let userDto: CreateUserCommand;
         let userEntity: UserEntity;
         let device: DeviceEntity;
@@ -347,6 +348,7 @@ describe('auth', () => {
                 .send(loginDto)
 
             accessToken = body.data.accessToken
+            refreshToken = headers['set-cookie'][0]
 
             const devices = await manager.find(DeviceEntity, { relations: { user: true } })
             device = devices[0]
@@ -358,6 +360,7 @@ describe('auth', () => {
                 .post('/auth/logout')
                 .set({
                     'Authorization': `Bearer ${accessToken}`,
+                    'cookie': refreshToken
                 })
 
             expect(status).toBe(HttpStatus.CREATED)
@@ -412,12 +415,36 @@ describe('auth', () => {
             const { status, body, headers } = await request(_httpServer)
                 .get('/auth/refresh-token')
                 .set({
-                    'Cookie': `refreshToken=${refreshToken}`,
+                    'Cookie': refreshToken,
                 })
 
             expect(status).toBe(HttpStatus.CREATED)
             expect(body.data?.accessToken).not.toBe(accessToken)
             expect(headers['set-cookie'][0]).not.toBe(refreshToken)
         })
+
+        it('use old token is fail', async () => {
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+
+            const { status, body, headers } = await request(_httpServer)
+                .get('/auth/refresh-token')
+                .set({
+                    'Cookie': refreshToken,
+                })
+
+            expect(status).toBe(HttpStatus.CREATED)
+            expect(body.data?.accessToken).not.toBe(accessToken)
+            expect(headers['set-cookie'][0]).not.toBe(refreshToken)
+
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+
+            const res = await request(_httpServer)
+                .get('/auth/refresh-token')
+                .set({
+                    'Cookie': refreshToken,
+                })
+            console.log(res.body)
+            expect(res.status).toBe(HttpStatus.UNAUTHORIZED)
+        }, 15000)
     })
 })

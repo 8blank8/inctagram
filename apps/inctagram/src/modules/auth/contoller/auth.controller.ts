@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpStatus, Post, Req, Res, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, HttpStatus, Post, Query, Req, Res, UseGuards } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
 import { RegistrationUserUseCase } from "../use-cases/registration/registration-user.use-case";
 import { RegistrationUserCommand } from "../use-cases/registration/dto/registration-user.command";
@@ -59,7 +59,7 @@ export class AuthContoller {
 
     @Post('/confirm-code')
     async confirmationCode(
-        @Body() dto: ConfirmationUserCommand
+        @Body() dto: ConfirmationUserCommand,
     ) {
         return this.confirmationUserUseCase.execute(dto)
     }
@@ -83,7 +83,7 @@ export class AuthContoller {
         })
 
         return res
-            .cookie('refreshToken', result.value.refreshToken, { httpOnly: false, secure: true, sameSite: 'none' })
+            .cookie('refreshToken', result.value.refreshToken, { httpOnly: true, secure: true, sameSite: 'none' })
             .status(HttpStatus.CREATED)
             .send({
                 resultCode: 0,
@@ -113,7 +113,8 @@ export class AuthContoller {
     ) {
         const command: LogoutUserCommand = {
             deviceId: req.deviceId,
-            userId: req.userId
+            userId: req.userId,
+            refreshToken: req.cookies.refreshToken
         }
         return this.logoutUserUseCase.execute(command)
     }
@@ -126,7 +127,8 @@ export class AuthContoller {
     ) {
         const command: RefreshTokenCommand = {
             deviceId: req.deviceId,
-            userId: req.userId
+            userId: req.userId,
+            refreshToken: req.cookies.refreshToken
         }
 
         const result = await this.refreshTokenUseCase.execute(command)

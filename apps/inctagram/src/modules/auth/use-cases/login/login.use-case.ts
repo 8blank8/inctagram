@@ -37,6 +37,7 @@ export class LoginUserUseCase {
 
             const user = await this.userRepo.getUserByEmail(email)
             if (!user) return Result.Err(new AuthError('The email or password are incorrect. Try again please'))
+            if (!user.emailConfirmed) return Result.Err('Email not confirmed')
 
             const { passwordHash } = await hashPassword(password, user.passwordSalt)
             if (passwordHash !== user.passwordHash) return Result.Err(new AuthError('The email or password are incorrect. Try again please'))

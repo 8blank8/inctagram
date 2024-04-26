@@ -31,6 +31,7 @@ export class CreateDeviceUseCase {
             device.createdAt = new Date()
             device.title = title
             device.user = user
+            device.updatedAt = new Date()
         } else {
             device.updatedAt = new Date()
         }
