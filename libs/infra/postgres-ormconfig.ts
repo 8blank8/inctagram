@@ -5,11 +5,13 @@ import { UserEntity } from '../../apps/inctagram/src/modules/user/entities/user.
 import { UserAvatarEntity } from '../../apps/files/src/modules/user/entities/user-avatar.entity'
 import { DataSource } from "typeorm";
 import { PostgresConnectionOptions } from "typeorm/driver/postgres/PostgresConnectionOptions";
+import { BlackList } from '../../apps/inctagram/src/modules/auth/entities/black-list.entity';
 
 export const allEntities = [
     UserEntity,
     DeviceEntity,
     UserAvatarEntity,
+    BlackList
 ]
 
 const isTest = process.env.MODE !== 'production';
