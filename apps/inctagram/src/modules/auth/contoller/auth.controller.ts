@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpStatus, Post, Query, Req, Res, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, HttpStatus, Ip, Post, Query, Req, Res, UseGuards } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
 import { RegistrationUserUseCase } from "../use-cases/registration/registration-user.use-case";
 import { RegistrationUserCommand } from "../use-cases/registration/dto/registration-user.command";
@@ -68,11 +68,13 @@ export class AuthContoller {
     async login(
         @Body() dto: LoginUserDto,
         @Req() req: Request,
-        @Res() res: Response
+        @Res() res: Response,
+        @Ip() ip: string
     ) {
         const command: LoginUserCommand = {
             ...dto,
-            title: req.headers['user-agent']
+            title: req.headers['user-agent'],
+            ip: ip
         }
 
         const result = await this.loginUserUseCase.execute(command)
@@ -157,13 +159,15 @@ export class AuthContoller {
     @Get('/google/callback')
     async googleAuthRedirect(
         @Req() req: ReqWithGoogleUser,
-        @Res() res: Response
+        @Res() res: Response,
+        @Ip() ip: string
     ) {
         const command: CreateUserGoogleOauthCommand = {
             email: req.user.email,
             firstname: req.user.firstname,
             lastname: req.user.lastname,
-            userAgent: req.headers['user-agent']
+            userAgent: req.headers['user-agent'],
+            ip: ip
         }
 
         const result = await this.createUserGoogleOauthUseCase.execute(command)
