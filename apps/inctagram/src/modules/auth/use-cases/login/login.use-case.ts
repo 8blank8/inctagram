@@ -30,7 +30,7 @@ export class LoginUserUseCase {
     }
 
     async doOperation(
-        { email, password, title }: LoginUserCommand,
+        { email, password, title, ip }: LoginUserCommand,
         manager: EntityManager
     ): Promise<Result<{ accessToken: string, refreshToken: string }>> {
         try {
@@ -44,7 +44,8 @@ export class LoginUserUseCase {
 
             const device = await this.createDeviceUseCase.execute({
                 title,
-                userId: user.id
+                userId: user.id,
+                ip: ip
             }, manager)
             if (!device.isSuccess) return Result.Err(device.err)
 

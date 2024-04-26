@@ -9,7 +9,7 @@ import { UserEntity } from "@inctagram/src/modules/user/entities/user.entity";
 @Injectable()
 export class CreateDeviceUseCase {
     async execute(command: CreateDeviceCommand, manager: EntityManager): Promise<Result<DeviceEntity>> {
-        const { title, userId } = command
+        const { title, userId, ip } = command
 
         const user = await manager.findOne(UserEntity, {
             where: { id: userId },
@@ -32,6 +32,7 @@ export class CreateDeviceUseCase {
             device.title = title
             device.user = user
             device.updatedAt = new Date()
+            device.ip = ip
         } else {
             device.updatedAt = new Date()
         }
