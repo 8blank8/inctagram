@@ -21,23 +21,23 @@ describe('user avatar', () => {
 
     let jwtService: JwtService
 
-    beforeAll(async () => {
-        // ({
-        //     app: app,
-        //     httpServer: _httpServer,
-        //     manager: manager,
-        //     moduleRef: moduleRef,
-        //     queryRunner: queryRunner
-        // } = await CreateAndConfigureAppForE2e())
+    // beforeAll(async () => {
+    //     ({
+    //         app: app,
+    //         httpServer: _httpServer,
+    //         manager: manager,
+    //         moduleRef: moduleRef,
+    //         queryRunner: queryRunner
+    //     } = await CreateAndConfigureAppForE2e())
 
-        // await app.init();
+    //     await app.init();
 
-        // jwtService = moduleRef.get<JwtService>(JwtService)
+    //     jwtService = moduleRef.get<JwtService>(JwtService)
 
-        // testSeeder = new TestSeeder(manager)
+    //     testSeeder = new TestSeeder(manager)
 
-        // await TestUtils.dropDb(queryRunner)
-    });
+    //     await TestUtils.dropDb(queryRunner)
+    // });
 
     // beforeEach(async () => {
     //     await TestUtils.dropDb(queryRunner)
@@ -58,7 +58,7 @@ describe('user avatar', () => {
         //     accessToken = tokens.accessToken
         // })
 
-        // xit('upload user avatar is success', async () => {
+        // it('upload user avatar is success', async () => {
         //     const response = await request(app.getHttpServer())
         //         .post('/users/avatar')
         //         .set('authorization', `Bearer ${accessToken}`)
@@ -66,7 +66,7 @@ describe('user avatar', () => {
         //         .field('offsetX', 1)
         //         .field('offsetY', 0.8)
         //         .field('scale', 0.3)
-
+        //     console.log(response.body)
         //     expect(response.status).toBe(HttpStatus.CREATED)
         //     expect(response.body.errors.length).toBe(0)
 
