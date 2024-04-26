@@ -4,13 +4,15 @@ import { TransactionDecorator } from "../../../../../../../libs/infra/inside-tra
 import { DataSource, EntityManager } from "typeorm";
 import { DeviceRepository } from "../../../device/repository/device.repository";
 import { Result } from "@libs/core/result";
+import { TokenService } from "../../services/token.service";
 
 
 @Injectable()
 export class LogoutUserUseCase {
     constructor(
         private dataSource: DataSource,
-        private deviceRepo: DeviceRepository
+        private deviceRepo: DeviceRepository,
+        private tokenService: TokenService
     ) { }
 
     async execute(command: LogoutUserCommand): Promise<Result<void>> {
@@ -23,8 +25,8 @@ export class LogoutUserUseCase {
     }
 
     private async doOperation(
-        { deviceId, userId }: LogoutUserCommand,
-        manager: EntityManager
+        { deviceId, userId, refreshToken }: LogoutUserCommand,
+        manager: EntityManager,
     ): Promise<Result<void>> {
 
         try {
@@ -33,6 +35,8 @@ export class LogoutUserUseCase {
             if (device.user.id !== userId) return Result.Err('user not owner this device')
 
             await manager.remove(device)
+
+            await this.tokenService.createExpriredTokenAndSave(refreshToken, manager)
 
             return Result.Ok()
 
