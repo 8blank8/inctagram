@@ -7,6 +7,7 @@ import { createJwtTokens } from "@libs/jwt/create-tokens";
 import { DataSource, EntityManager } from "typeorm";
 import { TransactionDecorator } from "@libs/infra/inside-transaction/inside-transaction";
 import { DeviceRepository } from "@inctagram/src/modules/device/repository/device.repository";
+import { TokenService } from "../../services/token.service";
 
 
 @Injectable()
@@ -15,7 +16,8 @@ export class RefreshTokenUseCase {
         private userRepo: UserRepository,
         private jwtService: JwtService,
         private deviceRepo: DeviceRepository,
-        private dataSource: DataSource
+        private dataSource: DataSource,
+        private tokenService: TokenService
     ) { }
 
     async execute(command: RefreshTokenCommand): Promise<Result<{ accessToken: string, refreshToken: string }>> {
@@ -28,7 +30,7 @@ export class RefreshTokenUseCase {
     }
 
     async doOperation(
-        { deviceId, userId }: RefreshTokenCommand,
+        { deviceId, userId, refreshToken }: RefreshTokenCommand,
         manager: EntityManager
     ): Promise<Result<{ accessToken: string, refreshToken: string }>> {
 
@@ -41,10 +43,12 @@ export class RefreshTokenUseCase {
 
         device.updatedAt = new Date()
 
+        await this.tokenService.createExpriredTokenAndSave(refreshToken, manager)
+
         await manager.save(device)
 
-        const { accessToken, refreshToken } = await createJwtTokens(this.jwtService, user.id, deviceId)
+        const tokens = await createJwtTokens(this.jwtService, user.id, deviceId)
 
-        return Result.Ok({ accessToken, refreshToken })
+        return Result.Ok({ accessToken: tokens.accessToken, refreshToken: tokens.refreshToken })
     }
 }
