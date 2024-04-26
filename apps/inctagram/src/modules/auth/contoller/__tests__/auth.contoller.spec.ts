@@ -140,53 +140,53 @@ describe('auth', () => {
         })
     })
 
-    // describe('confirm email code', () => {
-    //     it('confirmation email is success', async () => {
-    //         const user = await testSeeder.createUser(testSeeder.getUserDto(), { emailConfirmed: false, emailConfirmationCode: '123' })
+    describe('confirm email code', () => {
+        it('confirmation email is success', async () => {
+            const user = await testSeeder.createUser(testSeeder.getUserDto(), { emailConfirmed: false, emailConfirmationCode: '123asd' })
 
-    //         const confirmCodeDto: ConfirmationUserCommand = {
-    //             code: '123'
-    //         }
+            const confirmCodeDto: ConfirmationUserCommand = {
+                code: user.confirmationCode
+            }
 
-    //         const { status, body } = await request(_httpServer)
-    //             .get(`/auth/confirm-code?code=${}`)
-    //             .send(confirmCodeDto)
+            const { status, body } = await request(_httpServer)
+                .post(`/auth/confirm-code`)
+                .send(confirmCodeDto)
 
-    //         expect(status).toBe(HttpStatus.CREATED)
-    //         expect(body.errors.length).toBe(0)
+            expect(status).toBe(HttpStatus.CREATED)
+            expect(body.errors.length).toBe(0)
 
-    //         const findedUser = await manager.findOneBy(UserEntity, { id: user.id })
-    //         expect(findedUser.emailConfirmed).toBe(true)
-    //     })
+            const findedUser = await manager.findOneBy(UserEntity, { id: user.id })
+            expect(findedUser.emailConfirmed).toBe(true)
+        })
 
-    //     it('confirmation email user not found', async () => {
-    //         const confirmCodeDto: ConfirmationUserCommand = {
-    //             code: '1234'
-    //         }
+        it('confirmation email user not found', async () => {
+            const confirmCodeDto: ConfirmationUserCommand = {
+                code: '1234'
+            }
 
-    //         const { status, body } = await request(_httpServer)
-    //             .post('/auth/confirm-code')
-    //             .send(confirmCodeDto)
+            const { status, body } = await request(_httpServer)
+                .post('/auth/confirm-code')
+                .send(confirmCodeDto)
 
-    //         expect(status).toBe(HttpStatus.CREATED)
-    //         expect(body.errors.length).toBe(1)
-    //     })
+            expect(status).toBe(HttpStatus.CREATED)
+            expect(body.errors.length).toBe(1)
+        })
 
-    //     it('confirmation email user is confirmed', async () => {
-    //         const user = await testSeeder.createUser(testSeeder.getUserDto(), { emailConfirmationCode: '123' })
+        it('confirmation email user is confirmed', async () => {
+            const user = await testSeeder.createUser(testSeeder.getUserDto(), { emailConfirmationCode: '123asd' })
 
-    //         const confirmCodeDto: ConfirmationUserCommand = {
-    //             code: user.confirmationCode
-    //         }
+            const confirmCodeDto: ConfirmationUserCommand = {
+                code: user.confirmationCode
+            }
 
-    //         const { status, body } = await request(_httpServer)
-    //             .post('/auth/confirm-code')
-    //             .send(confirmCodeDto)
+            const { status, body } = await request(_httpServer)
+                .post('/auth/confirm-code')
+                .send(confirmCodeDto)
 
-    //         expect(status).toBe(HttpStatus.CREATED)
-    //         expect(body.errors.length).toBe(1)
-    //     })
-    // })
+            expect(status).toBe(HttpStatus.CREATED)
+            expect(body.errors.length).toBe(1)
+        })
+    })
 
     describe('login', () => {
         let userDto: CreateUserCommand;
