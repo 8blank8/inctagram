@@ -60,10 +60,8 @@ export class AuthContoller {
     @Get('/confirm-code')
     async confirmationCode(
         @Query() dto: ConfirmationUserCommand,
-        @Res() res: Response
     ) {
-        await this.confirmationUserUseCase.execute(dto)
-        return res.redirect(`${appSetting.FRONT_URL}`)
+        return this.confirmationUserUseCase.execute(dto)
     }
 
     @Post('/login')
