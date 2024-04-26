@@ -6,4 +6,5 @@ export class CreateUserGoogleOauthCommand implements GoogleUserOauthType {
     firstname: string;
     lastname: string;
     userAgent: string;
+    ip: string;
 }
