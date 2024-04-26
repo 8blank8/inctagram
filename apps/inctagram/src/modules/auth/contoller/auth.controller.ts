@@ -56,10 +56,10 @@ export class AuthContoller {
         console.log(dto)
         return this.resendConfirmationCodeUseCase.execute(dto)
     }
-    // TODO: поменять на старый флоу
-    @Get('/confirm-code')
+
+    @Post('/confirm-code')
     async confirmationCode(
-        @Query() dto: ConfirmationUserCommand,
+        @Body() dto: ConfirmationUserCommand,
     ) {
         return this.confirmationUserUseCase.execute(dto)
     }
