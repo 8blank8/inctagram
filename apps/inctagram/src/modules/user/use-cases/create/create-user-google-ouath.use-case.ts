@@ -30,7 +30,7 @@ export class CreateUserGoogleOauthUseCase {
     }
 
     async doOperation(
-        { email, firstname, lastname, userAgent }: CreateUserGoogleOauthCommand,
+        { email, firstname, lastname, userAgent, ip }: CreateUserGoogleOauthCommand,
         manager: EntityManager
     ): Promise<Result<{ accessToken: string, refreshToken: string }>> {
         let user: UserEntity;
@@ -51,7 +51,8 @@ export class CreateUserGoogleOauthUseCase {
 
         const device = await this.createDeviceUseCase.execute({
             title: userAgent,
-            userId: user.id
+            userId: user.id,
+            ip: ip
         }, manager)
         if (!device.isSuccess) return Result.Err(device.err)
 
