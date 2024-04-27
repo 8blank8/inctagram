@@ -4,11 +4,11 @@ import { CreatePostCommand } from "./dto/create-post.command";
 import { Result } from "@libs/core/result";
 import { TransactionDecorator } from "@libs/infra/inside-transaction/inside-transaction";
 import { UserRepository } from "@files/src/modules/user/repository/user.repository";
-import { PostPhotoEntity } from "../../entities/post-photo.enitity";
-import { PostEntity } from "../../entities/post.entity";
-import { UserEntity } from "@inctagram/src/modules/user/entities/user.entity";
+import { PostPhotoEntity } from "../../../../../../../libs/infra/entities/post-photo.enitity";
+import { PostEntity } from "../../../../../../../libs/infra/entities/post.entity";
 import { AspectRatioType } from "../../dto/create-post.dto";
 import { S3Service } from "@files/src/modules/s3/services/s3.service";
+import { UserEntity } from "@libs/infra/entities/user.entity";
 
 
 @Injectable()

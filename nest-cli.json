@@ -27,6 +27,15 @@
       "compilerOptions": {
         "tsConfigPath": "apps/files/tsconfig.app.json"
       }
+    },
+    "read": {
+      "type": "application",
+      "root": "apps/read",
+      "entryFile": "main",
+      "sourceRoot": "apps/read/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/read/tsconfig.app.json"
+      }
     }
   }
 }

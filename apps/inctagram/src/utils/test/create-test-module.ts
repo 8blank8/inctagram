@@ -5,8 +5,6 @@ import { MailService } from "../../../../../libs/mailer/mailer.service"
 import { APP_INTERCEPTOR } from "@nestjs/core"
 import { CustomResultInterceptor } from "../../../../../libs/interceptor/custom-result.interceptor"
 import { JwtService } from "@nestjs/jwt"
-import { UserEntity } from "@inctagram/src/modules/user/entities/user.entity"
-import { DeviceEntity } from "@inctagram/src/modules/device/entities/device.entity"
 import { AuthContoller } from "@inctagram/src/modules/auth/contoller/auth.controller"
 import { CreateUserUseCase } from "@inctagram/src/modules/user/use-cases/create/create-user.use-case"
 import { RegistrationUserUseCase } from "@inctagram/src/modules/auth/use-cases/registration/registration-user.use-case"
@@ -22,6 +20,8 @@ import { CreateUserGoogleOauthUseCase } from "@inctagram/src/modules/user/use-ca
 import { UserRepository } from "@inctagram/src/modules/user/repository/user.repository"
 import { DeviceRepository } from "@inctagram/src/modules/device/repository/device.repository"
 import { AppModule } from "@inctagram/src/app.module"
+import { DeviceEntity } from "@libs/infra/entities/device.entity"
+import { UserEntity } from "@libs/infra/entities/user.entity"
 
 export class MailServiceMock {
     async sendEmailConfirmationMessage(email: string, query: string): Promise<void> {

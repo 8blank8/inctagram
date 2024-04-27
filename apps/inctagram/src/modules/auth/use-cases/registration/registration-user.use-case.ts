@@ -1,21 +1,19 @@
 import { Injectable } from "@nestjs/common";
 import { RegistrationUserCommand } from "./dto/registration-user.command";
-import { CreateUserUseCase } from "../../../user/use-cases/create/create-user.use-case";
 import { Result } from "../../../../../../../libs/core/result";
 import { IdCreated } from "../../../../../../../libs/core/id-created";
 import { MailService } from "../../../../../../../libs/mailer/mailer.service";
 import { TransactionDecorator } from "@libs/infra/inside-transaction/inside-transaction";
 import { DataSource, EntityManager } from "typeorm";
 import { UserRepository } from "@inctagram/src/modules/user/repository/user.repository";
-import { UserEntity } from "@inctagram/src/modules/user/entities/user.entity";
 import { hashPassword } from "@inctagram/src/utils/hash-password";
 import { v4 as uuid } from 'uuid'
+import { UserEntity } from "@libs/infra/entities/user.entity";
 
 
 @Injectable()
 export class RegistrationUserUseCase {
     constructor(
-        private createUserUseCase: CreateUserUseCase,
         private mailService: MailService,
         private dataSource: DataSource,
         private userRepo: UserRepository

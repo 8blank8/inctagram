@@ -1,13 +1,13 @@
 import { config } from 'dotenv'
 config()
-import { DeviceEntity } from '../../apps/inctagram/src/modules/device/entities/device.entity';
-import { UserEntity } from '../../apps/inctagram/src/modules/user/entities/user.entity';
-import { UserAvatarEntity } from '../../apps/files/src/modules/user/entities/user-avatar.entity'
+import { DeviceEntity } from './entities/device.entity';
+import { UserEntity } from './entities/user.entity';
+import { UserAvatarEntity } from './entities/user-avatar.entity'
 import { DataSource } from "typeorm";
 import { PostgresConnectionOptions } from "typeorm/driver/postgres/PostgresConnectionOptions";
-import { BlackList } from '../../apps/inctagram/src/modules/auth/entities/black-list.entity';
-import { PostPhotoEntity } from '../../apps/files/src/modules/post/entities/post-photo.enitity';
-import { PostEntity } from "../../apps/files/src/modules/post/entities/post.entity";
+import { BlackList } from './entities/black-list.entity';
+import { PostPhotoEntity } from './entities/post-photo.enitity';
+import { PostEntity } from "./entities/post.entity";
 
 export const allEntities = [
     UserEntity,

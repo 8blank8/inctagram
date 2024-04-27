@@ -2,7 +2,7 @@ import { config } from 'dotenv'
 config()
 import { Injectable } from "@nestjs/common";
 import { CreateUserCommand } from "./dto/create-user.command";
-import { UserEntity } from "../../entities/user.entity";
+import { UserEntity } from "../../../../../../../libs/infra/entities/user.entity";
 import { Result } from '../../../../../../../libs/core/result';
 import { IdCreated } from '../../../../../../../libs/core/id-created';
 import { TransactionDecorator } from '../../../../../../../libs/infra/inside-transaction/inside-transaction';

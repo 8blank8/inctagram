@@ -7,8 +7,8 @@ import { S3Module } from "../s3/s3.module";
 import { PostRepository } from "./repositories/post.repository";
 import { UpdatePostUseCase } from "./use-cases/update/update-post.use-case";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { PostEntity } from "./entities/post.entity";
-import { PostPhotoEntity } from "./entities/post-photo.enitity";
+import { PostEntity } from "../../../../../libs/infra/entities/post.entity";
+import { PostPhotoEntity } from "../../../../../libs/infra/entities/post-photo.enitity";
 import { DeletePostUseCase } from "./use-cases/delete/delete-post.use-case";
 
 

@@ -8,11 +8,11 @@ import { JwtService } from '@nestjs/jwt';
 import { TestingModule } from '@nestjs/testing';
 import { createJwtTokens } from '@libs/jwt/create-tokens';
 import { TestUtils } from '@libs/tests/test-utils';
-import { UserEntity } from '@inctagram/src/modules/user/entities/user.entity';
 import { AspectRatioType } from '../../dto/create-post.dto';
-import { PostPhotoEntity } from '../../entities/post-photo.enitity';
-import { PostEntity } from '../../entities/post.entity';
+import { PostPhotoEntity } from '../../../../../../../libs/infra/entities/post-photo.enitity';
+import { PostEntity } from '../../../../../../../libs/infra/entities/post.entity';
 import { UpdatePostDto } from '../../dto/update-post.dto';
+import { UserEntity } from '@libs/infra/entities/user.entity';
 
 describe('posts file', () => {
     let app: INestApplication;

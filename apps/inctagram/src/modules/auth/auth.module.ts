@@ -17,7 +17,7 @@ import { CreateUserGoogleOauthUseCase } from "../user/use-cases/create/create-us
 import { TokenService } from "./services/token.service";
 import { TokenRepository } from "./repositories/token.repository";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { BlackList } from "./entities/black-list.entity";
+import { BlackList } from "../../../../../libs/infra/entities/black-list.entity";
 
 
 @Module({

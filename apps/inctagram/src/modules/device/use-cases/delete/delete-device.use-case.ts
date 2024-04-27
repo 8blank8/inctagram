@@ -4,7 +4,7 @@ import { DeviceRepository } from "../../repository/device.repository";
 import { DeleteDeviceCommand } from "./dto/delete-device.command";
 import { Result } from "@libs/core/result";
 import { TransactionDecorator } from "@libs/infra/inside-transaction/inside-transaction";
-import { DeviceEntity } from "../../entities/device.entity";
+import { DeviceEntity } from "../../../../../../../libs/infra/entities/device.entity";
 
 
 @Injectable()

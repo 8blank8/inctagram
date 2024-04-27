@@ -5,7 +5,7 @@ import { TransactionDecorator } from "@libs/infra/inside-transaction/inside-tran
 import { DataSource, EntityManager } from "typeorm";
 import { UserRepository } from "../../repository/user.repository";
 import { S3Service } from "@files/src/modules/s3/services/s3.service";
-import { UserAvatarEntity } from "../../entities/user-avatar.entity";
+import { UserAvatarEntity } from "../../../../../../../libs/infra/entities/user-avatar.entity";
 
 
 @Injectable()

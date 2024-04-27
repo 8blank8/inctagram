@@ -100,7 +100,8 @@
     "moduleNameMapper": {
       "@libs/(.*)$": "<rootDir>/libs/$1",
       "@inctagram/(.*)$": "<rootDir>/apps/inctagram/$1",
-      "@files/(.*)$": "<rootDir>/apps/files/$1"
+      "@files/(.*)$": "<rootDir>/apps/files/$1",
+      "@read/(.*)$": "<rootDir>/apps/read/$1"
     }
   }
 }

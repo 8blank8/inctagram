@@ -1,15 +1,15 @@
-import { UserEntity } from "@inctagram/src/modules/user/entities/user.entity"
 import { createAndConfigureAppForE2eTests } from "@inctagram/src/utils/test/create-and-configure-app-for-e2e"
 import { TestSeeder } from "@libs/tests/test-seeder"
 import { TestUtils } from "@libs/tests/test-utils"
 import { HttpStatus, INestApplication } from "@nestjs/common"
 import { EntityManager, QueryRunner } from "typeorm"
-import { DeviceEntity } from "../../entities/device.entity"
+import { DeviceEntity } from "../../../../../../../libs/infra/entities/device.entity"
 import * as request from 'supertest'
 import { JwtService } from "@nestjs/jwt"
 import { TestingModule } from "@nestjs/testing"
 import { createJwtTokens } from "@libs/jwt/create-tokens"
-import { DeviceMapper } from "../../mapper/device.mapper"
+import { DeviceMapper } from "@read/src/modules/device/mapper/device.mapper"
+import { UserEntity } from "@libs/infra/entities/user.entity"
 
 
 describe('devices', () => {
@@ -66,20 +66,6 @@ describe('devices', () => {
             accessToken = tokens.accessToken
         })
 
-        it('get devices for user is success', async () => {
-
-            const { status, body } = await request(_httpServer)
-                .get('/devices')
-                .set('Authorization', `Bearer ${accessToken}`)
-
-            expect(status).toBe(HttpStatus.OK)
-            expect(body.data.length).toBe(3)
-
-            const euqalDevice = devices.map(d => DeviceMapper.fromDeviceToDeviceViewDto(d))
-
-            expect(body.data).toEqual(euqalDevice)
-        })
-
         it('delete device by id is success', async () => {
             let user2 = await testSeeder.createUser(testSeeder.getUserDto(2))
             await testSeeder.createDevices(testSeeder.getDevicesDto(2, user2.id))
@@ -91,13 +77,14 @@ describe('devices', () => {
             expect(status).toBe(HttpStatus.OK)
             expect(body.errors.length).toBe(0)
 
-            const res = await request(_httpServer)
-                .get('/devices')
-                .set('Authorization', `Bearer ${accessToken}`)
-
-            const equalDevices = devices.slice(1).map(d => DeviceMapper.fromDeviceToDeviceViewDto(d))
-
-            expect(res.body.data).toEqual(equalDevices)
+            const findedDevices = await manager.find(DeviceEntity, {
+                where: {
+                    user: {
+                        id: user.id
+                    }
+                }
+            })
+            expect(findedDevices.length).toBe(2)
 
             const devicesUser2 = await manager.findBy(DeviceEntity, { user: { id: user2.id } })
             expect(devicesUser2.length).toBe(2)

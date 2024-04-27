@@ -8,8 +8,8 @@ import { JwtService } from '@nestjs/jwt';
 import { TestingModule } from '@nestjs/testing';
 import { createJwtTokens } from '@libs/jwt/create-tokens';
 import { TestUtils } from '@libs/tests/test-utils';
-import { UserEntity } from '@inctagram/src/modules/user/entities/user.entity';
-import { UserAvatarEntity } from '../../entities/user-avatar.entity';
+import { UserAvatarEntity } from '../../../../../../../libs/infra/entities/user-avatar.entity';
+import { UserEntity } from '@libs/infra/entities/user.entity';
 
 describe('user avatar', () => {
     let app: INestApplication;
