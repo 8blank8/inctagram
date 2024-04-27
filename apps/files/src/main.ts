@@ -24,7 +24,7 @@ async function bootstrap() {
 
   app.use(cookieParser())
 
-  app.setGlobalPrefix('api-files/v1');
+  app.setGlobalPrefix('api/v1');
 
   app.useGlobalPipes(new ValidationPipe({
     transform: true,
@@ -56,7 +56,7 @@ async function bootstrap() {
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api-files/v1/documentation', app, document);
+  SwaggerModule.setup('api/v1/documentation', app, document);
 
   const MODE = process.env.MODE || 'production';
   const PORT = process.env.PORT || 3000;
