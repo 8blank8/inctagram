@@ -6,12 +6,16 @@ import { UserAvatarEntity } from '../../apps/files/src/modules/user/entities/use
 import { DataSource } from "typeorm";
 import { PostgresConnectionOptions } from "typeorm/driver/postgres/PostgresConnectionOptions";
 import { BlackList } from '../../apps/inctagram/src/modules/auth/entities/black-list.entity';
+import { PostPhotoEntity } from '../../apps/files/src/modules/post/entities/post-photo.enitity';
+import { PostEntity } from "../../apps/files/src/modules/post/entities/post.entity";
 
 export const allEntities = [
     UserEntity,
     DeviceEntity,
     UserAvatarEntity,
-    BlackList
+    BlackList,
+    PostEntity,
+    PostPhotoEntity,
 ]
 
 const isTest = process.env.MODE !== 'production';
