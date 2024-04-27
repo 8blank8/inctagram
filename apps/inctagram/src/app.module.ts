@@ -13,6 +13,7 @@ import { DeviceModule } from './modules/device/device.module';
 import { JwtModule } from '@nestjs/jwt';
 import { GoogleStrategy } from '@libs/guards/google.guard';
 import { PassportModule } from '@nestjs/passport';
+import { PostModule } from './modules/post/post.module';
 
 
 @Module({
@@ -23,7 +24,8 @@ import { PassportModule } from '@nestjs/passport';
     MailModule,
     AuthModule,
     UserModule,
-    DeviceModule
+    DeviceModule,
+    PostModule
   ],
   controllers: [AppController],
   providers: [
