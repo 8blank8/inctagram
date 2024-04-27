@@ -2,7 +2,7 @@ import { JwtAuthGuard } from "@libs/guards/jwt.guard";
 import { ReqWithUser } from "@libs/types/req-with-user";
 import { Body, Controller, Delete, FileTypeValidator, MaxFileSizeValidator, Param, ParseFilePipe, Post, Put, Req, UploadedFiles, UseGuards, UseInterceptors } from "@nestjs/common";
 import { FileInterceptor, FilesInterceptor } from "@nestjs/platform-express";
-import { ApiTags } from "@nestjs/swagger";
+import { ApiConsumes, ApiTags } from "@nestjs/swagger";
 import { CreatePostDto } from "../dto/create-post.dto";
 import { CreatePostUseCase } from "../use-cases/create/create-post.use-case";
 import { CreatePostCommand } from "../use-cases/create/dto/create-post.command";
