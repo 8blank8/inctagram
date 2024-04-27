@@ -1,3 +1,6 @@
+import { AspectRatioType, CreatePostDto } from "@files/src/modules/post/dto/create-post.dto";
+import { PostPhotoEntity } from "@files/src/modules/post/entities/post-photo.enitity";
+import { PostEntity } from "@files/src/modules/post/entities/post.entity";
 import { DeviceEntity } from "@inctagram/src/modules/device/entities/device.entity";
 import { CreateDeviceCommand } from "@inctagram/src/modules/device/use-cases/create/dto/create-device.command";
 import { UserEntity } from "@inctagram/src/modules/user/entities/user.entity";
@@ -77,6 +80,40 @@ export class TestSeeder {
 
         return result
     }
+
+    getPostDto(num: number = 1): CreatePostDto {
+        return {
+            aspectRatio: AspectRatioType.RATIO_16_9,
+            offsetX: 1,
+            offsetY: 1,
+            scale: 1,
+            description: `test post description ${num}`,
+            location: `nsk ${num}`
+        }
+    }
+
+    getPostDtos(num: number): CreatePostDto[] {
+        const posts: CreatePostDto[] = []
+
+        for (let i = 0; i < num; i++) {
+            posts.push(this.getPostDto(i))
+        }
+
+        return posts
+    }
+
+    async createPosts(dto: CreatePostDto[], user: UserEntity) {
+        const posts: PostEntity[] = []
+
+        for (let i = 0; i < dto.length; i++) {
+            const postDto = dto[i]
+            const post = await this.testCreator.createPost(postDto, user)
+
+            posts.push(post)
+        }
+
+        return posts
+    }
 }
 
 export class TestCreator {
@@ -118,6 +155,39 @@ export class TestCreator {
             await this.manager.save(createdDevice)
 
             return createdDevice
+        } catch (e) {
+            console.log(e)
+        }
+    }
+
+    async createPost(dto: CreatePostDto, user: UserEntity): Promise<PostEntity> {
+        try {
+            const post = new PostEntity()
+            post.createdAt = new Date()
+            post.description = dto.description
+            post.location = dto.location
+            post.user = user
+
+            await this.manager.save(post)
+
+            const photos: PostPhotoEntity[] = []
+
+            for (let i = 0; i < 2; i++) {
+                const photo = new PostPhotoEntity()
+                photo.aspectRatio = dto.aspectRatio
+                photo.createdAt = new Date()
+                photo.offsetX = dto.offsetX
+                photo.offsetY = dto.offsetY
+                photo.scale = dto.scale
+                photo.url = `photo/url/${i}`
+                photo.post = post
+
+                photos.push(photo)
+            }
+
+            await this.manager.save(photos)
+
+            return post
         } catch (e) {
             console.log(e)
         }
