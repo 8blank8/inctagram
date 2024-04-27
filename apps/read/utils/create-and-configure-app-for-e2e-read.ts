@@ -2,7 +2,7 @@ import { BadRequestException, ValidationError, ValidationPipe } from "@nestjs/co
 import { Test, TestingModule } from "@nestjs/testing";
 import * as cookieParser from 'cookie-parser'
 import { DataSource } from "typeorm";
-import { ReadModule } from "../src/modules/app/read.module";
+import { ReadModule } from "../src/read.module";
 
 
 export const CreateAndConfigureAppForE2eRead = async () => {

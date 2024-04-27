@@ -1,13 +1,11 @@
 import { Module } from '@nestjs/common';
-import { ReadController } from './read.controller';
-import { ReadService } from './read.service';
-import { DeviceModule } from '../device/device.module';
+import { DeviceModule } from './modules/device/device.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { primaryPostgresConnectionOptions } from '@libs/infra/postgres-ormconfig';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { CustomResultInterceptor } from '@libs/interceptor/custom-result.interceptor';
-import { PostModule } from '../post/post.module';
-import { UserModule } from '../user/user.module';
+import { PostModule } from './modules/post/post.module';
+import { UserModule } from './modules/user/user.module';
 
 @Module({
   imports: [
@@ -16,9 +14,8 @@ import { UserModule } from '../user/user.module';
     PostModule,
     UserModule
   ],
-  controllers: [ReadController],
+  controllers: [],
   providers: [
-    ReadService,
     {
       provide: APP_INTERCEPTOR,
       useClass: CustomResultInterceptor

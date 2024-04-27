@@ -1,6 +1,4 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { AuthModule } from './modules/auth/auth.module';
 // import { PostgresModule } from '../../../libs/infra/postgres.module';
 import { UserModule } from './modules/user/user.module';
@@ -25,9 +23,8 @@ import { PassportModule } from '@nestjs/passport';
     UserModule,
     DeviceModule,
   ],
-  controllers: [AppController],
+  controllers: [],
   providers: [
-    AppService,
     {
       provide: APP_INTERCEPTOR,
       useClass: CustomResultInterceptor

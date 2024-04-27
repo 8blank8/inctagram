@@ -1,6 +1,4 @@
 import { Module } from '@nestjs/common';
-import { FilesController } from './files.controller';
-import { FilesService } from './files.service';
 import { UserModule } from './modules/user/user.module';
 import { primaryPostgresConnectionOptions } from '@libs/infra/postgres-ormconfig';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -14,9 +12,8 @@ import { PostModule } from './modules/post/post.module';
     UserModule,
     PostModule
   ],
-  controllers: [FilesController],
+  controllers: [],
   providers: [
-    FilesService,
     {
       provide: APP_INTERCEPTOR,
       useClass: CustomResultInterceptor

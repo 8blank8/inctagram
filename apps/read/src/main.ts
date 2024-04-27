@@ -1,7 +1,7 @@
 import { config } from 'dotenv'
 config()
 import { NestFactory } from '@nestjs/core';
-import { ReadModule } from './modules/app/read.module';
+import { ReadModule } from './read.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { BadRequestException, ValidationError, ValidationPipe } from '@nestjs/common';
 import * as cookieParser from 'cookie-parser';

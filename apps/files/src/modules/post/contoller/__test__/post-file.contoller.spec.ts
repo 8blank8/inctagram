@@ -1,7 +1,6 @@
 import * as request from 'supertest';
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import { CreateAndConfigureAppForE2e } from '@files/src/utils/tests/create-and-configure-app-for-e2e';
-import { appSetting } from '@libs/core/app-setting';
 import { TestSeeder } from '@libs/tests/test-seeder';
 import { EntityManager, QueryRunner } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
