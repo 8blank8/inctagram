@@ -2,6 +2,7 @@ import { BaseEntity } from "../../../../../../libs/infra/entities/base.entity";
 import { Column, Entity, JoinColumn, OneToMany, OneToOne } from "typeorm";
 import { DeviceEntity } from "../../device/entities/device.entity";
 import { UserAvatarEntity } from "../../../../../files/src/modules/user/entities/user-avatar.entity";
+import { PostEntity } from "../../../../../files/src/modules/post/entities/post.entity";
 
 
 @Entity()
@@ -45,6 +46,9 @@ export class UserEntity extends BaseEntity {
     @OneToOne(() => UserAvatarEntity, avatar => avatar.user, { nullable: true })
     @JoinColumn()
     avatar: UserAvatarEntity
+
+    @OneToMany(() => PostEntity, post => post.user)
+    posts: PostEntity[]
 
     @Column({ default: false })
     isDelete: boolean;
