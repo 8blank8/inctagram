@@ -1,15 +1,32 @@
 import { FilesModule } from "@files/src/files.module";
+import { S3Service } from "@files/src/modules/s3/services/s3.service";
+import { Result } from "@libs/core/result";
 import { validationPipeConfig } from "@libs/core/validation-pipe.config";
 import { ValidationPipe } from "@nestjs/common";
 import { Test, TestingModule } from "@nestjs/testing";
 import * as cookieParser from 'cookie-parser'
 import { DataSource } from "typeorm";
 
+export class S3ServiceMock {
+    upload(url: string, buffer: Buffer) {
+        console.log(url)
+        return Result.Ok()
+    }
+
+    delete(url: string) {
+        console.log(url)
+        return Result.Ok()
+    }
+}
+
 
 export const CreateAppForE2eTestsFiles = async () => {
     const moduleRef: TestingModule = await Test.createTestingModule({
         imports: [FilesModule],
-    }).compile();
+    })
+        .overrideProvider(S3Service)
+        .useClass(S3ServiceMock)
+        .compile();
 
     const app = moduleRef.createNestApplication();
 
