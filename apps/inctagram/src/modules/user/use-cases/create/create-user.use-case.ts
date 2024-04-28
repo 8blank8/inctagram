@@ -4,7 +4,6 @@ import { Injectable } from "@nestjs/common";
 import { CreateUserCommand } from "./dto/create-user.command";
 import { UserEntity } from "../../../../../../../libs/infra/entities/user.entity";
 import { Result } from '../../../../../../../libs/core/result';
-import { IdCreated } from '../../../../../../../libs/core/id-created';
 import { TransactionDecorator } from '../../../../../../../libs/infra/inside-transaction/inside-transaction';
 import { DataSource, EntityManager } from 'typeorm';
 import { UserRepository } from '../../repository/user.repository';
@@ -36,6 +35,7 @@ export class CreateUserUseCase {
 
         try {
 
+
             const findedUserEmail = await this.userRepo.getUserByEmail(email)
             if (findedUserEmail && findedUserEmail.emailConfirmed) return Result.Err('user with email is exist')
 
@@ -55,8 +55,6 @@ export class CreateUserUseCase {
                     passwordSalt,
                     manager
                 )
-
-                return Result.Ok(createdUser)
             }
 
             if (findedUserUsername && !findedUserUsername.emailConfirmed) {
@@ -68,23 +66,22 @@ export class CreateUserUseCase {
                     passwordSalt,
                     manager
                 )
-
-                return Result.Ok(createdUser)
             }
 
-            const user = new UserEntity()
-            console.log(user)
-            createdUser = await this.createUser(
-                user,
-                email,
-                username,
-                passwordHash,
-                passwordSalt,
-                manager
-            )
+            if (!createdUser) {
+                const user = new UserEntity()
+
+                createdUser = await this.createUser(
+                    user,
+                    email,
+                    username,
+                    passwordHash,
+                    passwordSalt,
+                    manager
+                )
+            }
 
             return Result.Ok(createdUser)
-
         } catch (e) {
             console.log(e)
             return Result.Err('CreateUserUseCase error')
@@ -100,7 +97,6 @@ export class CreateUserUseCase {
         user.passwordSalt = passwordSalt
         user.confirmationCode = uuid()
 
-        console.log(user)
         return manager.save(user)
     }
 }
