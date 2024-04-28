@@ -10,6 +10,12 @@ import { UserRepository } from '../../repository/user.repository';
 import { hashPassword } from '../../../../utils/hash-password';
 import { v4 as uuid } from 'uuid'
 
+class UserDto {
+    email: string
+    username: string
+    passwordHash: string
+    passwordSalt: string
+}
 
 @Injectable()
 export class CreateUserUseCase {
@@ -46,38 +52,24 @@ export class CreateUserUseCase {
 
             let createdUser: UserEntity
 
-            if (findedUserEmail && !findedUserEmail.emailConfirmed) {
-                createdUser = await this.createUser(
-                    findedUserEmail,
-                    email,
-                    username,
-                    passwordHash,
-                    passwordSalt,
-                    manager
-                )
+            const dto: UserDto = {
+                email,
+                passwordHash,
+                passwordSalt,
+                username
             }
 
-            if (findedUserUsername && !findedUserUsername.emailConfirmed) {
-                createdUser = await this.createUser(
-                    findedUserUsername,
-                    email,
-                    username,
-                    passwordHash,
-                    passwordSalt,
-                    manager
-                )
-            }
+            if (findedUserEmail && !findedUserEmail.emailConfirmed) createdUser = await this.createUser(findedUserEmail, manager, dto)
+
+            if (findedUserUsername && !findedUserUsername.emailConfirmed) createdUser = await this.createUser(findedUserUsername, manager, dto)
 
             if (!createdUser) {
                 const user = new UserEntity()
 
                 createdUser = await this.createUser(
                     user,
-                    email,
-                    username,
-                    passwordHash,
-                    passwordSalt,
-                    manager
+                    manager,
+                    dto
                 )
             }
 
@@ -88,7 +80,9 @@ export class CreateUserUseCase {
         }
     }
 
-    async createUser(user: UserEntity, email: string, username: string, passwordHash: string, passwordSalt: string, manager: EntityManager): Promise<UserEntity> {
+    async createUser(user: UserEntity, manager: EntityManager, dto: UserDto): Promise<UserEntity> {
+
+        const { email, passwordHash, passwordSalt, username } = dto
 
         user.username = username
         user.email = email
