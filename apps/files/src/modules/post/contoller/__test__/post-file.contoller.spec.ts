@@ -1,6 +1,6 @@
 import * as request from 'supertest';
 import { HttpStatus, INestApplication } from '@nestjs/common';
-import { CreateAndConfigureAppForE2e } from '@files/src/utils/tests/create-and-configure-app-for-e2e';
+import { CreateAppForE2eTestsFiles } from '@files/src/utils/tests/create-and-configure-app-for-e2e';
 import { TestSeeder } from '@libs/tests/test-seeder';
 import { EntityManager, QueryRunner } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
@@ -30,7 +30,7 @@ describe('posts file', () => {
             manager: manager,
             moduleRef: moduleRef,
             queryRunner: queryRunner
-        } = await CreateAndConfigureAppForE2e())
+        } = await CreateAppForE2eTestsFiles())
 
         await app.init();
 

@@ -1,14 +1,14 @@
 import { Module } from '@nestjs/common';
 import { UserModule } from './modules/user/user.module';
-import { primaryPostgresConnectionOptions } from '@libs/infra/postgres-ormconfig';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { CustomResultInterceptor } from '@libs/interceptor/custom-result.interceptor';
 import { PostModule } from './modules/post/post.module';
+import { PostgresModule } from '@libs/infra/postgres.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot(primaryPostgresConnectionOptions),
+    PostgresModule,
     UserModule,
     PostModule
   ],

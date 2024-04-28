@@ -1,11 +1,12 @@
-import { BadRequestException, ValidationError, ValidationPipe } from "@nestjs/common";
+import { ValidationPipe } from "@nestjs/common";
 import { Test, TestingModule } from "@nestjs/testing";
 import * as cookieParser from 'cookie-parser'
 import { DataSource } from "typeorm";
 import { ReadModule } from "../src/read.module";
+import { validationPipeConfig } from "@libs/core/validation-pipe.config";
 
 
-export const CreateAndConfigureAppForE2eRead = async () => {
+export const CreateAppForE2eTestsRead = async () => {
     const moduleRef: TestingModule = await Test.createTestingModule({
         imports: [ReadModule],
     }).compile();
@@ -14,28 +15,7 @@ export const CreateAndConfigureAppForE2eRead = async () => {
 
     app.use(cookieParser())
 
-    app.useGlobalPipes(new ValidationPipe({
-        transform: true,
-        transformOptions: {
-            enableImplicitConversion: true,
-        },
-        exceptionFactory: (errors: ValidationError[]) => {
-            const errorsMessages = errors.map(e => {
-                let message = null;
-
-                if (e.constraints && Object.keys(e.constraints).length) {
-                    message = e.constraints[Object.keys(e.constraints)[0]]
-                }
-
-                return {
-                    field: e.property,
-                    message
-                }
-            })
-
-            throw new BadRequestException(errorsMessages)
-        }
-    }));
+    app.useGlobalPipes(new ValidationPipe(validationPipeConfig));
 
     const httpServer = app.getHttpServer();
 

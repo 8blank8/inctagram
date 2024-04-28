@@ -6,7 +6,7 @@ import { TestSeeder } from "../../../../../../../libs/tests/test-seeder"
 import { JwtService } from "@nestjs/jwt"
 import { TestingModule } from "@nestjs/testing"
 import { createJwtTokens } from "@libs/jwt/create-tokens"
-import { CreateAndConfigureAppForE2eRead } from "@read/utils/create-and-configure-app-for-e2e-read"
+import { CreateAppForE2eTestsRead } from "@read/utils/create-and-configure-app-for-e2e-read"
 
 
 describe('user', () => {
@@ -28,7 +28,7 @@ describe('user', () => {
             queryRunner: _queryRunner,
             manager: manager,
             moduleRef
-        } = await CreateAndConfigureAppForE2eRead())
+        } = await CreateAppForE2eTestsRead())
         testSeeder = new TestSeeder(manager)
 
         jwtService = moduleRef.get<JwtService>(JwtService)

@@ -5,7 +5,7 @@ import { EntityManager, QueryRunner } from "typeorm"
 import * as request from 'supertest'
 import { GetPostFilterDto } from "../../filters/get-post.filter"
 import { PostMapper } from "../../mapper/post.mapper"
-import { CreateAndConfigureAppForE2eRead } from "@read/utils/create-and-configure-app-for-e2e-read"
+import { CreateAppForE2eTestsRead } from "@read/utils/create-and-configure-app-for-e2e-read"
 import { UserEntity } from "@libs/infra/entities/user.entity"
 import { PostEntity } from "@libs/infra/entities/post.entity"
 
@@ -20,7 +20,7 @@ describe('posts', () => {
 
     beforeAll(async () => {
 
-        ({ httpServer: _httpServer, app: app, queryRunner: _queryRunner, manager: manager } = await CreateAndConfigureAppForE2eRead())
+        ({ httpServer: _httpServer, app: app, queryRunner: _queryRunner, manager: manager } = await CreateAppForE2eTestsRead())
         testSeeder = new TestSeeder(manager)
 
         await app.init()

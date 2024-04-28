@@ -1,4 +1,4 @@
-import { createAndConfigureAppForE2eTests } from "@inctagram/src/utils/test/create-and-configure-app-for-e2e"
+import { CreateAppForE2eTestsMain } from "@inctagram/src/utils/test/create-and-configure-app-for-e2e"
 import { TestSeeder } from "@libs/tests/test-seeder"
 import { TestUtils } from "@libs/tests/test-utils"
 import { HttpStatus, INestApplication } from "@nestjs/common"
@@ -31,7 +31,7 @@ describe('devices', () => {
             queryRunner: _queryRunner,
             manager: manager,
             moduleRef: _moduleRef
-        } = await createAndConfigureAppForE2eTests())
+        } = await CreateAppForE2eTestsMain())
 
         testSeeder = new TestSeeder(manager)
 

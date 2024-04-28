@@ -20,7 +20,7 @@ export const allEntities = [
 
 const isTest = process.env.MODE !== 'production';
 console.log('=============================> database name', isTest ? 'inctagram_test' : process.env.PG_DATABASE)
-export const primaryPostgresConnectionOptions: PostgresConnectionOptions = {
+export const postgresConnectionOptions: PostgresConnectionOptions = {
     name: "default",
     type: 'postgres',
     host: isTest ? 'localhost' : process.env.PG_HOST,
@@ -41,4 +41,4 @@ export const primaryPostgresConnectionOptions: PostgresConnectionOptions = {
     migrations: [__dirname + '/migrations/**/*{.ts,.js}'],
 };
 
-export default new DataSource(primaryPostgresConnectionOptions)
+export default new DataSource(postgresConnectionOptions)

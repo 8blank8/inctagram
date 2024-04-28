@@ -7,7 +7,7 @@ import { UpdateUserDto } from "../../dto/update-user.dto"
 import { JwtService } from "@nestjs/jwt"
 import { TestingModule } from "@nestjs/testing"
 import { UserEntity } from "../../../../../../../libs/infra/entities/user.entity"
-import { createAndConfigureAppForE2eTests } from "@inctagram/src/utils/test/create-and-configure-app-for-e2e"
+import { CreateAppForE2eTestsMain } from "@inctagram/src/utils/test/create-and-configure-app-for-e2e"
 import { createJwtTokens } from "@libs/jwt/create-tokens"
 
 
@@ -30,7 +30,7 @@ describe('user', () => {
             queryRunner: _queryRunner,
             manager: manager,
             moduleRef
-        } = await createAndConfigureAppForE2eTests())
+        } = await CreateAppForE2eTestsMain())
         testSeeder = new TestSeeder(manager)
 
         jwtService = moduleRef.get<JwtService>(JwtService)

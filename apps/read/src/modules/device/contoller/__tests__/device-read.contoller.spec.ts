@@ -8,7 +8,7 @@ import { JwtService } from "@nestjs/jwt"
 import { TestingModule } from "@nestjs/testing"
 import { createJwtTokens } from "@libs/jwt/create-tokens"
 import { DeviceMapper } from "../../mapper/device.mapper"
-import { CreateAndConfigureAppForE2eRead } from "@read/utils/create-and-configure-app-for-e2e-read"
+import { CreateAppForE2eTestsRead } from "@read/utils/create-and-configure-app-for-e2e-read"
 import { UserEntity } from "@libs/infra/entities/user.entity"
 
 
@@ -31,7 +31,7 @@ describe('devices', () => {
             queryRunner: _queryRunner,
             manager: manager,
             moduleRef: _moduleRef
-        } = await CreateAndConfigureAppForE2eRead())
+        } = await CreateAppForE2eTestsRead())
 
         testSeeder = new TestSeeder(manager)
 
