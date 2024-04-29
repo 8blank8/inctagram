@@ -35,3 +35,7 @@ lerna-debug.log*
 !.vscode/extensions.json
 
 .env
+
+apps/files/src/modules/post/contoller/__test__/assets
+apps/files/src/modules/user/contoller/__tests__/assets
+

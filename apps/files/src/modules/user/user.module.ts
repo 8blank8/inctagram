@@ -21,6 +21,9 @@ import { DeleteUserAvatarUseCase } from "./use-cases/delete-avatar/delete-user-a
         DeleteUserAvatarUseCase,
         UserRepository,
         JwtService,
+    ],
+    exports: [
+        UserRepository,
     ]
 })
 export class UserModule { }

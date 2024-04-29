@@ -8,9 +8,9 @@ import { JwtAuthGuard } from "@libs/guards/jwt.guard";
 import { ReqWithUser } from "@libs/types/req-with-user";
 import { DeleteUserAvatarCommand } from "../use-cases/delete-avatar/dto/delete-user-avatar.command";
 import { DeleteUserAvatarUseCase } from "../use-cases/delete-avatar/delete-user-avatar.use-case";
-import { ApiConsumes } from "@nestjs/swagger";
+import { ApiConsumes, ApiTags } from "@nestjs/swagger";
 
-
+@ApiTags('users')
 @Controller('users')
 export class UserContoller {
     constructor(
