@@ -42,6 +42,11 @@ spec:
                  secretKeyRef:
                    name: back-incta-read-production-config-secret
                    key: PG_DATABASE
+             - name: MODE
+               valueFrom:
+                 secretKeyRef:
+                   name: back-incta-read-production-config-secret
+                   key: MODE
              - name: PG_USER
                valueFrom:
                  secretKeyRef:
