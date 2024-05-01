@@ -1,7 +1,7 @@
 import { TestSeeder } from "@libs/tests/test-seeder"
 import { TestUtils } from "@libs/tests/test-utils"
 import { HttpStatus, INestApplication } from "@nestjs/common"
-import { EntityManager, MoreThan, QueryRunner } from "typeorm"
+import { EntityManager, FindManyOptions, MoreThan, QueryRunner } from "typeorm"
 import * as request from 'supertest'
 import { GetPostFilterDto } from "../../filters/get-post.filter"
 import { PostMapper } from "../../mapper/post.mapper"
@@ -72,9 +72,46 @@ describe('posts', () => {
                 take: query.size
             })
 
-            const equalData = findedPosts.map(p => PostMapper.fromPostToPostsViewDto(p))
+            const equalData = findedPosts.map(p => PostMapper.fromPostToPostsViewDto(p)[0])
 
             expect(body.data.items).toEqual(equalData)
+        })
+
+        it('get public posts is success', async () => {
+            const { body } = await request(_httpServer)
+                .get('/posts/public')
+
+            expect(body.data.length).toBe(4)
+
+            const query: FindManyOptions<PostEntity> = {
+                where: {
+                    public: true
+                },
+                relations: {
+                    user: {
+                        avatar: true
+                    },
+                    photos: true
+                },
+                order: { createdAt: 'desc' },
+                take: 4
+            }
+
+            const findedPosts = await manager.find(PostEntity, query)
+            const equalPosts = findedPosts.map(p => PostMapper.fromPostToPublicPostViewDto(p))
+
+            expect(body.data).toEqual(equalPosts)
+
+            await testSeeder.createPosts(testSeeder.getPostDtos(2), user)
+
+            const response = await request(_httpServer)
+                .get('/posts/public')
+
+            const findedPostsAfter = await manager.find(PostEntity, query)
+            const equalPostsAfter = findedPostsAfter.map(p => PostMapper.fromPostToPublicPostViewDto(p))
+
+            expect(response.body.data).toEqual(equalPostsAfter)
+            expect(body.data).not.toEqual(response.body.data)
         })
     })
 })
