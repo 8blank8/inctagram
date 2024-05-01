@@ -4,6 +4,7 @@ import { GetPostFilterDto } from "../filters/get-post.filter";
 import { PostQueryRepository } from "../repositories/post-query.repository";
 import { Paginated } from "@libs/core/pagination";
 import { PostsViewDto } from "../dto/posts-view.dto";
+import { PostsForPublicViewDto } from "../dto/posts-for-public-view.dto";
 
 class GetPostsViewResponse extends Paginated<PostsViewDto> {
     @ApiProperty({ type: PostsViewDto, isArray: true })
@@ -25,5 +26,11 @@ export class PostContoller {
         @Query() filter: GetPostFilterDto
     ) {
         return this.postQueryRepo.getPosts(filter)
+    }
+
+    @ApiResponse({ type: PostsForPublicViewDto, isArray: true })
+    @Get('public')
+    async getPublicPosts() {
+        return this.postQueryRepo.getPublicPosts()
     }
 }
