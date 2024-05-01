@@ -1,11 +1,24 @@
+import { AspectRatioType } from "@files/src/modules/post/dto/create-post.dto";
 import { ApiProperty } from "@nestjs/swagger";
 
 export class PostsViewDto {
     @ApiProperty()
-    id: string
+    postId: string
 
     @ApiProperty()
     url: string
+
+    @ApiProperty()
+    offsetX: number
+
+    @ApiProperty()
+    offsetY: number
+
+    @ApiProperty()
+    scale: number
+
+    @ApiProperty({ enum: AspectRatioType })
+    aspectRatio: AspectRatioType
 
     @ApiProperty()
     cursor: number
