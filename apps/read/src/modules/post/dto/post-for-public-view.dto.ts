@@ -1,14 +1,14 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { UserForPostViewDto } from "./user-for-post-view.dto";
-import { PostsViewDto } from "./posts-view.dto";
+import { PostPhotoViewDto } from "./post-photo-view.dto";
 
 
-export class PostsForPublicViewDto {
+export class PostForPublicViewDto {
     @ApiProperty()
     id: string
 
-    @ApiProperty({ type: PostsViewDto, isArray: true })
-    photos: PostsViewDto[]
+    @ApiProperty({ type: PostPhotoViewDto, isArray: true })
+    photos: PostPhotoViewDto[]
 
     @ApiProperty()
     description: string

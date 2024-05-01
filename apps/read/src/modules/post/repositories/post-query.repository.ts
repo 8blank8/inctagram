@@ -4,10 +4,11 @@ import { FindManyOptions, MoreThan, Repository } from "typeorm";
 import { GetPostFilterDto } from "../filters/get-post.filter";
 import { Result } from "@libs/core/result";
 import { Paginated } from "@libs/core/pagination";
-import { PostsViewDto } from "../dto/posts-view.dto";
+import { PostProfileViewDto } from "../dto/post-profile-view.dto";
 import { PostMapper } from "../mapper/post.mapper";
 import { PostEntity } from "@libs/infra/entities/post.entity";
-import { PostsForPublicViewDto } from "../dto/posts-for-public-view.dto";
+import { PostForPublicViewDto } from "../dto/post-for-public-view.dto";
+import { PostViewDto } from "../dto/post-view.dto";
 
 
 @Injectable()
@@ -16,7 +17,7 @@ export class PostQueryRepository {
         @InjectRepository(PostEntity) private postRepo: Repository<PostEntity>
     ) { }
 
-    async getPosts(filter: GetPostFilterDto): Promise<Result<Paginated<PostsViewDto>>> {
+    async getPosts(filter: GetPostFilterDto): Promise<Result<Paginated<PostProfileViewDto>>> {
         try {
             const { cursor, size, userId } = filter
 
@@ -28,7 +29,7 @@ export class PostQueryRepository {
                 },
             }
 
-            const posts = await this.postRepo.findAndCount({
+            const posts = await this.postRepo.find({
                 ...filters,
                 relations: { photos: true },
                 where: {
@@ -41,9 +42,8 @@ export class PostQueryRepository {
 
             return Result.Ok(
                 Paginated.new({
-                    count: posts[1],
                     size: size,
-                    items: posts[0].map(p => PostMapper.fromPostToPostsViewDto(p)[0])
+                    items: posts.map(p => PostMapper.fromPostToPostProfileViewDto(p))
                 })
             )
         } catch (e) {
@@ -52,7 +52,7 @@ export class PostQueryRepository {
         }
     }
 
-    async getPublicPosts(): Promise<Result<PostsForPublicViewDto[]>> {
+    async getPublicPosts(): Promise<Result<PostForPublicViewDto[]>> {
         try {
 
             const posts = await this.postRepo.find({
@@ -70,7 +70,7 @@ export class PostQueryRepository {
             })
 
             return Result.Ok(
-                posts.map(p => PostMapper.fromPostToPublicPostViewDto(p))
+                posts.map(p => PostMapper.fromPostToPostPublicViewDto(p))
             )
 
         } catch (e) {
@@ -78,4 +78,28 @@ export class PostQueryRepository {
             return Result.Err('some error get public posts')
         }
     }
+
+    async getPostById(postId: string): Promise<Result<PostViewDto>> {
+        try {
+            const post = await this.postRepo.findOne({
+                where: {
+                    id: postId
+                },
+                relations: {
+                    user: {
+                        avatar: true
+                    },
+                    photos: true
+                }
+            })
+
+            if (!post) return Result.Ok(null)
+            return Result.Ok(PostMapper.fromPostToPostViewDto(post))
+
+        } catch (e) {
+            console.log(`${PostQueryRepository.name} getPostById`, e)
+            return Result.Err('get post by id some error')
+        }
+    }
+
 }
