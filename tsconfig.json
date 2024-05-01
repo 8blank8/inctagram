@@ -26,6 +26,9 @@
       ],
       "@files/*": [
         "apps/files/*"
+      ],
+      "@read/*": [
+        "apps/read/*"
       ]
     }
   }

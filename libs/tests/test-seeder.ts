@@ -1,11 +1,11 @@
 import { AspectRatioType, CreatePostDto } from "@files/src/modules/post/dto/create-post.dto";
-import { PostPhotoEntity } from "@files/src/modules/post/entities/post-photo.enitity";
-import { PostEntity } from "@files/src/modules/post/entities/post.entity";
-import { DeviceEntity } from "@inctagram/src/modules/device/entities/device.entity";
 import { CreateDeviceCommand } from "@inctagram/src/modules/device/use-cases/create/dto/create-device.command";
-import { UserEntity } from "@inctagram/src/modules/user/entities/user.entity";
 import { CreateUserCommand } from "@inctagram/src/modules/user/use-cases/create/dto/create-user.command";
 import { hashPassword } from "@inctagram/src/utils/hash-password";
+import { DeviceEntity } from "@libs/infra/entities/device.entity";
+import { PostPhotoEntity } from "@libs/infra/entities/post-photo.enitity";
+import { PostEntity } from "@libs/infra/entities/post.entity";
+import { UserEntity } from "@libs/infra/entities/user.entity";
 import { EntityManager } from "typeorm";
 
 export class CreateUserOptions {

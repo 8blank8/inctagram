@@ -12,8 +12,11 @@
     "start:inctagram": "node dist/apps/inctagram/main",
     "build:files": "nest build files",
     "start:files": "node dist/apps/files/main",
+    "build:read": "nest build read",
+    "start:read": "node dist/apps/read/main",
     "start:dev:files": "nest start files --watch",
     "start:dev:inctagram": "nest start inctagram --watch",
+    "start:dev:read": "nest start read --watch",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest --runInBand",
     "test:watch": "jest --watch",
@@ -100,7 +103,8 @@
     "moduleNameMapper": {
       "@libs/(.*)$": "<rootDir>/libs/$1",
       "@inctagram/(.*)$": "<rootDir>/apps/inctagram/$1",
-      "@files/(.*)$": "<rootDir>/apps/files/$1"
+      "@files/(.*)$": "<rootDir>/apps/files/$1",
+      "@read/(.*)$": "<rootDir>/apps/read/$1"
     }
   }
 }

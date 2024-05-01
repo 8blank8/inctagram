@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { DeviceEntity } from "../entities/device.entity";
+import { DeviceEntity } from "../../../../../../libs/infra/entities/device.entity";
 import { Not, Repository } from "typeorm";
 
 

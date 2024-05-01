@@ -2,15 +2,20 @@ import { config } from 'dotenv'
 config()
 import { Injectable } from "@nestjs/common";
 import { CreateUserCommand } from "./dto/create-user.command";
-import { UserEntity } from "../../entities/user.entity";
+import { UserEntity } from "../../../../../../../libs/infra/entities/user.entity";
 import { Result } from '../../../../../../../libs/core/result';
-import { IdCreated } from '../../../../../../../libs/core/id-created';
 import { TransactionDecorator } from '../../../../../../../libs/infra/inside-transaction/inside-transaction';
 import { DataSource, EntityManager } from 'typeorm';
 import { UserRepository } from '../../repository/user.repository';
 import { hashPassword } from '../../../../utils/hash-password';
 import { v4 as uuid } from 'uuid'
 
+class UserDto {
+    email: string
+    username: string
+    passwordHash: string
+    passwordSalt: string
+}
 
 @Injectable()
 export class CreateUserUseCase {
@@ -36,6 +41,7 @@ export class CreateUserUseCase {
 
         try {
 
+
             const findedUserEmail = await this.userRepo.getUserByEmail(email)
             if (findedUserEmail && findedUserEmail.emailConfirmed) return Result.Err('user with email is exist')
 
@@ -46,52 +52,37 @@ export class CreateUserUseCase {
 
             let createdUser: UserEntity
 
-            if (findedUserEmail && !findedUserEmail.emailConfirmed) {
-                createdUser = await this.createUser(
-                    findedUserEmail,
-                    email,
-                    username,
-                    passwordHash,
-                    passwordSalt,
-                    manager
-                )
-
-                return Result.Ok(createdUser)
-            }
-
-            if (findedUserUsername && !findedUserUsername.emailConfirmed) {
-                createdUser = await this.createUser(
-                    findedUserUsername,
-                    email,
-                    username,
-                    passwordHash,
-                    passwordSalt,
-                    manager
-                )
-
-                return Result.Ok(createdUser)
-            }
-
-            const user = new UserEntity()
-            console.log(user)
-            createdUser = await this.createUser(
-                user,
+            const dto: UserDto = {
                 email,
-                username,
                 passwordHash,
                 passwordSalt,
-                manager
-            )
+                username
+            }
+
+            if (findedUserEmail && !findedUserEmail.emailConfirmed) createdUser = await this.createUser(findedUserEmail, manager, dto)
+
+            if (findedUserUsername && !findedUserUsername.emailConfirmed) createdUser = await this.createUser(findedUserUsername, manager, dto)
+
+            if (!createdUser) {
+                const user = new UserEntity()
+
+                createdUser = await this.createUser(
+                    user,
+                    manager,
+                    dto
+                )
+            }
 
             return Result.Ok(createdUser)
-
         } catch (e) {
             console.log(e)
             return Result.Err('CreateUserUseCase error')
         }
     }
 
-    async createUser(user: UserEntity, email: string, username: string, passwordHash: string, passwordSalt: string, manager: EntityManager): Promise<UserEntity> {
+    async createUser(user: UserEntity, manager: EntityManager, dto: UserDto): Promise<UserEntity> {
+
+        const { email, passwordHash, passwordSalt, username } = dto
 
         user.username = username
         user.email = email
@@ -100,7 +91,6 @@ export class CreateUserUseCase {
         user.passwordSalt = passwordSalt
         user.confirmationCode = uuid()
 
-        console.log(user)
         return manager.save(user)
     }
 }

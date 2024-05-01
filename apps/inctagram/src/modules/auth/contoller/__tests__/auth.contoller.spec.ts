@@ -1,17 +1,15 @@
 import { HttpStatus, INestApplication } from "@nestjs/common"
-import { createAndConfigureAppForTests } from "../../../../utils/test/create-and-configure-app"
 import { EntityManager, QueryRunner } from "typeorm"
 import { TestUtils } from "../../../../../../../libs/tests/test-utils"
 import * as request from 'supertest'
 import { TestSeeder } from "../../../../../../../libs/tests/test-seeder"
-import { UserEntity } from "../../../user/entities/user.entity"
+import { UserEntity } from "../../../../../../../libs/infra/entities/user.entity"
 import { LoginUserDto } from "../../dto/input/login-user.dto"
-import { DeviceEntity } from "../../../device/entities/device.entity"
+import { DeviceEntity } from "../../../../../../../libs/infra/entities/device.entity"
 import { CreateUserCommand } from "../../../user/use-cases/create/dto/create-user.command"
 import { ConfirmationUserCommand } from "../../use-cases/confirmation/dto/confirmation-user.command"
 import { ResetUserPasswordCommand } from "../../use-cases/recovery-password/dto/reset-user-password.command"
-import { appSetting } from "@libs/core/app-setting"
-import { createAndConfigureAppForE2eTests } from "@inctagram/src/utils/test/create-and-configure-app-for-e2e"
+import { CreateAppForE2eTestsMain } from "@inctagram/src/utils/test/create-and-configure-app-for-e2e"
 
 
 describe('auth', () => {
@@ -24,7 +22,7 @@ describe('auth', () => {
 
     beforeAll(async () => {
 
-        ({ httpServer: _httpServer, app: app, queryRunner: _queryRunner, manager: manager } = await createAndConfigureAppForE2eTests())
+        ({ httpServer: _httpServer, app: app, queryRunner: _queryRunner, manager: manager } = await CreateAppForE2eTestsMain())
         testSeeder = new TestSeeder(manager)
 
         await app.init()

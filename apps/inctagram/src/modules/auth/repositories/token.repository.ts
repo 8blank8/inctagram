@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { BlackList } from "../entities/black-list.entity";
+import { BlackList } from "../../../../../../libs/infra/entities/black-list.entity";
 import { Repository } from "typeorm";
 
 

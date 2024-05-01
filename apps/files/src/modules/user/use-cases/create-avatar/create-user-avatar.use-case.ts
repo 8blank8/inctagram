@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { CreateUserAvatarCommand } from "./dto/create-user-avatar.command";
 import { UserRepository } from "../../repository/user.repository";
 import { Result } from "@libs/core/result";
-import { UserAvatarEntity } from "../../entities/user-avatar.entity";
+import { UserAvatarEntity } from "../../../../../../../libs/infra/entities/user-avatar.entity";
 import { DataSource, EntityManager } from "typeorm";
 import { TransactionDecorator } from "@libs/infra/inside-transaction/inside-transaction";
 import { IdCreated } from "@libs/core/id-created";

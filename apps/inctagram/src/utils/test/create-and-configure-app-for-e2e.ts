@@ -1,40 +1,37 @@
 import * as cookieParser from 'cookie-parser';
 import { DataSource } from "typeorm";
-import { CreateModuleForControllerTest } from "./create-test-module";
-import { BadRequestException, ValidationError, ValidationPipe } from '@nestjs/common';
+import { ValidationPipe } from '@nestjs/common';
+import { Test } from '@nestjs/testing';
+import { AppModule } from '@inctagram/src/app.module';
+import { MailService } from '@libs/mailer/mailer.service';
+import { validationPipeConfig } from '@libs/core/validation-pipe.config';
 
+export class MailServiceMock {
+    async sendEmailConfirmationMessage(email: string, query: string): Promise<void> {
+        console.log(email, query)
+        return Promise.resolve();
+    }
 
-export const createAndConfigureAppForE2eTests = async () => {
+    async sendEmailPassRecovery(email: string, query: string): Promise<void> {
+        console.log(email, query)
+        return Promise.resolve();
+    }
+}
 
-    let moduleRef = await CreateModuleForControllerTest()
-        .compile();
+export const CreateAppForE2eTestsMain = async () => {
+
+    let moduleRef = await Test.createTestingModule({
+        imports: [AppModule],
+    })
+        .overrideProvider(MailService)
+        .useClass(MailServiceMock)
+        .compile()
 
     const app = moduleRef.createNestApplication();
 
     app.use(cookieParser())
 
-    app.useGlobalPipes(new ValidationPipe({
-        transform: true,
-        transformOptions: {
-            enableImplicitConversion: true,
-        },
-        exceptionFactory: (errors: ValidationError[]) => {
-            const errorsMessages = errors.map(e => {
-                let message = null;
-
-                if (e.constraints && Object.keys(e.constraints).length) {
-                    message = e.constraints[Object.keys(e.constraints)[0]]
-                }
-
-                return {
-                    field: e.property,
-                    message
-                }
-            })
-
-            throw new BadRequestException(errorsMessages)
-        }
-    }));
+    app.useGlobalPipes(new ValidationPipe(validationPipeConfig));
 
     const httpServer = app.getHttpServer();
 

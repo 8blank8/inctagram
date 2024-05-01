@@ -1,9 +1,9 @@
 import { Injectable } from "@nestjs/common";
 import { CreateDeviceCommand } from "./dto/create-device.command";
-import { DeviceEntity } from "../../entities/device.entity";
+import { DeviceEntity } from "../../../../../../../libs/infra/entities/device.entity";
 import { Result } from "../../../../../../../libs/core/result";
 import { EntityManager } from "typeorm";
-import { UserEntity } from "@inctagram/src/modules/user/entities/user.entity";
+import { UserEntity } from "@libs/infra/entities/user.entity";
 
 
 @Injectable()

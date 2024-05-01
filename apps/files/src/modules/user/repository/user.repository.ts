@@ -1,4 +1,4 @@
-import { UserEntity } from "@inctagram/src/modules/user/entities/user.entity";
+import { UserEntity } from "@libs/infra/entities/user.entity";
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";

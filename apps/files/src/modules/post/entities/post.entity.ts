@@ -1,7 +1,7 @@
 import { BaseEntity } from "../../../../../../libs/infra/entities/base.entity";
 import { Column, Entity, ManyToOne, OneToMany } from "typeorm";
-import { UserEntity } from "../../../../../inctagram/src/modules/user/entities/user.entity";
 import { PostPhotoEntity } from "./post-photo.enitity";
+import { UserEntity } from "@libs/infra/entities/user.entity";
 
 
 @Entity()

@@ -1,18 +1,17 @@
 import * as request from 'supertest';
 import { HttpStatus, INestApplication } from '@nestjs/common';
-import { CreateAndConfigureAppForE2e } from '@files/src/utils/tests/create-and-configure-app-for-e2e';
-import { appSetting } from '@libs/core/app-setting';
+import { CreateAppForE2eTestsFiles } from '@files/src/utils/tests/create-and-configure-app-for-e2e';
 import { TestSeeder } from '@libs/tests/test-seeder';
 import { EntityManager, QueryRunner } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
 import { TestingModule } from '@nestjs/testing';
 import { createJwtTokens } from '@libs/jwt/create-tokens';
 import { TestUtils } from '@libs/tests/test-utils';
-import { UserEntity } from '@inctagram/src/modules/user/entities/user.entity';
 import { AspectRatioType } from '../../dto/create-post.dto';
-import { PostPhotoEntity } from '../../entities/post-photo.enitity';
-import { PostEntity } from '../../entities/post.entity';
+import { PostPhotoEntity } from '../../../../../../../libs/infra/entities/post-photo.enitity';
+import { PostEntity } from '../../../../../../../libs/infra/entities/post.entity';
 import { UpdatePostDto } from '../../dto/update-post.dto';
+import { UserEntity } from '@libs/infra/entities/user.entity';
 
 describe('posts file', () => {
     let app: INestApplication;
@@ -31,7 +30,7 @@ describe('posts file', () => {
             manager: manager,
             moduleRef: moduleRef,
             queryRunner: queryRunner
-        } = await CreateAndConfigureAppForE2e())
+        } = await CreateAppForE2eTestsFiles())
 
         await app.init();
 

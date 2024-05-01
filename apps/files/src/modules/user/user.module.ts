@@ -4,10 +4,10 @@ import { CreateUserAvatarUseCase } from "./use-cases/create-avatar/create-user-a
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { UserRepository } from "./repository/user.repository";
 import { JwtService } from "@nestjs/jwt";
-import { UserAvatarEntity } from "./entities/user-avatar.entity";
-import { UserEntity } from "@inctagram/src/modules/user/entities/user.entity";
+import { UserAvatarEntity } from "../../../../../libs/infra/entities/user-avatar.entity";
 import { S3Module } from "../s3/s3.module";
 import { DeleteUserAvatarUseCase } from "./use-cases/delete-avatar/delete-user-avatar.use-case";
+import { UserEntity } from "@libs/infra/entities/user.entity";
 
 
 @Module({

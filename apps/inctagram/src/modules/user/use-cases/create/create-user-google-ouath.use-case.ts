@@ -4,7 +4,7 @@ import { Result } from "@libs/core/result";
 import { DataSource, EntityManager } from "typeorm";
 import { UserRepository } from "../../repository/user.repository";
 import { CreateDeviceUseCase } from "../../../device/use-cases/create/create-device.use-case";
-import { UserEntity } from "../../entities/user.entity";
+import { UserEntity } from "../../../../../../../libs/infra/entities/user.entity";
 import { generateUniqueUsername } from "../../../../utils/generate-random-username";
 import { JwtService } from "@nestjs/jwt";
 import { TransactionDecorator } from "@libs/infra/inside-transaction/inside-transaction";

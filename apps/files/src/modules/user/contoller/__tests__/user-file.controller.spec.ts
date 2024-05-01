@@ -1,15 +1,14 @@
 import * as request from 'supertest';
 import { HttpStatus, INestApplication } from '@nestjs/common';
-import { CreateAndConfigureAppForE2e } from '@files/src/utils/tests/create-and-configure-app-for-e2e';
-import { appSetting } from '@libs/core/app-setting';
+import { CreateAppForE2eTestsFiles } from '@files/src/utils/tests/create-and-configure-app-for-e2e';
 import { TestSeeder } from '@libs/tests/test-seeder';
 import { EntityManager, QueryRunner } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
 import { TestingModule } from '@nestjs/testing';
 import { createJwtTokens } from '@libs/jwt/create-tokens';
 import { TestUtils } from '@libs/tests/test-utils';
-import { UserEntity } from '@inctagram/src/modules/user/entities/user.entity';
-import { UserAvatarEntity } from '../../entities/user-avatar.entity';
+import { UserAvatarEntity } from '../../../../../../../libs/infra/entities/user-avatar.entity';
+import { UserEntity } from '@libs/infra/entities/user.entity';
 
 describe('user avatar', () => {
     let app: INestApplication;
@@ -28,7 +27,7 @@ describe('user avatar', () => {
             manager: manager,
             moduleRef: moduleRef,
             queryRunner: queryRunner
-        } = await CreateAndConfigureAppForE2e())
+        } = await CreateAppForE2eTestsFiles())
 
         await app.init();
 
