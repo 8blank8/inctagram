@@ -1,7 +1,7 @@
 import { TestSeeder } from "@libs/tests/test-seeder"
 import { TestUtils } from "@libs/tests/test-utils"
 import { HttpStatus, INestApplication } from "@nestjs/common"
-import { EntityManager, QueryRunner } from "typeorm"
+import { EntityManager, MoreThan, QueryRunner } from "typeorm"
 import * as request from 'supertest'
 import { GetPostFilterDto } from "../../filters/get-post.filter"
 import { PostMapper } from "../../mapper/post.mapper"
@@ -42,12 +42,12 @@ describe('posts', () => {
 
         beforeEach(async () => {
             user = await testSeeder.createUser(testSeeder.getUserDto(1))
-            posts = await testSeeder.createPosts(testSeeder.getPostDtos(2), user)
+            posts = await testSeeder.createPosts(testSeeder.getPostDtos(10), user)
         })
 
         it('get posts is success', async () => {
             const query: GetPostFilterDto = {
-                page: 0,
+                cursor: 5,
                 size: 5,
                 userId: user.id
             }
@@ -57,17 +57,18 @@ describe('posts', () => {
                 .query(query)
 
             expect(status).toBe(HttpStatus.OK)
-            expect(body.data.items.length).toBe(2)
-            expect(body.data.totalCount).toBe(2)
+            expect(body.data.items.length).toBe(5)
+            expect(body.data.totalCount).toBe(5)
 
             const findedPosts = await manager.find(PostEntity, {
                 where: {
                     user: {
                         id: user.id
-                    }
+                    },
+                    cursor: MoreThan(query.cursor)
                 },
                 relations: { photos: true },
-                skip: query.page * query.size,
+                order: { cursor: 'ASC' },
                 take: query.size
             })
 

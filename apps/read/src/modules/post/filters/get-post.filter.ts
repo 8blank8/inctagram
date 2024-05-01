@@ -8,7 +8,7 @@ export class GetPostFilterDto {
 
     @ApiProperty()
     @IsNumber()
-    page: number
+    cursor: number
 
     @ApiProperty()
     @IsString()

@@ -6,7 +6,8 @@ export class PostMapper {
     static fromPostToPostsViewDto(post: PostEntity): PostsViewDto {
         return {
             id: post.id,
-            url: post.photos[0].url
+            url: post.photos[0].url,
+            cursor: post.cursor
         }
     }
 }

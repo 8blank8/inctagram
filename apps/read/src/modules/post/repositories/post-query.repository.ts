@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { FindManyOptions, Repository } from "typeorm";
+import { FindManyOptions, MoreThan, Repository } from "typeorm";
 import { GetPostFilterDto } from "../filters/get-post.filter";
 import { Result } from "@libs/core/result";
 import { Paginated } from "@libs/core/pagination";
@@ -17,7 +17,7 @@ export class PostQueryRepository {
 
     async getPosts(filter: GetPostFilterDto): Promise<Result<Paginated<PostsViewDto>>> {
         try {
-            const { page, size, userId } = filter
+            const { cursor, size, userId } = filter
 
             const filters: FindManyOptions<PostEntity> = {
                 where: {
@@ -27,21 +27,22 @@ export class PostQueryRepository {
                 },
             }
 
-            const posts = await this.postRepo.find({
+            const posts = await this.postRepo.findAndCount({
                 ...filters,
                 relations: { photos: true },
-                skip: page * size,
+                where: {
+                    cursor: MoreThan(cursor)
+                },
+                order: { cursor: 'ASC' },
                 take: size
             })
 
-            const totalCount = await this.postRepo.count(filters)
 
             return Result.Ok(
                 Paginated.new({
-                    count: totalCount,
-                    page: page,
+                    count: posts[1],
                     size: size,
-                    items: posts.map(p => PostMapper.fromPostToPostsViewDto(p))
+                    items: posts[0].map(p => PostMapper.fromPostToPostsViewDto(p))
                 })
             )
         } catch (e) {

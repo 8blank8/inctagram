@@ -6,4 +6,7 @@ export class PostsViewDto {
 
     @ApiProperty()
     url: string
+
+    @ApiProperty()
+    cursor: number
 }
