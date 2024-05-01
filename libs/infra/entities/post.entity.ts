@@ -17,6 +17,9 @@ export class PostEntity extends BaseEntity {
     @Generated('increment')
     cursor: number
 
+    @Column({ default: true })
+    public: boolean
+
     @OneToMany(() => PostPhotoEntity, photo => photo.post, { onDelete: "CASCADE" })
     photos: PostPhotoEntity[];
 
