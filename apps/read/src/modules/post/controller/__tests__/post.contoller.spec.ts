@@ -1,7 +1,7 @@
 import { TestSeeder } from "@libs/tests/test-seeder"
 import { TestUtils } from "@libs/tests/test-utils"
 import { HttpStatus, INestApplication } from "@nestjs/common"
-import { EntityManager, MoreThan, QueryRunner } from "typeorm"
+import { EntityManager, FindManyOptions, MoreThan, QueryRunner } from "typeorm"
 import * as request from 'supertest'
 import { GetPostFilterDto } from "../../filters/get-post.filter"
 import { PostMapper } from "../../mapper/post.mapper"
@@ -58,7 +58,6 @@ describe('posts', () => {
 
             expect(status).toBe(HttpStatus.OK)
             expect(body.data.items.length).toBe(5)
-            expect(body.data.totalCount).toBe(5)
 
             const findedPosts = await manager.find(PostEntity, {
                 where: {
@@ -72,9 +71,69 @@ describe('posts', () => {
                 take: query.size
             })
 
-            const equalData = findedPosts.map(p => PostMapper.fromPostToPostsViewDto(p))
+            const equalData = findedPosts.map(p => PostMapper.fromPostToPostProfileViewDto(p))
 
             expect(body.data.items).toEqual(equalData)
+        })
+
+        it('get public posts is success', async () => {
+            const { body } = await request(_httpServer)
+                .get('/posts/public')
+
+            expect(body.data.length).toBe(4)
+
+            const query: FindManyOptions<PostEntity> = {
+                where: {
+                    public: true
+                },
+                relations: {
+                    user: {
+                        avatar: true
+                    },
+                    photos: true
+                },
+                order: { createdAt: 'desc' },
+                take: 4
+            }
+
+            const findedPosts = await manager.find(PostEntity, query)
+            const equalPosts = findedPosts.map(p => PostMapper.fromPostToPostPublicViewDto(p))
+
+            expect(body.data).toEqual(equalPosts)
+
+            await testSeeder.createPosts(testSeeder.getPostDtos(2), user)
+
+            const response = await request(_httpServer)
+                .get('/posts/public')
+
+            const findedPostsAfter = await manager.find(PostEntity, query)
+            const equalPostsAfter = findedPostsAfter.map(p => PostMapper.fromPostToPostPublicViewDto(p))
+
+            expect(response.body.data).toEqual(equalPostsAfter)
+            expect(body.data).not.toEqual(response.body.data)
+        })
+
+        it('get post by id is success', async () => {
+            const { body } = await request(_httpServer)
+                .get(`/posts/${posts[0].id}`)
+
+            expect(body.errors.length).toBe(0)
+
+            const findedPost = await manager.findOne(PostEntity, {
+                where: {
+                    id: posts[0].id
+                },
+                relations: {
+                    user: {
+                        avatar: true
+                    },
+                    photos: true
+                }
+            })
+
+            const equalData = PostMapper.fromPostToPostViewDto(findedPost)
+
+            expect(body.data).toEqual(equalData)
         })
     })
 })

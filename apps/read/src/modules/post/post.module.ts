@@ -4,6 +4,7 @@ import { PostContoller } from "./controller/post.contoller";
 import { PostQueryRepository } from "./repositories/post-query.repository";
 import { PostPhotoEntity } from "@libs/infra/entities/post-photo.enitity";
 import { PostEntity } from "@libs/infra/entities/post.entity";
+import { JwtService } from "@nestjs/jwt";
 
 
 @Module({
@@ -14,7 +15,8 @@ import { PostEntity } from "@libs/infra/entities/post.entity";
         PostContoller
     ],
     providers: [
-        PostQueryRepository
+        PostQueryRepository,
+        JwtService
     ]
 })
 export class PostModule { }

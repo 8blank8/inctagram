@@ -3,8 +3,8 @@ import { ApiProperty } from "@nestjs/swagger"
 export abstract class Paginated<T> {
     abstract items: Array<T>
 
-    @ApiProperty()
-    totalCount: number
+    // @ApiProperty()
+    // totalCount: number
 
     // @ApiProperty()
     // pagesCount: number
@@ -19,10 +19,10 @@ export abstract class Paginated<T> {
         items: Array<T>,
         //  page,
         size,
-        count
+        // count
     }): Paginated<T> {
         return {
-            totalCount: data.count,
+            // totalCount: data.count,
             // pagesCount: Math.ceil(data.count / data.size),
             // page: data.page,
             size: data.size,
