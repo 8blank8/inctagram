@@ -1,7 +1,7 @@
-import { BaseEntity } from "./base.entity";
-import { Column, Entity, Generated, ManyToOne, OneToMany } from "typeorm";
-import { UserEntity } from "./user.entity";
 import { PostPhotoEntity } from "./post-photo.enitity";
+import { Column, Entity, Generated, ManyToOne, OneToMany } from "typeorm";
+import { BaseEntity } from "./base.entity";
+import { UserEntity } from "./user.entity";
 
 
 @Entity()
