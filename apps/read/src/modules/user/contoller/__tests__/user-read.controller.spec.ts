@@ -55,7 +55,7 @@ describe('user', () => {
             const accessToken = (await createJwtTokens(jwtService, user.id, 'asd')).accessToken
 
             const { status, body } = await request(_httpServer)
-                .get('/users/profile')
+                .get('/users/me')
                 .set({
                     'Authorization': `Bearer ${accessToken}`,
                 })
@@ -96,6 +96,16 @@ describe('user', () => {
             const equalData = UserMapper.fromUserToUserProfileViewDto(findedUser)
 
             expect(res.body.data).toEqual(equalData)
+        })
+
+        it('get total count users is success', async () => {
+
+            await testSeeder.createUsers(testSeeder.getUserDtos(9))
+
+            const { body } = await request(_httpServer)
+                .get('/users/total-count')
+
+            expect(body.data.count).toBe(10)
         })
     })
 })

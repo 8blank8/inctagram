@@ -32,4 +32,9 @@ export class UserContoller {
     ) {
         return this.userQueryRepo.getUserProfileWithAvatar(id, !!req.userId)
     }
+
+    @Get('/total-count')
+    async getTotalCountUsers() {
+        return this.userQueryRepo.getTotalCountUsers()
+    }
 }

@@ -44,9 +44,11 @@ export class TestSeeder {
     async createUsers(dtos: CreateUserCommand[]): Promise<UserEntity[]> {
         const users = []
 
-        dtos.forEach(user => {
-            users.push(this.createUser(user))
-        });
+        for (let user of dtos) {
+            const u = await this.createUser(user)
+
+            users.push(u)
+        }
 
         return users
     }
