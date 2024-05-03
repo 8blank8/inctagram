@@ -11,7 +11,7 @@ import { JwtService } from "@nestjs/jwt";
 import { ExtractJwt } from './refresh-token.guard';
 
 
-export const JwtAuthGuard = (): any => {
+export const JwtOrNotAuthGuard = (): any => {
     @Injectable()
     class Guard implements CanActivate {
         constructor(
@@ -24,8 +24,13 @@ export const JwtAuthGuard = (): any => {
             const accessToken = ExtractJwt.fromAuthHeaderAsBearerToken(req);
 
             try {
-                if (!accessToken)
-                    throw new UnauthorizedException("Access token is not set");
+                if (!accessToken) {
+                    req.userId = null
+                    req.deviceId = null
+
+                    return true
+                }
+
 
                 const { userId, deviceId } = await this.jwtService.verifyAsync(accessToken, { secret: process.env.JWT_SECRET || '123' });
 

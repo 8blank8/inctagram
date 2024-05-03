@@ -17,7 +17,7 @@ export class PostQueryRepository {
         @InjectRepository(PostEntity) private postRepo: Repository<PostEntity>
     ) { }
 
-    async getPosts(filter: GetPostFilterDto): Promise<Result<Paginated<PostProfileViewDto>>> {
+    async getPosts(filter: GetPostFilterDto, userId: string | undefined): Promise<Result<Paginated<PostProfileViewDto>>> {
         try {
             const { cursor, size, userId } = filter
 
@@ -25,16 +25,16 @@ export class PostQueryRepository {
                 where: {
                     user: {
                         id: userId
-                    }
+                    },
+                    cursor: MoreThan(cursor),
                 },
+                relations: { photos: true },
             }
+
+            if (!userId) filters.where['public'] = true
 
             const posts = await this.postRepo.find({
                 ...filters,
-                relations: { photos: true },
-                where: {
-                    cursor: MoreThan(cursor)
-                },
                 order: { cursor: 'ASC' },
                 take: size
             })
@@ -83,7 +83,8 @@ export class PostQueryRepository {
         try {
             const post = await this.postRepo.findOne({
                 where: {
-                    id: postId
+                    id: postId,
+                    public: true
                 },
                 relations: {
                     user: {

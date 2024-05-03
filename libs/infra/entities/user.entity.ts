@@ -40,6 +40,9 @@ export class UserEntity extends BaseEntity {
     @Column({ nullable: true })
     passwordHash: string | null
 
+    @Column({ default: true })
+    public: boolean
+
     @OneToMany(() => DeviceEntity, device => device.user)
     devices: DeviceEntity[]
 

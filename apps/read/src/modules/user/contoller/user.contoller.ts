@@ -1,9 +1,10 @@
 import { JwtAuthGuard } from "@libs/guards/jwt.guard";
-import { Controller, Get, Req, UseGuards } from "@nestjs/common";
+import { Controller, Get, Param, Req, UseGuards } from "@nestjs/common";
 import { ApiOkResponse, ApiTags } from "@nestjs/swagger";
 import { ReqWithUser } from "@libs/types/req-with-user";
 import { UserQueryRepository } from "../repositories/user-query.repository";
 import { UserPfofileViewDto } from "../dto/user-profile-view.dto";
+import { JwtOrNotAuthGuard } from "@libs/guards/jwt-or-not.guard";
 
 
 @ApiTags('users')
@@ -16,10 +17,19 @@ export class UserContoller {
 
     @ApiOkResponse({ type: UserPfofileViewDto })
     @UseGuards(JwtAuthGuard())
-    @Get('/profile')
-    async getUserProfile(
+    @Get('/me')
+    async getMyProfile(
         @Req() req: ReqWithUser,
     ) {
-        return this.userQueryRepo.getUserProfileWithAvatar(req.userId)
+        return this.userQueryRepo.getUserProfileWithAvatar(req.userId, true)
+    }
+
+    @UseGuards(JwtOrNotAuthGuard())
+    @Get('/profile/:id')
+    async getUserProfileById(
+        @Param('id') id: string,
+        @Req() req: ReqWithUser
+    ) {
+        return this.userQueryRepo.getUserProfileWithAvatar(id, !!req.userId)
     }
 }

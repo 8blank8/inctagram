@@ -11,8 +11,16 @@ import { UserMapper } from "../mapper/user.mapper";
 export class UserQueryRepository {
     constructor(@InjectRepository(UserEntity) private userRepo: Repository<UserEntity>) { }
 
-    async getUserProfileWithAvatar(userId: string): Promise<Result<UserPfofileViewDto>> {
-        const user = await this.userRepo.findOneBy({ id: userId })
+    async getUserProfileWithAvatar(userId: string, isAuth: boolean = false): Promise<Result<UserPfofileViewDto>> {
+        const user = await this.userRepo.findOne({
+            where: {
+                id: userId,
+                public: isAuth
+            },
+            relations: {
+                avatar: true
+            }
+        })
         if (!user) return Result.Err(`user with id: ${userId} not found`)
 
         return Result.Ok(UserMapper.fromUserToUserProfileViewDto(user))
