@@ -53,7 +53,6 @@ export class AuthContoller {
     async resendEmailCode(
         @Body() dto: ResendConfirmationCodeCommand
     ) {
-        console.log(dto)
         return this.resendConfirmationCodeUseCase.execute(dto)
     }
 

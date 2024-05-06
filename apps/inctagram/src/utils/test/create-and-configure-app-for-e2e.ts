@@ -8,12 +8,10 @@ import { validationPipeConfig } from '@libs/core/validation-pipe.config';
 
 export class MailServiceMock {
     async sendEmailConfirmationMessage(email: string, query: string): Promise<void> {
-        console.log(email, query)
         return Promise.resolve();
     }
 
     async sendEmailPassRecovery(email: string, query: string): Promise<void> {
-        console.log(email, query)
         return Promise.resolve();
     }
 }

@@ -9,7 +9,10 @@ export class UserRepository {
     constructor(@InjectRepository(UserEntity) private userRepo: Repository<UserEntity>) { }
 
     async getUserByEmail(email: string): Promise<UserEntity | null> {
-        return this.userRepo.findOneBy({ email: email })
+        return this.userRepo.findOne({
+            where: { email: email },
+            relations: { confirmation: true }
+        })
     }
 
     async getUserByUsername(username: string): Promise<UserEntity | null> {
@@ -21,7 +24,14 @@ export class UserRepository {
     }
 
     async getUserByConfirmationCode(code: string): Promise<UserEntity | null> {
-        return this.userRepo.findOneBy({ confirmationCode: code })
+        return this.userRepo.findOne({
+            where: {
+                confirmation: {
+                    confirmationCode: code
+                }
+            },
+            relations: { confirmation: true }
+        })
     }
 
     async getUserByResetPasswordCode(code: string): Promise<UserEntity | null> {

@@ -31,8 +31,10 @@ export class ConfirmationUserUseCase {
             if (!user) return Result.Err('user not found')
             if (user.emailConfirmed) return Result.Err('user is confirmed')
 
+            const currentTime = user.confirmation.updatedAt.getTime() - new Date().getTime()
+            if (currentTime > 900000) return Result.Err('code is expired')
+
             user.emailConfirmed = true
-            user.confirmationCode = null
 
             await manager.save(user)
 

@@ -9,12 +9,10 @@ import { DataSource } from "typeorm";
 
 export class S3ServiceMock {
     upload(url: string, buffer: Buffer) {
-        console.log(url)
         return Result.Ok()
     }
 
     delete(url: string) {
-        console.log(url)
         return Result.Ok()
     }
 }

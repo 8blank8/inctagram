@@ -107,7 +107,6 @@ describe('posts file', () => {
             expect(body.errors.length).toBe(0)
 
             const findedPost = await manager.findOneBy(PostEntity, { id: postEntity.id })
-            console.log(findedPost)
             expect(findedPost).toBe(null)
         })
     })
