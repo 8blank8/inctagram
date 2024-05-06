@@ -3,6 +3,7 @@ import { Column, Entity, JoinColumn, OneToMany, OneToOne } from "typeorm";
 import { DeviceEntity } from "./device.entity";
 import { UserAvatarEntity } from "./user-avatar.entity";
 import { PostEntity } from "./post.entity";
+import { EmailConfirmationEntity } from "./email-confirmation.entity";
 
 
 @Entity()
@@ -29,9 +30,6 @@ export class UserEntity extends BaseEntity {
     emailConfirmed: boolean
 
     @Column({ nullable: true })
-    confirmationCode: string | null
-
-    @Column({ nullable: true })
     passwordRecoveryCode: string | null
 
     @Column({ nullable: true })
@@ -52,6 +50,10 @@ export class UserEntity extends BaseEntity {
 
     @OneToMany(() => PostEntity, post => post.user)
     posts: PostEntity[]
+
+    @OneToOne(() => EmailConfirmationEntity, confirmation => confirmation.user, { nullable: true })
+    @JoinColumn()
+    confirmation: EmailConfirmationEntity | null
 
     @Column({ default: false })
     isDelete: boolean;
