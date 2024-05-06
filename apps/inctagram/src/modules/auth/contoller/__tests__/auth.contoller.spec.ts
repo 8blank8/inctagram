@@ -106,6 +106,7 @@ describe('auth', () => {
     describe('resend confirmation code', () => {
         it('resend confirmation code success', async () => {
             const user = await testSeeder.createUser(testSeeder.getUserDto(), { emailConfirmed: false })
+            await testSeeder.createEmailConfirmationCode(user)
 
             const { body, status } = await request(_httpServer)
                 .post('/auth/resend-email-code')
@@ -140,15 +141,17 @@ describe('auth', () => {
 
     describe('confirm email code', () => {
         it('confirmation email is success', async () => {
-            const user = await testSeeder.createUser(testSeeder.getUserDto(), { emailConfirmed: false, emailConfirmationCode: '123asd' })
+            const user = await testSeeder.createUser(testSeeder.getUserDto(), { emailConfirmed: false })
+            const confirmation = await testSeeder.createEmailConfirmationCode(user)
 
             const confirmCodeDto: ConfirmationUserCommand = {
-                code: user.confirmationCode
+                code: confirmation.confirmationCode
             }
 
             const { status, body } = await request(_httpServer)
                 .post(`/auth/confirm-code`)
                 .send(confirmCodeDto)
+
 
             expect(status).toBe(HttpStatus.CREATED)
             expect(body.errors.length).toBe(0)
@@ -171,10 +174,30 @@ describe('auth', () => {
         })
 
         it('confirmation email user is confirmed', async () => {
-            const user = await testSeeder.createUser(testSeeder.getUserDto(), { emailConfirmationCode: '123asd' })
+            const user = await testSeeder.createUser(testSeeder.getUserDto())
+            const confirmation = await testSeeder.createEmailConfirmationCode(user)
 
             const confirmCodeDto: ConfirmationUserCommand = {
-                code: user.confirmationCode
+                code: confirmation.confirmationCode
+            }
+
+            const { status, body } = await request(_httpServer)
+                .post('/auth/confirm-code')
+                .send(confirmCodeDto)
+
+            expect(status).toBe(HttpStatus.CREATED)
+            expect(body.errors.length).toBe(1)
+        })
+
+        it('confirmation email is failed code is expired', async () => {
+            const user = await testSeeder.createUser(testSeeder.getUserDto(), { emailConfirmed: false })
+            const confirmation = await testSeeder.createEmailConfirmationCode(user)
+
+            confirmation.updatedAt = new Date(new Date().getTime() + 950000)
+            await manager.save(confirmation)
+
+            const confirmCodeDto: ConfirmationUserCommand = {
+                code: confirmation.confirmationCode
             }
 
             const { status, body } = await request(_httpServer)
@@ -441,7 +464,6 @@ describe('auth', () => {
                 .set({
                     'Cookie': refreshToken,
                 })
-            console.log(res.body)
             expect(res.status).toBe(HttpStatus.UNAUTHORIZED)
         }, 15000)
     })
