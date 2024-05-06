@@ -54,7 +54,6 @@ export const JwtRefreshAuthGuard = (): any => {
 
                 return true;
             } catch (e) {
-                console.log('auth err')
                 throw new UnauthorizedException(e.message);
             }
         }
