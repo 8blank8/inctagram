@@ -10,6 +10,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { GoogleStrategy } from '@libs/guards/google.guard';
 import { PassportModule } from '@nestjs/passport';
 import { PostgresModule } from '@libs/infra/postgres.module';
+import { StripeModule } from './modules/stripe/stripe.module';
 
 
 @Module({
@@ -21,6 +22,7 @@ import { PostgresModule } from '@libs/infra/postgres.module';
     AuthModule,
     UserModule,
     DeviceModule,
+    StripeModule
   ],
   controllers: [],
   providers: [
