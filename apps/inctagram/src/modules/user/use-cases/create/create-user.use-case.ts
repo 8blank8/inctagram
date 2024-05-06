@@ -8,7 +8,6 @@ import { TransactionDecorator } from '../../../../../../../libs/infra/inside-tra
 import { DataSource, EntityManager } from 'typeorm';
 import { UserRepository } from '../../repository/user.repository';
 import { hashPassword } from '../../../../utils/hash-password';
-import { v4 as uuid } from 'uuid'
 
 class UserDto {
     email: string
@@ -24,7 +23,11 @@ export class CreateUserUseCase {
         private userRepo: UserRepository
     ) { }
 
-    async execute(command: CreateUserCommand): Promise<Result<UserEntity>> {
+    async execute(command: CreateUserCommand, manager?: EntityManager): Promise<Result<UserEntity>> {
+
+        if (manager) {
+            return this.doOperation(command, manager)
+        }
 
         const transaction = new TransactionDecorator(this.dataSource)
 
@@ -89,7 +92,6 @@ export class CreateUserUseCase {
         user.createdAt = new Date()
         user.passwordHash = passwordHash
         user.passwordSalt = passwordSalt
-        user.confirmationCode = uuid()
 
         return manager.save(user)
     }
