@@ -62,7 +62,7 @@ describe('user avatar', () => {
                 .field('offsetX', 1)
                 .field('offsetY', 0.8)
                 .field('scale', 1)
-            console.log(response.body)
+
             expect(response.status).toBe(HttpStatus.CREATED)
             expect(response.body.errors.length).toBe(0)
 
