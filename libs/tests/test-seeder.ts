@@ -3,15 +3,16 @@ import { CreateDeviceCommand } from "@inctagram/src/modules/device/use-cases/cre
 import { CreateUserCommand } from "@inctagram/src/modules/user/use-cases/create/dto/create-user.command";
 import { hashPassword } from "@inctagram/src/utils/hash-password";
 import { DeviceEntity } from "@libs/infra/entities/device.entity";
+import { EmailConfirmationEntity } from "@libs/infra/entities/email-confirmation.entity";
 import { PostPhotoEntity } from "@libs/infra/entities/post-photo.enitity";
 import { PostEntity } from "@libs/infra/entities/post.entity";
 import { UserEntity } from "@libs/infra/entities/user.entity";
 import { EntityManager } from "typeorm";
+import { v4 as uuid } from 'uuid'
 
 export class CreateUserOptions {
     emailConfirmed?: boolean
     resetPasswordCode?: string
-    emailConfirmationCode?: string
 }
 
 export class TestSeeder {
@@ -51,6 +52,10 @@ export class TestSeeder {
         }
 
         return users
+    }
+
+    async createEmailConfirmationCode(user: UserEntity): Promise<EmailConfirmationEntity> {
+        return this.testCreator.createEmailConfirmationCode(user)
     }
 
     getDeviceDto(num: number = 1, userId: string): CreateDeviceCommand {
@@ -132,7 +137,6 @@ export class TestCreator {
             user.createdAt = new Date()
             user.passwordHash = passwordHash
             user.passwordSalt = passwordSalt
-            user.confirmationCode = options?.emailConfirmationCode ?? null
             user.passwordRecoveryCode = options?.resetPasswordCode ?? null
 
             return this.manager.save(user)
@@ -193,5 +197,21 @@ export class TestCreator {
         } catch (e) {
             console.log(e)
         }
+    }
+
+    async createEmailConfirmationCode(user: UserEntity): Promise<EmailConfirmationEntity> {
+        const confirmation = new EmailConfirmationEntity()
+        confirmation.confirmationCode = uuid()
+        confirmation.user = user
+        confirmation.createdAt = new Date()
+        confirmation.updatedAt = new Date()
+
+        await this.manager.save(confirmation)
+
+        user.confirmation = confirmation
+
+        await this.manager.save(user)
+
+        return confirmation
     }
 }
