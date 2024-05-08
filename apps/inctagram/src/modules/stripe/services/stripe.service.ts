@@ -15,7 +15,7 @@ export class StripeService {
         this.stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
     }
 
-    private async createPayment(unit_amount: number, description: string) {
+    private async createPayment(unit_amount: number, description: string, userId: string, termSubscriptionType: TermSubscriptionType) {
         const session = await this.stripe.checkout.sessions.create({
             success_url: 'https://example.com/success',
             line_items: [
@@ -25,33 +25,40 @@ export class StripeService {
                         unit_amount: unit_amount * 100,
                         product_data: {
                             name: 'Subscription',
-                            description: description
-                        }
+                            description: description,
+                        },
                     },
                     quantity: 1,
                 },
             ],
-            mode: 'payment',
+            mode: 'subscription',
             currency: 'usd',
+            metadata: {
+                userId,
+                termSubscriptionType
+            },
 
         });
 
         return session
     }
 
-    async paymentSubscription(term: TermSubscriptionType): Promise<Result<Stripe.Response<Stripe.Checkout.Session>>> {
+    async paymentSubscription(term: TermSubscriptionType, userId: string): Promise<Result<Stripe.Response<Stripe.Checkout.Session>>> {
         try {
             let session: Stripe.Response<Stripe.Checkout.Session>
 
             switch (term) {
                 case TermSubscriptionType.ONE_DAY: {
-                    session = await this.createPayment(10, 'subscription on 1 day')
+                    session = await this.createPayment(10, 'subscription on 1 day', userId, term)
+                    break
                 }
                 case TermSubscriptionType.SEVEN_DAYS: {
-                    session = await this.createPayment(50, 'subscription on 7 days')
+                    session = await this.createPayment(50, 'subscription on 7 days', userId, term)
+                    break
                 }
                 case TermSubscriptionType.ONE_MONTH: {
-                    session = await this.createPayment(100, 'subscription on 1 month')
+                    session = await this.createPayment(100, 'subscription on 1 month', userId, term)
+                    break
                 }
             }
 
