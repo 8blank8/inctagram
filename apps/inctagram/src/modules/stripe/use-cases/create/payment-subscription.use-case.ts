@@ -3,9 +3,9 @@ import { DataSource, EntityManager } from "typeorm";
 import { PaymentSubscriptionCommand } from "./dto/payment-subscription.command";
 import { Result } from "@libs/core/result";
 import { TransactionDecorator } from "@libs/infra/inside-transaction/inside-transaction";
-import { UserRepository } from "../../repository/user.repository";
 import { StripeService } from "@inctagram/src/modules/stripe/services/stripe.service";
 import { PaymentSystenType } from "@libs/enum/enum";
+import { UserRepository } from "@inctagram/src/modules/user/repository/user.repository";
 
 
 @Injectable()
@@ -38,7 +38,7 @@ export class PaymentSubscriptionUseCase {
 
             switch (paymentSystem) {
                 case PaymentSystenType.STRIPE: {
-                    const res = await this.stripeService.paymentSubscription(term)
+                    const res = await this.stripeService.paymentSubscription(term, user.id)
                     if (!res.isSuccess) return Result.Err(res.err.message)
 
                     paymentUrl = res.value.url
