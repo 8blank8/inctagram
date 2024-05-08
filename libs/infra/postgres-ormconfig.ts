@@ -9,6 +9,7 @@ import { BlackList } from './entities/black-list.entity';
 import { PostPhotoEntity } from './entities/post-photo.enitity';
 import { PostEntity } from "./entities/post.entity";
 import { EmailConfirmationEntity } from './entities/email-confirmation.entity';
+import { SubscriptionEntity } from './entities/subscription.entity';
 
 export const allEntities = [
     UserEntity,
@@ -17,7 +18,8 @@ export const allEntities = [
     BlackList,
     PostEntity,
     PostPhotoEntity,
-    EmailConfirmationEntity
+    EmailConfirmationEntity,
+    SubscriptionEntity
 ]
 
 const isTest = process.env.MODE !== 'production';

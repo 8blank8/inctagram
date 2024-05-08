@@ -8,13 +8,12 @@ import { CreateDeviceUseCase } from "../device/use-cases/create/create-device.us
 import { JwtService } from "@nestjs/jwt";
 import { UpdateUserUseCase } from "./use-cases/update/update-user.use-case";
 import { UserContoller } from "./controller/user.contoller";
-import { PaymentSubscriptionUseCase } from "./use-cases/pyament/payment-subscription.use-case";
 import { StripeModule } from "../stripe/stripe.module";
+import { SubscriptionEntity } from "@libs/infra/entities/subscription.entity";
 
 @Module({
     imports: [
-        TypeOrmModule.forFeature([UserEntity]),
-        StripeModule
+        TypeOrmModule.forFeature([UserEntity, SubscriptionEntity]),
     ],
     controllers: [
         UserContoller
@@ -26,7 +25,7 @@ import { StripeModule } from "../stripe/stripe.module";
         UpdateUserUseCase,
         UserRepository,
         JwtService,
-        PaymentSubscriptionUseCase,
+
     ],
     exports: [
         CreateUserUseCase,

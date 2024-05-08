@@ -1,12 +1,16 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { UserEntity } from "../../../../../../libs/infra/entities/user.entity";
-import { Repository } from "typeorm";
+import { MoreThan, Repository } from "typeorm";
+import { SubscriptionEntity } from "@libs/infra/entities/subscription.entity";
 
 
 @Injectable()
 export class UserRepository {
-    constructor(@InjectRepository(UserEntity) private userRepo: Repository<UserEntity>) { }
+    constructor(
+        @InjectRepository(UserEntity) private userRepo: Repository<UserEntity>,
+        @InjectRepository(SubscriptionEntity) private subscriptionRepo: Repository<SubscriptionEntity>
+    ) { }
 
     async getUserByEmail(email: string): Promise<UserEntity | null> {
         return this.userRepo.findOne({
@@ -43,5 +47,20 @@ export class UserRepository {
             where: { id: userId },
             relations: { devices: true }
         })
+    }
+
+    async getCurrentUserSubscription(userId: string): Promise<SubscriptionEntity[]> {
+        const subscription = await this.subscriptionRepo.find({
+            where: {
+                expirationDate: MoreThan(new Date()),
+                user: {
+                    id: userId
+                }
+            },
+            relations: { user: true },
+            order: { expirationDate: 'DESC' }
+        })
+
+        return subscription
     }
 }

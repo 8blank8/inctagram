@@ -4,6 +4,7 @@ import { DeviceEntity } from "./device.entity";
 import { UserAvatarEntity } from "./user-avatar.entity";
 import { PostEntity } from "./post.entity";
 import { EmailConfirmationEntity } from "./email-confirmation.entity";
+import { SubscriptionEntity } from "./subscription.entity";
 
 
 @Entity()
@@ -54,6 +55,10 @@ export class UserEntity extends BaseEntity {
     @OneToOne(() => EmailConfirmationEntity, confirmation => confirmation.user, { nullable: true })
     @JoinColumn()
     confirmation: EmailConfirmationEntity | null
+
+    @OneToOne(() => SubscriptionEntity, subscription => subscription.user, { nullable: true })
+    @JoinColumn()
+    subscription: SubscriptionEntity | null
 
     @Column({ default: false })
     isDelete: boolean;
