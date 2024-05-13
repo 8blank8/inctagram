@@ -26,7 +26,7 @@ export class PaymentSubscriptionUseCase {
     }
 
     private async doOperation(
-        { paymentSystem, term, userId }: PaymentSubscriptionCommand,
+        { paymentSystem, term, userId, isSubscription }: PaymentSubscriptionCommand,
         manager: EntityManager
     ): Promise<Result<{ url: string }>> {
         try {
@@ -38,7 +38,7 @@ export class PaymentSubscriptionUseCase {
 
             switch (paymentSystem) {
                 case PaymentSystenType.STRIPE: {
-                    const res = await this.stripeService.paymentSubscription(term, user.id)
+                    const res = await this.stripeService.paymentSubscription(term, user.id, isSubscription)
                     if (!res.isSuccess) return Result.Err(res.err.message)
 
                     paymentUrl = res.value.url
