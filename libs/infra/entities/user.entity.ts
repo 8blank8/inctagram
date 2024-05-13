@@ -5,6 +5,7 @@ import { UserAvatarEntity } from "./user-avatar.entity";
 import { PostEntity } from "./post.entity";
 import { EmailConfirmationEntity } from "./email-confirmation.entity";
 import { SubscriptionEntity } from "./subscription.entity";
+import { AccountType } from "../../../libs/enum/enum";
 
 
 @Entity()
@@ -29,6 +30,9 @@ export class UserEntity extends BaseEntity {
 
     @Column({ default: false })
     emailConfirmed: boolean
+
+    @Column({ type: 'enum', enum: AccountType, default: AccountType.PERSONAL })
+    accountType: AccountType
 
     @Column({ nullable: true })
     passwordRecoveryCode: string | null
