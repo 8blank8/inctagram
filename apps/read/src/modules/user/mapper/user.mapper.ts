@@ -23,7 +23,7 @@ export class UserMapper {
     static fromAvatarToAvatarViewDto(a: UserAvatarEntity): AvatarViewDto {
         let avatar: AvatarViewDto | null = null
 
-        if (avatar) {
+        if (a) {
             avatar = {
                 id: a.id,
                 url: appSetting.AWS_S3_BASE_URL + a.url,
