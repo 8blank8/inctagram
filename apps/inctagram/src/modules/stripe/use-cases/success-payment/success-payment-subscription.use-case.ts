@@ -4,16 +4,16 @@ import { SuccessPaymentSubscriptionCommand } from "./dto/success-payment-subscri
 import { Result } from "@libs/core/result";
 import { TransactionDecorator } from "@libs/infra/inside-transaction/inside-transaction";
 import { SubscriptionEntity } from "@libs/infra/entities/subscription.entity";
-import { TermSubscriptionType } from "@libs/enum/enum";
+import { AccountType, TermSubscriptionType } from "@libs/enum/enum";
 import { UserRepository } from "@inctagram/src/modules/user/repository/user.repository";
-import { UserEntity } from "@libs/infra/entities/user.entity";
+import { StripeService } from "../../services/stripe.service";
 
 
 @Injectable()
 export class SuccessPaymentSubscriptionUseCase {
     constructor(
         private dataSource: DataSource,
-        private userRepo: UserRepository
+        private userRepo: UserRepository,
     ) { }
 
     async execute(command: SuccessPaymentSubscriptionCommand): Promise<Result<void>> {
@@ -35,12 +35,20 @@ export class SuccessPaymentSubscriptionUseCase {
             const user = await this.userRepo.getUserById(dto.data.object.metadata.userId)
             if (!user) return Result.Err('user not found')
 
+            user.accountType = AccountType.BUSINESS
 
+            await manager.save(user)
 
             const subscription = new SubscriptionEntity()
             subscription.createdAt = new Date()
             subscription.paymentSystem = paymentSystem
             subscription.user = user
+            subscription.isActive = true
+
+            if (dto.data.object.subscription) {
+                subscription.subscriptionId = dto.data.object.subscription as string
+                subscription.isSubscription = true
+            }
 
             switch (dto.data.object.metadata.termSubscriptionType) {
                 case TermSubscriptionType.ONE_DAY: {
@@ -70,10 +78,6 @@ export class SuccessPaymentSubscriptionUseCase {
             }
 
             await manager.save(subscription)
-
-
-            const fs = await manager.findOne(SubscriptionEntity, { where: { id: subscription.id } })
-            console.log('subscription =============> ', fs)
 
             return Result.Ok()
 
