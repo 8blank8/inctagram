@@ -7,4 +7,7 @@ export class PaymentSubscriptionDto {
 
     @ApiProperty({ enum: TermSubscriptionType })
     term: TermSubscriptionType
+
+    @ApiProperty()
+    isSubscription: boolean
 }
