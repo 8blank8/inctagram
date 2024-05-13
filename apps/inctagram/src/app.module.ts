@@ -11,10 +11,13 @@ import { GoogleStrategy } from '@libs/guards/google.guard';
 import { PassportModule } from '@nestjs/passport';
 import { PostgresModule } from '@libs/infra/postgres.module';
 import { StripeModule } from './modules/stripe/stripe.module';
+import { SchedulerModule } from './schedulers/scheduler.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 
 @Module({
   imports: [
+    ScheduleModule.forRoot(),
     PostgresModule,
     PassportModule,
     JwtModule,
@@ -22,7 +25,8 @@ import { StripeModule } from './modules/stripe/stripe.module';
     AuthModule,
     UserModule,
     DeviceModule,
-    StripeModule
+    StripeModule,
+    SchedulerModule
   ],
   controllers: [],
   providers: [
@@ -30,7 +34,7 @@ import { StripeModule } from './modules/stripe/stripe.module';
       provide: APP_INTERCEPTOR,
       useClass: CustomResultInterceptor
     },
-    GoogleStrategy
+    GoogleStrategy,
   ],
 })
 export class AppModule { }
