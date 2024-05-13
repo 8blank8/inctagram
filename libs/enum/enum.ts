@@ -4,7 +4,12 @@ export enum PaymentSystenType {
 }
 
 export enum TermSubscriptionType {
-    ONE_DAY = 'ONE_DAY',
-    SEVEN_DAYS = 'SEVEN_DAYS',
-    ONE_MONTH = 'ONE_MONTH'
+    ONE_DAY = 'day',
+    SEVEN_DAYS = 'week',
+    ONE_MONTH = 'month'
+}
+
+export enum AccountType {
+    PERSONAL = 'PERSONAL',
+    BUSINESS = 'BUSINESS'
 }
