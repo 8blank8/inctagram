@@ -1,4 +1,6 @@
 import { AspectRatioType, CreatePostDto } from "@files/src/modules/post/dto/create-post.dto";
+import { CreateUserAvatarDto } from "@files/src/modules/user/dto/input/create-user-avatar.dto";
+import { CreateUserAvatarCommand } from "@files/src/modules/user/use-cases/create-avatar/dto/create-user-avatar.command";
 import { CreateDeviceCommand } from "@inctagram/src/modules/device/use-cases/create/dto/create-device.command";
 import { CreateUserCommand } from "@inctagram/src/modules/user/use-cases/create/dto/create-user.command";
 import { hashPassword } from "@inctagram/src/utils/hash-password";
@@ -6,6 +8,7 @@ import { DeviceEntity } from "@libs/infra/entities/device.entity";
 import { EmailConfirmationEntity } from "@libs/infra/entities/email-confirmation.entity";
 import { PostPhotoEntity } from "@libs/infra/entities/post-photo.enitity";
 import { PostEntity } from "@libs/infra/entities/post.entity";
+import { UserAvatarEntity } from "@libs/infra/entities/user-avatar.entity";
 import { UserEntity } from "@libs/infra/entities/user.entity";
 import { EntityManager } from "typeorm";
 import { v4 as uuid } from 'uuid'
@@ -121,6 +124,19 @@ export class TestSeeder {
 
         return posts
     }
+
+    getAvatarDto(): CreateUserAvatarDto {
+        return {
+            offsetX: 0.2,
+            offsetY: 0.4,
+            scale: 1,
+            file: ''
+        }
+    }
+
+    async createAvatar(dto: CreateUserAvatarDto, user: UserEntity): Promise<UserAvatarEntity> {
+        return this.testCreator.createAvatar(dto, user)
+    }
 }
 
 export class TestCreator {
@@ -213,5 +229,20 @@ export class TestCreator {
         await this.manager.save(user)
 
         return confirmation
+    }
+
+    async createAvatar(dto: CreateUserAvatarDto, user: UserEntity): Promise<UserAvatarEntity> {
+        const avatar = new UserAvatarEntity()
+
+        avatar.createdAt = new Date()
+        avatar.offsetX = dto.offsetX
+        avatar.offsetY = dto.offsetY
+        avatar.scale = dto.scale
+        avatar.url = 'avatar/url'
+        avatar.user = user
+
+        await this.manager.save(avatar)
+
+        return avatar
     }
 }
