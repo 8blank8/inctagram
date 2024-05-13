@@ -44,7 +44,8 @@ describe('user integration tests', () => {
         const command: PaymentSubscriptionCommand = {
             paymentSystem: PaymentSystenType.STRIPE,
             term: TermSubscriptionType.ONE_DAY,
-            userId: user.id
+            userId: user.id,
+            isSubscription: true
         }
 
         const res = await paymentSubscriptionUseCase.execute(command)
@@ -57,7 +58,8 @@ describe('user integration tests', () => {
         const command1: PaymentSubscriptionCommand = {
             paymentSystem: PaymentSystenType.STRIPE,
             term: TermSubscriptionType.ONE_DAY,
-            userId: user.id
+            userId: user.id,
+            isSubscription: true
         }
 
         const res1 = await paymentSubscriptionUseCase.execute(command1)
