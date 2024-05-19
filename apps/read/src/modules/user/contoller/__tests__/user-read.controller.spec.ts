@@ -71,6 +71,8 @@ describe('user', () => {
                 email: user.email,
                 aboutMe: user.aboutMe,
                 dateOfBirth: user.dateOfBirth,
+                city: null,
+                country: null,
                 createdAt: user.createdAt.toISOString(),
                 updatedAt: null,
                 avatar: null
