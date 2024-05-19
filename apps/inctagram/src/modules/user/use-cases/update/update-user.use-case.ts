@@ -28,7 +28,7 @@ export class UpdateUserUseCase {
         manager: EntityManager
     ): Promise<Result<void>> {
         try {
-            const { dateOfBirth, firstname, lastname, username, aboutMe, userId } = data
+            const { dateOfBirth, firstname, lastname, username, aboutMe, userId, city, country } = data
 
             const user = await this.userRepo.getUserById(userId)
             if (!user) return Result.Err(`user with id: ${userId} not found`)
@@ -42,9 +42,11 @@ export class UpdateUserUseCase {
 
             user.firstname = firstname
             user.lastname = lastname
-            user.dateOfBirth = new Date(dateOfBirth)
+            user.dateOfBirth = dateOfBirth ? new Date(dateOfBirth) : null
             user.aboutMe = aboutMe ?? null
             user.updatedAt = new Date()
+            user.country = country ?? null
+            user.city = city ?? null
 
             await manager.save(user)
 

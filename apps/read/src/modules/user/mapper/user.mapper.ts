@@ -14,6 +14,8 @@ export class UserMapper {
             email: user.email,
             aboutMe: user.aboutMe,
             dateOfBirth: user.dateOfBirth,
+            city: user.city,
+            country: user.country,
             createdAt: user.createdAt.toISOString(),
             updatedAt: user.updatedAt === null ? null : user.updatedAt.toISOString(),
             avatar: UserMapper.fromAvatarToAvatarViewDto(user.avatar)

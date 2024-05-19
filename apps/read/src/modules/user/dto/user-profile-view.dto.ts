@@ -24,6 +24,12 @@ export class UserPfofileViewDto {
     dateOfBirth: Date | null
 
     @ApiProperty({ nullable: true })
+    country: string | null
+
+    @ApiProperty({ nullable: true })
+    city: string | null
+
+    @ApiProperty({ nullable: true })
     avatar: AvatarViewDto | null
 
     @ApiProperty()
