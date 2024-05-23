@@ -9,20 +9,17 @@ import * as cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule)
-  // cors: {
-  //   origin: [
-  //     'http://localhost:3000',
-  //     'http://localhost:3001',
-  //     'http://localhost:5173',
-  //     'http://localhost:8080',
-  //     'https://incubator-icta-trainee.uk',
-  //   ],
-  //   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-  //   credentials: true,
-  // },
 
   app.enableCors({
-    origin: '*',
+    origin: [
+      'http://localhost:3000',
+      'http://localhost:3001',
+      'http://localhost:5173',
+      'http://localhost:8080',
+      'https://incubator-icta-trainee.uk/',
+      'https://read.incubator-icta-trainee.uk',
+      'https://files.incubator-icta-trainee.uk'
+    ],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
   });
