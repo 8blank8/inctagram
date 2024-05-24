@@ -12,7 +12,7 @@ async function bootstrap() {
 
   app.enableCors({
     origin: [
-      'https://incubator-icta-trainee.uk/',
+      'https://incubator-icta-trainee.uk',
       'https://read.incubator-icta-trainee.uk',
       'https://files.incubator-icta-trainee.uk',
       'http://localhost:3000',
