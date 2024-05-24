@@ -9,32 +9,16 @@ import * as cookieParser from 'cookie-parser';
 async function bootstrap() {
   const app = await NestFactory.create(FilesModule);
 
-
   app.enableCors({
     origin: [
+      'https://incubator-icta-trainee.uk/',
+      'https://read.incubator-icta-trainee.uk',
+      'https://files.incubator-icta-trainee.uk',
       'http://localhost:3000',
       'http://localhost:3001',
       'http://localhost:5173',
       'http://localhost:8080',
-      'https://incubator-icta-trainee.uk/',
-      'https://read.incubator-icta-trainee.uk',
-      'https://files.incubator-icta-trainee.uk'
     ],
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    credentials: true,
-  });
-
-  // app.use((req, res, next) => {
-  //   res.header('Access-Control-Allow-Origin', 'https://incubator-icta-trainee.uk, http://localhost:3000, http://localhost:3001, http://localhost:5173, http://localhost:8080, https://read.incubator-icta-trainee.uk, https://files.incubator-icta-trainee.uk');
-  //   res.header('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DELETE');
-  //   res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  //   res.header('Access-Control-Allow-Credentials', 'true');
-  //   next();
-  // });
-
-  app.enableCors({
-    origin: '*',
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
   });
 
