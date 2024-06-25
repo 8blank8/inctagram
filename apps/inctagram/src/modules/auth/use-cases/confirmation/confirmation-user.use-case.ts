@@ -32,7 +32,8 @@ export class ConfirmationUserUseCase {
             if (user.emailConfirmed) return Result.Err('user is confirmed')
 
             const currentTime = user.confirmation.updatedAt.getTime() - new Date().getTime()
-            if (currentTime > 900000) return Result.Err('code is expired')
+            if (currentTime > 900000)
+                return Result.Err<{ email: string }>('code is expired', { email: user.email });
 
             user.emailConfirmed = true
 
