@@ -34,12 +34,15 @@ export class UpdateUserUseCase {
             if (!user) return Result.Err(`user with id: ${userId} not found`)
             if (!user.emailConfirmed) return Result.Err('user email not confirmed')
 
-            const isOver13 = userIsOver13(dateOfBirth)
-            if (!isOver13) return Result.Err('A user under 13 cannot create a profile')
+            if (dateOfBirth) {
+                const isOver13 = userIsOver13(dateOfBirth)
+                if (!isOver13) return Result.Err('A user under 13 cannot create a profile')
+            }
 
             const isUsername = await this.userRepo.getUserByUsername(username)
             if (isUsername && user.username !== username) return Result.Err(`user with username: ${username} is exist`)
 
+            user.username = username
             user.firstname = firstname
             user.lastname = lastname
             user.dateOfBirth = dateOfBirth ? new Date(dateOfBirth) : null
