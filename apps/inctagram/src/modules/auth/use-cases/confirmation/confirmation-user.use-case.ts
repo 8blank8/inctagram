@@ -4,6 +4,7 @@ import { UserRepository } from "../../../user/repository/user.repository";
 import { Result } from "../../../../../../../libs/core/result";
 import { TransactionDecorator } from "../../../../../../../libs/infra/inside-transaction/inside-transaction";
 import { DataSource, EntityManager } from "typeorm";
+import {  ExpiresConfirmationCodeError } from "@libs/core/custom-error";
 
 
 @Injectable()
@@ -31,9 +32,8 @@ export class ConfirmationUserUseCase {
             if (!user) return Result.Err('user not found')
             if (user.emailConfirmed) return Result.Err('user is confirmed')
 
-            const currentTime = user.confirmation.updatedAt.getTime() - new Date().getTime()
-            if (currentTime > 900000)
-                return Result.Err<{ email: string }>('code is expired', { email: user.email });
+            const currentTime = new Date().getTime() - user.confirmation.updatedAt.getTime() 
+            if (currentTime > 900000) return Result.Err(new ExpiresConfirmationCodeError(user.email));
 
             user.emailConfirmed = true
 
