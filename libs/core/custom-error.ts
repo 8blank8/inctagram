@@ -1,3 +1,5 @@
+import { ResultCode } from "@libs/interceptor/custom-response";
+
 export class CustomError {
     constructor(
         public readonly message: string,
@@ -45,6 +47,16 @@ export class DuplicateError extends CustomError {
         super(
             `${duplicateField} ${value} already exists`,
             DUPLICATE_ERROR_CODE
+        )
+    }
+}
+
+
+export class ExpiresConfirmationCodeError extends CustomError {
+    constructor(email: string){
+        super(
+            `${email}`,
+            ResultCode.EXPIRES_CONFIRMATION_CODE
         )
     }
 }
