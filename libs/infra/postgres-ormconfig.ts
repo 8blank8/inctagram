@@ -26,7 +26,7 @@ export const postgresConnectionOptions: PostgresConnectionOptions = {
     name: "default",
     type: 'postgres',
     host: isTest ? 'localhost' : process.env.PG_HOST,
-    port: isTest ? 5432 : +process.env.PG_PORT,
+    port: isTest ? 5433 : +process.env.PG_PORT,
     username: isTest ? 'blank' : process.env.PG_USER,
     password: isTest ? 'blank' : process.env.PG_PASSWORD,
     database: isTest ? 'inctagram_test' : process.env.PG_DATABASE,
