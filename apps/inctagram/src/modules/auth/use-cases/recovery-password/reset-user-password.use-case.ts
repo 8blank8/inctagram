@@ -5,6 +5,7 @@ import { Result } from "../../../../../../../libs/core/result";
 import { TransactionDecorator } from "../../../../../../../libs/infra/inside-transaction/inside-transaction";
 import { UserRepository } from "../../../user/repository/user.repository";
 import { hashPassword } from "../../../../utils/hash-password";
+import { UserNotFoundError } from "@libs/core/custom-error";
 
 
 @Injectable()
@@ -30,7 +31,7 @@ export class ResetUserPasswordUseCase {
 
         try {
             const user = await this.userRepo.getUserByResetPasswordCode(code)
-            if (!user) return Result.Err('user not found')
+            if (!user) return Result.Err(new UserNotFoundError())
 
             const { passwordHash, passwordSalt } = await hashPassword(password)
 
@@ -43,7 +44,7 @@ export class ResetUserPasswordUseCase {
             return Result.Ok()
         } catch (e) {
             console.log(e)
-            return Result.Err('password not changed')
+            return Result.Err(`${ResetUserPasswordUseCase.name} some error`)
         }
     }
 }

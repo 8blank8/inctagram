@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { LoginUserCommand } from "./dto/login.command";
 import { Result } from "../../../../../../../libs/core/result";
 import { UserRepository } from "../../../user/repository/user.repository";
-import { AuthError } from "../../../../../../../libs/core/custom-error";
+import { BadCredentialsError, EmailNotConfirmedError, SomeError } from "../../../../../../../libs/core/custom-error";
 import { hashPassword } from "../../../../utils/hash-password";
 import { CreateDeviceUseCase } from "../../../device/use-cases/create/create-device.use-case";
 import { JwtService } from "@nestjs/jwt";
@@ -36,11 +36,11 @@ export class LoginUserUseCase {
         try {
 
             const user = await this.userRepo.getUserByEmail(email)
-            if (!user) return Result.Err(new AuthError('The email or password are incorrect. Try again please'))
-            if (!user.emailConfirmed) return Result.Err('Email not confirmed')
+            if (!user) return Result.Err(new BadCredentialsError())
+            if (!user.emailConfirmed) return Result.Err(new EmailNotConfirmedError())
 
             const { passwordHash } = await hashPassword(password, user.passwordSalt)
-            if (passwordHash !== user.passwordHash) return Result.Err(new AuthError('The email or password are incorrect. Try again please'))
+            if (passwordHash !== user.passwordHash) return Result.Err(new BadCredentialsError())
 
             const device = await this.createDeviceUseCase.execute({
                 title,
@@ -54,7 +54,7 @@ export class LoginUserUseCase {
             return Result.Ok({ accessToken, refreshToken })
         } catch (e) {
             console.log(e)
-            return Result.Err('something wrong')
+            return Result.Err(new SomeError(`${LoginUserUseCase.name} some error`))
         }
     }
 

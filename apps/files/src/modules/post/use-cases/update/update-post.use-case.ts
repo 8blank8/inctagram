@@ -5,6 +5,7 @@ import { Result } from "@libs/core/result";
 import { TransactionDecorator } from "@libs/infra/inside-transaction/inside-transaction";
 import { UserRepository } from "@files/src/modules/user/repository/user.repository";
 import { PostRepository } from "../../repositories/post.repository";
+import { NotOwnerError, PostNotFoundError, UserNotFoundError } from "@libs/core/custom-error";
 
 
 @Injectable()
@@ -30,11 +31,11 @@ export class UpdatePostUseCase {
     ): Promise<Result<void>> {
         try {
             const user = await this.userRepo.getUserById(userId)
-            if (!user) return Result.Err('user not found')
+            if (!user) return Result.Err(new UserNotFoundError())
 
             const post = await this.postRepo.getPostById(postId)
-            if (!post) return Result.Err('post not found')
-            if (post.user.id !== userId) return Result.Err('user is not owner this post')
+            if (!post) return Result.Err(new PostNotFoundError())
+            if (post.user.id !== userId) return Result.Err(new NotOwnerError('post'))
 
             post.description = description ?? null
             post.updatedAt = new Date()
@@ -43,8 +44,8 @@ export class UpdatePostUseCase {
 
             return Result.Ok()
         } catch (e) {
-            console.log(e)
-            return Result.Err('update post some error')
+            console.log(`${UpdatePostUseCase.name} some error`, e)
+            return Result.Err(`${UpdatePostUseCase.name} some error`)
         }
     }
 }

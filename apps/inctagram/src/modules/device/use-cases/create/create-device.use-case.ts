@@ -4,6 +4,7 @@ import { DeviceEntity } from "../../../../../../../libs/infra/entities/device.en
 import { Result } from "../../../../../../../libs/core/result";
 import { EntityManager } from "typeorm";
 import { UserEntity } from "@libs/infra/entities/user.entity";
+import { UserNotFoundError } from "@libs/core/custom-error";
 
 
 @Injectable()
@@ -15,7 +16,7 @@ export class CreateDeviceUseCase {
             where: { id: userId },
             relations: { devices: true }
         })
-        if (!user) return Result.Err('CreateDeviceUseCase: user not found')
+        if (!user) return Result.Err(new UserNotFoundError())
 
         let device: DeviceEntity;
 

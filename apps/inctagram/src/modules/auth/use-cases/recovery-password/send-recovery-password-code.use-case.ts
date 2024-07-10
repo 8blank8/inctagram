@@ -6,6 +6,7 @@ import { Result } from "../../../../../../../libs/core/result";
 import { v4 as uuid } from 'uuid'
 import { TransactionDecorator } from "../../../../../../../libs/infra/inside-transaction/inside-transaction";
 import { DataSource, EntityManager } from "typeorm";
+import { SomeError, UserNotFoundError } from "@libs/core/custom-error";
 
 
 @Injectable()
@@ -32,7 +33,7 @@ export class SendRecoveryPasswordCodeUseCase {
 
         try {
             const user = await this.userRepo.getUserByEmail(email)
-            if (!user) return Result.Err('user not found')
+            if (!user) return Result.Err(new UserNotFoundError())
 
             user.passwordRecoveryCode = uuid()
             await manager.save(user)
@@ -43,7 +44,7 @@ export class SendRecoveryPasswordCodeUseCase {
 
         } catch (e) {
             console.log(e)
-            return Result.Err('code not sended')
+            return Result.Err(new SomeError(`${SendRecoveryPasswordCodeUseCase.name} some error`))
         }
 
 

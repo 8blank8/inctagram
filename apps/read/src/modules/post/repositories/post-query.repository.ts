@@ -47,8 +47,8 @@ export class PostQueryRepository {
                 })
             )
         } catch (e) {
-            console.log(e)
-            return Result.Err('get posts some error')
+            console.log(`${PostQueryRepository.name, this.getPosts.name} some error`, e)
+            return Result.Err(`${PostQueryRepository.name, this.getPosts.name} some error`)
         }
     }
 
@@ -74,8 +74,8 @@ export class PostQueryRepository {
             )
 
         } catch (e) {
-            console.log('getPublicPosts', e)
-            return Result.Err('some error get public posts')
+            console.log(`${PostQueryRepository.name, this.getPublicPosts.name} some error`, e)
+            return Result.Err(`${PostQueryRepository.name, this.getPublicPosts.name} some error`)
         }
     }
 
@@ -98,8 +98,8 @@ export class PostQueryRepository {
             return Result.Ok(PostMapper.fromPostToPostViewDto(post))
 
         } catch (e) {
-            console.log(`${PostQueryRepository.name} getPostById`, e)
-            return Result.Err('get post by id some error')
+            console.log(`${PostQueryRepository.name, this.getPostById.name} some error`, e)
+            return Result.Err(`${PostQueryRepository.name, this.getPostById.name} some error`)
         }
     }
 

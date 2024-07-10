@@ -1,4 +1,3 @@
-import { appSetting } from "@libs/core/app-setting";
 import { Body, Controller, Delete, FileTypeValidator, MaxFileSizeValidator, Param, ParseFilePipe, Post, Req, UploadedFile, UseGuards, UseInterceptors } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { CreateUserAvatarDto } from "../dto/input/create-user-avatar.dto";

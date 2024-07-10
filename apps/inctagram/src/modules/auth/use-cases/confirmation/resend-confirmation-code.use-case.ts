@@ -6,6 +6,7 @@ import { MailService } from "../../../../../../../libs/mailer/mailer.service";
 import { v4 as uuid } from 'uuid'
 import { DataSource, EntityManager } from "typeorm";
 import { TransactionDecorator } from "@libs/infra/inside-transaction/inside-transaction";
+import { EmailIsConfirmedError, SomeError, UserWithEmailNotFoundError } from "@libs/core/custom-error";
 
 
 @Injectable()
@@ -33,8 +34,8 @@ export class ResendConfirmationCodeUseCase {
         try {
 
             const user = await this.userRepo.getUserByEmail(email)
-            if (!user) return Result.Err('user with email not found')
-            if (user.emailConfirmed) return Result.Err('user email is confirmed')
+            if (!user) return Result.Err(new UserWithEmailNotFoundError(email))
+            if (user.emailConfirmed) return Result.Err(new EmailIsConfirmedError())
 
             user.confirmation.confirmationCode = uuid()
             user.confirmation.updatedAt = new Date()
@@ -47,7 +48,7 @@ export class ResendConfirmationCodeUseCase {
 
         } catch (e) {
             console.log(ResendConfirmationCodeUseCase.name + e)
-            return Result.Err('resend code some error')
+            return Result.Err(new SomeError(`${ResendConfirmationCodeUseCase.name} some error`))
         }
     }
 }

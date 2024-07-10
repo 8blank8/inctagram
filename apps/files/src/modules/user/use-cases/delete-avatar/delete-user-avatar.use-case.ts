@@ -6,6 +6,7 @@ import { DataSource, EntityManager } from "typeorm";
 import { UserRepository } from "../../repository/user.repository";
 import { S3Service } from "@files/src/modules/s3/services/s3.service";
 import { UserAvatarEntity } from "../../../../../../../libs/infra/entities/user-avatar.entity";
+import { AvatarNotDeletedError, AvatarNotFoundError, UserWithIdNotFoundError } from "@libs/core/custom-error";
 
 
 @Injectable()
@@ -32,22 +33,22 @@ export class DeleteUserAvatarUseCase {
         try {
 
             const user = await this.userRepo.getUserById(userId)
-            if (!user) return Result.Err(`user with id: ${userId} not found`)
-            if (!user.avatar) return Result.Err(`avatar id: ${avatarId} doesn't exist`)
+            if (!user) return Result.Err(new UserWithIdNotFoundError(userId))
+            if (!user.avatar) return Result.Err(new AvatarNotFoundError(avatarId))
 
             const isDelete = await this.s3Service.delete(user.avatar.url)
-            if (!isDelete.isSuccess) return Result.Err('avatar not deleted')
+            if (!isDelete.isSuccess) return Result.Err(new AvatarNotDeletedError())
 
             user.avatar = null
             await manager.save(user)
 
             const isDeleteUserAvatar = await manager.delete(UserAvatarEntity, { id: avatarId })
-            if (isDeleteUserAvatar.affected !== 1) return Result.Err('user avatar not deleted')
+            if (isDeleteUserAvatar.affected !== 1) return Result.Err(new AvatarNotDeletedError())
 
             return Result.Ok()
         } catch (e) {
-            console.log(e)
-            return Result.Err('delete avatar for user something error}')
+            console.log(`${DeleteUserAvatarUseCase.name} some error`, e)
+            return Result.Err(`${DeleteUserAvatarUseCase.name} some error`)
         }
     }
 }

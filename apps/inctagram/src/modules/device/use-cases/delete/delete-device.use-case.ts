@@ -36,7 +36,7 @@ export class DeleteDeviceUseCase {
             return Result.Ok()
         } catch (e) {
             console.log(e)
-            return Result.Err('delete device some err')
+            return Result.Err(`${DeleteDeviceUseCase.name} some error`)
         }
     }
 }

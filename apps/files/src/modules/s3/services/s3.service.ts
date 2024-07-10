@@ -24,8 +24,8 @@ export class S3Service {
 
             return Result.Ok()
         } catch (e) {
-            console.log(e)
-            return Result.Err('upload image something error')
+            console.log(`${S3Service.name, this.upload.name} some error`, e)
+            return Result.Err(`${S3Service.name, this.upload.name} some error`)
         }
     }
 
@@ -40,8 +40,8 @@ export class S3Service {
 
             return Result.Ok()
         } catch (e) {
-            console.log(e)
-            return Result.Err('delete image something error')
+            console.log(`${S3Service.name, this.delete.name} some error`, e)
+            return Result.Err(`${S3Service.name, this.delete.name} some error`)
         }
     }
 }

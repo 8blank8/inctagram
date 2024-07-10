@@ -6,6 +6,7 @@ import { DeletePostCommand } from "./dto/delete-post.command";
 import { Result } from "@libs/core/result";
 import { TransactionDecorator } from "@libs/infra/inside-transaction/inside-transaction";
 import { S3Service } from "@files/src/modules/s3/services/s3.service";
+import { NotOwnerError, PostNotFoundError, UserNotFoundError } from "@libs/core/custom-error";
 
 
 @Injectable()
@@ -32,11 +33,11 @@ export class DeletePostUseCase {
     ): Promise<Result<void>> {
         try {
             const user = await this.userRepo.getUserById(userId)
-            if (!user) return Result.Err('user not found')
+            if (!user) return Result.Err(new UserNotFoundError())
 
             const post = await this.postRepo.getPostById(postId)
-            if (!post) return Result.Err('post not found')
-            if (post.user.id !== userId) return Result.Err('user is not owner this post')
+            if (!post) return Result.Err(new PostNotFoundError())
+            if (post.user.id !== userId) return Result.Err(new NotOwnerError('post'))
 
             for (let i = 0; i < post.photos.length; i++) {
                 const url = post.photos[i].url
@@ -48,8 +49,8 @@ export class DeletePostUseCase {
 
             return Result.Ok()
         } catch (e) {
-            console.log(e)
-            return Result.Err('delete post some error')
+            console.log(`${DeletePostUseCase.name} some error`, e)
+            return Result.Err(`${DeletePostUseCase.name} some error`)
         }
     }
 }

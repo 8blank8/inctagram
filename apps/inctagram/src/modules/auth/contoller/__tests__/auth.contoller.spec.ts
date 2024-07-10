@@ -10,6 +10,7 @@ import { CreateUserCommand } from "../../../user/use-cases/create/dto/create-use
 import { ConfirmationUserCommand } from "../../use-cases/confirmation/dto/confirmation-user.command"
 import { ResetUserPasswordCommand } from "../../use-cases/recovery-password/dto/reset-user-password.command"
 import { CreateAppForE2eTestsMain } from "@inctagram/src/utils/test/create-and-configure-app-for-e2e"
+import { ResultCode } from "@libs/interceptor/custom-response"
 
 
 describe('auth', () => {
@@ -124,7 +125,7 @@ describe('auth', () => {
                 .send({ email: user.email })
 
             expect(status).toBe(HttpStatus.CREATED)
-            expect(body.resultCode).toBe(1)
+            expect(body.resultCode).toBe(ResultCode.EMAIL_IS_CONFIRMED)
             expect(body.errors.length).toBe(1)
         })
 
@@ -134,7 +135,7 @@ describe('auth', () => {
                 .send({ email: 'tes@gmail.com' })
 
             expect(status).toBe(HttpStatus.CREATED)
-            expect(body.resultCode).toBe(1)
+            expect(body.resultCode).toBe(ResultCode.USER_WITH_ID_NOT_FOUND)
             expect(body.errors.length).toBe(1)
         })
     })
@@ -205,7 +206,7 @@ describe('auth', () => {
                 .send(confirmCodeDto)
 
             expect(status).toBe(HttpStatus.CREATED)
-            expect(body.errors.length).toBe(1)
+            expect(body.errors.length).toBe(0)
         })
     })
 
