@@ -4,6 +4,7 @@ import { UserRepository } from "../../../user/repository/user.repository";
 import { Result } from "../../../../../../../libs/core/result";
 import { TransactionDecorator } from "../../../../../../../libs/infra/inside-transaction/inside-transaction";
 import { DataSource, EntityManager } from "typeorm";
+import { EmailIsConfirmedError, ExpiresConfirmationCodeError, SomeError, UserNotFoundError } from "@libs/core/custom-error";
 
 
 @Injectable()
@@ -28,12 +29,11 @@ export class ConfirmationUserUseCase {
     ) {
         try {
             const user = await this.userRepo.getUserByConfirmationCode(code)
-            if (!user) return Result.Err('user not found')
-            if (user.emailConfirmed) return Result.Err('user is confirmed')
+            if (!user) return Result.Err(new UserNotFoundError())
+            if (user.emailConfirmed) return Result.Err(new EmailIsConfirmedError())
 
-            const currentTime = user.confirmation.updatedAt.getTime() - new Date().getTime()
-            if (currentTime > 900000)
-                return Result.Err<{ email: string }>('code is expired', { email: user.email });
+            const currentTime = new Date().getTime() - user.confirmation.updatedAt.getTime()
+            if (currentTime > 900000) return Result.Err(new ExpiresConfirmationCodeError(user.email));
 
             user.emailConfirmed = true
 
@@ -42,7 +42,7 @@ export class ConfirmationUserUseCase {
             return Result.Ok()
         } catch (e) {
             console.log(e)
-            return Result.Err('confirm email some error')
+            return Result.Err(new SomeError(`${ConfirmationUserUseCase.name} some error`))
         }
     }
 }

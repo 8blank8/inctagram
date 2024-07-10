@@ -5,6 +5,7 @@ import { DataSource, EntityManager } from "typeorm";
 import { DeviceRepository } from "../../../device/repository/device.repository";
 import { Result } from "@libs/core/result";
 import { TokenService } from "../../services/token.service";
+import { DeviceNotFoundError, NotOwnerError } from "@libs/core/custom-error";
 
 
 @Injectable()
@@ -31,8 +32,8 @@ export class LogoutUserUseCase {
 
         try {
             const device = await this.deviceRepo.getDeviceById(deviceId)
-            if (!device) return Result.Err('device not found')
-            if (device.user.id !== userId) return Result.Err('user not owner this device')
+            if (!device) return Result.Err(new DeviceNotFoundError())
+            if (device.user.id !== userId) return Result.Err(new NotOwnerError('device'))
 
             await manager.remove(device)
 
@@ -42,7 +43,7 @@ export class LogoutUserUseCase {
 
         } catch (e) {
             console.log(e)
-            return Result.Err('logout some error')
+            return Result.Err(`${LogoutUserUseCase.name} some error`)
         }
     }
 }

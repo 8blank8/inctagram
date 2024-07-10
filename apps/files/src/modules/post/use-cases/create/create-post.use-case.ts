@@ -9,6 +9,7 @@ import { PostEntity } from "../../../../../../../libs/infra/entities/post.entity
 import { AspectRatioType } from "../../dto/create-post.dto";
 import { S3Service } from "@files/src/modules/s3/services/s3.service";
 import { UserEntity } from "@libs/infra/entities/user.entity";
+import { UserNotFoundError } from "@libs/core/custom-error";
 
 
 @Injectable()
@@ -34,7 +35,7 @@ export class CreatePostUseCase {
     ): Promise<Result<void>> {
         try {
             const user = await this.userRepo.getUserById(dto.userId)
-            if (!user) return Result.Err('user not found')
+            if (!user) return Result.Err(new UserNotFoundError())
 
             const post = new PostEntity()
             post.createdAt = new Date()
@@ -60,8 +61,8 @@ export class CreatePostUseCase {
 
             return Result.Ok()
         } catch (e) {
-            console.log(e)
-            return Result.Err('create post some error')
+            console.log(`${CreatePostUseCase.name} some error`, e)
+            return Result.Err(`${CreatePostUseCase.name} some error`)
         }
     }
 

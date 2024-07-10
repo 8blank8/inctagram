@@ -8,6 +8,7 @@ import { TransactionDecorator } from '../../../../../../../libs/infra/inside-tra
 import { DataSource, EntityManager } from 'typeorm';
 import { UserRepository } from '../../repository/user.repository';
 import { hashPassword } from '../../../../utils/hash-password';
+import { SomeError, UserWithEmailIsExistError, UserWithUsernameIsExistError } from '@libs/core/custom-error';
 
 class UserDto {
     email: string
@@ -46,10 +47,10 @@ export class CreateUserUseCase {
 
 
             const findedUserEmail = await this.userRepo.getUserByEmail(email)
-            if (findedUserEmail && findedUserEmail.emailConfirmed) return Result.Err('user with email is exist')
+            if (findedUserEmail && findedUserEmail.emailConfirmed) return Result.Err(new UserWithEmailIsExistError(findedUserEmail.email))
 
             const findedUserUsername = await this.userRepo.getUserByUsername(username)
-            if (findedUserUsername && findedUserUsername.emailConfirmed) return Result.Err('user with username is exist')
+            if (findedUserUsername && findedUserUsername.emailConfirmed) return Result.Err(new UserWithUsernameIsExistError(findedUserUsername.username))
 
             const { passwordHash, passwordSalt } = await hashPassword(password)
 
@@ -79,7 +80,7 @@ export class CreateUserUseCase {
             return Result.Ok(createdUser)
         } catch (e) {
             console.log(e)
-            return Result.Err('CreateUserUseCase error')
+            return Result.Err(new SomeError(`${CreateUserUseCase.name}, some error`))
         }
     }
 

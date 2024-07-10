@@ -12,23 +12,27 @@ export class UserQueryRepository {
     constructor(@InjectRepository(UserEntity) private userRepo: Repository<UserEntity>) { }
 
     async getUserProfileWithAvatar(userId: string, isAuth: boolean = false): Promise<Result<UserPfofileViewDto>> {
+        try {
+            const filter: FindOneOptions<UserEntity> = {
+                where: {
+                    id: userId,
 
-        const filter: FindOneOptions<UserEntity> = {
-            where: {
-                id: userId,
-
-            },
-            relations: {
-                avatar: true
+                },
+                relations: {
+                    avatar: true
+                }
             }
+
+            if (!isAuth) filter.where['public'] = true
+
+            const user = await this.userRepo.findOne(filter)
+            if (!user) return Result.Err(`user with id: ${userId} not found`)
+
+            return Result.Ok(UserMapper.fromUserToUserProfileViewDto(user))
+        } catch (e) {
+            console.log(`${UserQueryRepository.name, this.getUserProfileWithAvatar.name} some error`, e)
+            return Result.Err(`${UserQueryRepository.name, this.getUserProfileWithAvatar.name} some error`)
         }
-
-        if (!isAuth) filter.where['public'] = true
-
-        const user = await this.userRepo.findOne(filter)
-        if (!user) return Result.Err(`user with id: ${userId} not found`)
-
-        return Result.Ok(UserMapper.fromUserToUserProfileViewDto(user))
     }
 
     async getTotalCountUsers(): Promise<Result<{ count: number }>> {
@@ -37,8 +41,8 @@ export class UserQueryRepository {
 
             return Result.Ok({ count })
         } catch (e) {
-            console.log(`${UserQueryRepository.name}, getTotalCountUsers error`, e)
-            return Result.Err('some error')
+            console.log(`${UserQueryRepository.name, this.getTotalCountUsers.name} some error`, e)
+            return Result.Err(`${UserQueryRepository.name, this.getTotalCountUsers.name} some error`)
         }
     }
 }

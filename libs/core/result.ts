@@ -17,14 +17,14 @@ export class Result<T = void> {
         return new Result<T>(true, parsedValue as unknown as T);
     }
 
-    public static Err<T>(err: CustomError | string, _value: T = null): Result<T> {
+    public static Err<T>(err: CustomError | string): Result<T> {
 
         let error: CustomError = err as CustomError;
 
         if (typeof err === 'string')
             error = new CustomError(err as string);
 
-        return new Result<T>(false, _value, error);
+        return new Result<T>(false, null, error);
     }
 
     get value(): T {

@@ -7,6 +7,7 @@ import { DataSource, EntityManager } from "typeorm";
 import { TransactionDecorator } from "@libs/infra/inside-transaction/inside-transaction";
 import { IdCreated } from "@libs/core/id-created";
 import { S3Service } from "@files/src/modules/s3/services/s3.service";
+import { AvatarNotDeletedError, UserWithIdNotFoundError } from "@libs/core/custom-error";
 
 
 @Injectable()
@@ -33,7 +34,7 @@ export class CreateUserAvatarUseCase {
     ): Promise<Result<IdCreated>> {
         try {
             const user = await this.userRepo.getUserById(userId)
-            if (!user) return Result.Err(`user with id:${userId} not found`)
+            if (!user) return Result.Err(new UserWithIdNotFoundError(userId))
 
             if (user.avatar) {
                 const isDelete = await this.s3Service.delete(user.avatar.url)
@@ -43,10 +44,10 @@ export class CreateUserAvatarUseCase {
 
                 user.avatar = null
                 const userWithNonAvatar = await manager.save(user)
-                if (userWithNonAvatar.avatar) return Result.Err('user avatar is not deleted')
+                if (userWithNonAvatar.avatar) return Result.Err(new AvatarNotDeletedError())
 
                 const isDeleteUserAvatar = await manager.delete(UserAvatarEntity, currentAvatarId)
-                if (isDeleteUserAvatar.affected !== 1) return Result.Err('avatar is not deleted')
+                if (isDeleteUserAvatar.affected !== 1) return Result.Err(new AvatarNotDeletedError())
             }
 
             const avatarUrl = this.createUrl(user.id, file.originalname)
@@ -69,8 +70,8 @@ export class CreateUserAvatarUseCase {
 
             return Result.Ok({ id: createdAvatar.id })
         } catch (e) {
-            console.log(e)
-            return Result.Err('user avatar not created')
+            console.log(`${CreateUserAvatarUseCase.name} some error`, e)
+            return Result.Err(`${CreateUserAvatarUseCase.name} some error`)
         }
     }
 

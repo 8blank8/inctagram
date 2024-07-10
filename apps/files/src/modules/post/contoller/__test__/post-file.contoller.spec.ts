@@ -103,7 +103,7 @@ describe('posts file', () => {
             const { body } = await request(_httpServer)
                 .delete(`/posts/${postEntity.id}`)
                 .set('authorization', `Bearer ${accessToken}`)
-
+            console.log(body)
             expect(body.errors.length).toBe(0)
 
             const findedPost = await manager.findOneBy(PostEntity, { id: postEntity.id })

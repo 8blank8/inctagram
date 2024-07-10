@@ -8,6 +8,7 @@ import { EmailConfirmationEntity } from "@libs/infra/entities/email-confirmation
 import { v4 as uuid } from 'uuid'
 import { DataSource, EntityManager } from "typeorm";
 import { TransactionDecorator } from "@libs/infra/inside-transaction/inside-transaction";
+import { SomeError } from "@libs/core/custom-error";
 
 
 @Injectable()
@@ -51,7 +52,7 @@ export class RegistrationUserUseCase {
 
         } catch (e) {
             console.log(RegistrationUserUseCase.name + e)
-            return Result.Err('registration user some error')
+            return Result.Err(new SomeError(`${RegistrationUserUseCase.name} some error`))
         }
     }
 }

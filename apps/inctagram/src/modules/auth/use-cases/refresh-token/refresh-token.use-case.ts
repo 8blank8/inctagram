@@ -8,6 +8,7 @@ import { DataSource, EntityManager } from "typeorm";
 import { TransactionDecorator } from "@libs/infra/inside-transaction/inside-transaction";
 import { DeviceRepository } from "@inctagram/src/modules/device/repository/device.repository";
 import { TokenService } from "../../services/token.service";
+import { DeviceNotFoundError, NotOwnerError, UserNotFoundError } from "@libs/core/custom-error";
 
 
 @Injectable()
@@ -35,11 +36,11 @@ export class RefreshTokenUseCase {
     ): Promise<Result<{ accessToken: string, refreshToken: string }>> {
 
         const user = await this.userRepo.getUserWithDevicesById(userId)
-        if (!user) return Result.Err('user not found')
+        if (!user) return Result.Err(new UserNotFoundError())
 
         const device = await this.deviceRepo.getDeviceById(deviceId)
-        if (!device) return Result.Err('device not found')
-        if (device.user.id !== user.id) return Result.Err('user not owner this device')
+        if (!device) return Result.Err(new DeviceNotFoundError())
+        if (device.user.id !== user.id) return Result.Err(new NotOwnerError('device'))
 
         device.updatedAt = new Date()
 
