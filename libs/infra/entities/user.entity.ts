@@ -25,6 +25,12 @@ export class UserEntity extends BaseEntity {
     @Column({ nullable: true })
     aboutMe: string | null
 
+    @Column({ nullable: true })
+    country: string
+
+    @Column({ nullable: true })
+    city: string
+
     @Column({ type: 'timestamp without time zone', nullable: true, default: null })
     dateOfBirth: Date | null
 

@@ -14,6 +14,8 @@ export class UserMapper {
             email: user.email,
             aboutMe: user.aboutMe,
             dateOfBirth: user.dateOfBirth,
+            city: user.city,
+            country: user.country,
             createdAt: user.createdAt.toISOString(),
             updatedAt: user.updatedAt === null ? null : user.updatedAt.toISOString(),
             avatar: UserMapper.fromAvatarToAvatarViewDto(user.avatar)
@@ -23,7 +25,7 @@ export class UserMapper {
     static fromAvatarToAvatarViewDto(a: UserAvatarEntity): AvatarViewDto {
         let avatar: AvatarViewDto | null = null
 
-        if (avatar) {
+        if (a) {
             avatar = {
                 id: a.id,
                 url: appSetting.AWS_S3_BASE_URL + a.url,
