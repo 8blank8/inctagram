@@ -63,5 +63,6 @@ async function bootstrap() {
   console.log(`Server listen on ${PORT} port in ${MODE} mode.`);
 
   await app.listen(PORT);
+  console.log('this is test 2')
 }
 bootstrap();
